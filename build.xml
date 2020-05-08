@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- WARNING: Eclipse auto-generated file.
+              Any modifications will be overwritten.
+              To include a user specific buildfile here, simply create one in the same
+              directory with the processing instruction <?eclipse.ant.import?>
+              as the first entry and export the buildfile again. --><project basedir="." default="build" name="jist-swans-1.0.6">
+    <property environment="env"/>
+    <property name="Test2.location" value="C:/Users/isaia/eclipse-workspace/Test2"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.4"/>
+    <property name="source" value="1.4"/>
+    <path id="jist-swans-1.0.6.classpath">
+        <pathelement location="src"/>
+        <pathelement location="libs/bcel.jar"/>
+        <pathelement location="libs/bsh.jar"/>
+        <pathelement location="libs/checkstyle-all.jar"/>
+        <pathelement location="libs/jargs.jar"/>
+        <pathelement location="libs/jython.jar"/>
+        <pathelement location="libs/log4j.jar"/>
+    </path>
+    <target name="init">
+        <mkdir dir="src"/>
+        <copy includeemptydirs="false" todir="src">
+            <fileset dir="src">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="clean">
+        <delete dir="src"/>
+    </target>
+    <target depends="clean" name="cleanall"/>
+    <target depends="build-subprojects,build-project" name="build"/>
+    <target name="build-subprojects"/>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="src" includeantruntime="false" source="${source}" target="${target}">
+            <src path="src"/>
+            <classpath refid="jist-swans-1.0.6.classpath"/>
+        </javac>
+    </target>
+    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects">
+        <ant antfile="build.xml" dir="${Test2.location}" inheritAll="false" target="clean"/>
+        <ant antfile="build.xml" dir="${Test2.location}" inheritAll="false" target="build"/>
+    </target>
+    <target name="CBR">
+        <java classname="driver.CBR" failonerror="true" fork="yes">
+            <classpath refid="jist-swans-1.0.6.classpath"/>
+        </java>
+    </target>
+    <target name="hello">
+        <java classname="jist.minisim.hello" failonerror="true" fork="yes">
+            <classpath refid="jist-swans-1.0.6.classpath"/>
+        </java>
+    </target>
+    <target name="Main (1)">
+        <java classname="jist.runtime.Main" failonerror="true" fork="yes">
+            <classpath refid="jist-swans-1.0.6.classpath"/>
+        </java>
+    </target>
+    <target name="Main (2)">
+        <java classname="jist.runtime.Main" failonerror="true" fork="yes">
+            <arg line="&quot;jist.swans.Main driver.aodvsim&quot;"/>
+            <classpath refid="jist-swans-1.0.6.classpath"/>
+        </java>
+    </target>
+    <target name="Main">
+        <java classname="jist.swans.Main" failonerror="true" fork="yes">
+            <arg line="-v"/>
+            <classpath refid="jist-swans-1.0.6.classpath"/>
+        </java>
+    </target>
+</project>
