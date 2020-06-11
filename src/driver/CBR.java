@@ -488,6 +488,7 @@ public class CBR
         break;
       case Constants.NET_LOSS_UNIFORM:
         loss = new PacketLoss.Uniform(Double.parseDouble(opts.lossOpts));
+        break;
       default:
         throw new RuntimeException("unknown packet loss model");
     }
