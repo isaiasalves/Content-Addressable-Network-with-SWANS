@@ -382,13 +382,13 @@ public class RouteDsr implements RouteInterface.Dsr
     {
       reply.addOption(RouteDsrMsg.OptionSourceRoute.create(0,
         routeFromHere.length, routeFromHere));
-      
-      
-      //********************* Adição para plotar a quantidade de nós ********************* //
-      System.out.println("Quantidade de nós até o Destino: "+(routeToHere.length-1)+":");
-      //*********************************************************************************** //
-      
+     
     }
+    
+    
+    //********************* Adição para plotar a quantidade de nós ********************* //
+    System.out.println("Quantidade de nós até o Destino: "+(routeToHere.length-1)+":");
+    //*********************************************************************************** //
     
     //******************** Adição para plotar os nós até o destino ********************* //
     for	(int i=0; i < routeToHere.length; i++)	
@@ -1673,13 +1673,17 @@ public class RouteDsr implements RouteInterface.Dsr
     if (route.length > 0)
     {
       dsrMsg.addOption(RouteDsrMsg.OptionSourceRoute.create(0, route.length, route));
-      
-      //****************************** Adição para mostrar o tamanho da rota ******************************//
-      System.out.println();
-      System.out.println("Tamanho da rota: "+route.length);
-      //****************************************************************************************************//
+       
     }
 
+    
+    //****************************** Adição para mostrar o tamanho da rota ******************************//
+    System.out.println();
+    System.out.println("Tamanho da rota: "+route.length);
+    System.out.println();
+    //****************************************************************************************************//
+    
+    
     if (log.isInfoEnabled())
     {
       log.info("Route length: " + route.length);
