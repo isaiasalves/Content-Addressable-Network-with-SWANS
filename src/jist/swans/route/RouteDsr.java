@@ -382,7 +382,23 @@ public class RouteDsr implements RouteInterface.Dsr
     {
       reply.addOption(RouteDsrMsg.OptionSourceRoute.create(0,
         routeFromHere.length, routeFromHere));
+      
+      
+      //********************* Adição para plotar a quantidade de nós ********************* //
+      System.out.println("Quantidade de nós até o Destino: "+(routeToHere.length-1)+":");
+      //*********************************************************************************** //
+      
     }
+    
+    //******************** Adição para plotar os nós até o destino ********************* //
+    for	(int i=0; i < routeToHere.length; i++)	
+    {
+    	System.out.print(routeToHere[i]+", ");
+    	
+    }
+    System.out.println();
+    //*********************************************************************************** //
+    
 
     NetMessage.Ip replyMsg = new NetMessage.Ip(reply, localAddr,
       src, Constants.NET_PROTOCOL_DSR, Constants.NET_PRIORITY_NORMAL,
@@ -1591,6 +1607,15 @@ public class RouteDsr implements RouteInterface.Dsr
           msg.getDst() + "!");
       }
     }
+    
+    
+    //************************** Adição para mostrar as retransmissões que ocorreram **************************************** //
+    if (numRetransmits > 0)
+    {
+    	System.out.println();
+    	System.out.println(localAddr + " retransmitting from " + msg.getSrc() + " to " +msg.getDst() + "!");
+    }
+    //************************************************************************************************************************** //
 
     netEntity.send(msg, Constants.NET_INTERFACE_DEFAULT, MacAddress.ANY);
     JistAPI.sleep(timeout + (long)(Math.random() * BROADCAST_JITTER));
@@ -1648,6 +1673,11 @@ public class RouteDsr implements RouteInterface.Dsr
     if (route.length > 0)
     {
       dsrMsg.addOption(RouteDsrMsg.OptionSourceRoute.create(0, route.length, route));
+      
+      //****************************** Adição para mostrar o tamanho da rota ******************************//
+      System.out.println();
+      System.out.println("Tamanho da rota: "+route.length);
+      //****************************************************************************************************//
     }
 
     if (log.isInfoEnabled())
