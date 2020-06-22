@@ -3,6 +3,7 @@
 	<name>jist-swans-PGC</name>
 	<comment></comment>
 	<projects>
+		<project>Starter</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

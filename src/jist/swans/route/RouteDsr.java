@@ -21,7 +21,13 @@ import jist.runtime.JistAPI;
 
 import org.apache.log4j.Logger;
 
+import driver.CBR;
+
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
+
+import csvMaker.*;
 
 /**
  * An implementation of the Dynamic Source Routing protocol.
@@ -38,7 +44,8 @@ public class RouteDsr implements RouteInterface.Dsr
   //////////////////////////////////////////////////
   // constants
   //
-
+  public static CBR cbr = new CBR();
+	
   /** The maximum amount of jitter before sending a packet. */ 
   public static final long BROADCAST_JITTER       = 10 * Constants.MILLI_SECOND;
   /** The maximum amount of time a packet can remain in the Send Buffer. */
@@ -89,6 +96,9 @@ public class RouteDsr implements RouteInterface.Dsr
   //////////////////////////////////////////////////
   // locals
   //
+  
+  private long startTime;
+  private long stopTime;
 
   /** DSR logger. */
   private static Logger log = Logger.getLogger(RouteDsr.class.getName());
@@ -398,8 +408,19 @@ public class RouteDsr implements RouteInterface.Dsr
     }
     System.out.println();
     //*********************************************************************************** //
-    
+    //cbr.registrar("Quantidade de nós até o Destino: "+(routeToHere.length-1));
+    cbr.registrar(2, ""+(routeToHere.length-1));
 
+	/*
+	 * System.out.println("ESCREVENDO NO ARQUIVO"); try { FileWriter myWriter = new
+	 * FileWriter("C:\\Testes\\filename.txt");
+	 * myWriter.write("Quantidade de nós até o Destino: "+(routeToHere.length-1));
+	 * myWriter.close(); System.out.println("Successfully wrote to the file."); }
+	 * catch (IOException e) { System.out.println("An error occurred.");
+	 * e.printStackTrace(); }
+	 */
+    
+    
     NetMessage.Ip replyMsg = new NetMessage.Ip(reply, localAddr,
       src, Constants.NET_PROTOCOL_DSR, Constants.NET_PRIORITY_NORMAL,
       Constants.TTL_DEFAULT);
@@ -1614,6 +1635,25 @@ public class RouteDsr implements RouteInterface.Dsr
     {
     	System.out.println();
     	System.out.println(localAddr + " retransmitting from " + msg.getSrc() + " to " +msg.getDst() + "!");
+    	
+    	
+		//    	
+		//    	 System.out.println("ESCREVENDO NO ARQUIVO");
+		//    	    try {
+		//    		      FileWriter myWriter = new FileWriter("C:\\Testes\\filename.txt");
+		//    		      myWriter.write(localAddr + " retransmitting from " + msg.getSrc() + " to " +msg.getDst() + "!");
+		//    		      myWriter.close();
+		//    		      System.out.println("Successfully wrote to the file.");
+		//    		    } catch (IOException e) {
+		//    		      System.out.println("An error occurred.");
+		//    		      e.printStackTrace();
+		//    		    }
+		    	    
+    	    
+    	    
+    	   //cbr.registrar(localAddr + " retransmitting from " + msg.getSrc() + " to " +msg.getDst() + "!");
+    	cbr.registrar(3, localAddr + " retransmitting from " + msg.getSrc() + " to " +msg.getDst());
+    	    
     }
     //************************************************************************************************************************** //
 
@@ -1681,6 +1721,24 @@ public class RouteDsr implements RouteInterface.Dsr
     System.out.println();
     System.out.println("Tamanho da rota: "+route.length);
     System.out.println();
+    
+    
+    
+	    
+	//    System.out.println("ESCREVENDO NO ARQUIVO");
+	//    try {
+	//	      FileWriter myWriter = new FileWriter("C:\\Testes\\filename.txt");
+	//	      myWriter.write("Tamanho da rota: "+route.length);
+	//	      myWriter.close();
+	//	      System.out.println("Successfully wrote to the file.");
+	//	    } catch (IOException e) {
+	//	      System.out.println("An error occurred.");
+	//	      e.printStackTrace();
+	//	    }
+	    
+    
+    cbr.registrar(4, ""+route.length); //Tamanho da rota
+   
     //****************************************************************************************************//
     
     

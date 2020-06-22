@@ -42,7 +42,15 @@ import jist.runtime.JistAPI;
 
 import jargs.gnu.*;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
+
+import com.puppycrawl.tools.checkstyle.checks.UpperEllCheck;
+import com.ziclix.python.sql.util.Queue;
+
+import csvMaker.*;
+
 
 /**
  * Constant Bit Rate simulation program.  This program creates a field and
@@ -55,6 +63,9 @@ import java.util.*;
  * @author Ben Viglietta
  * @author Rimon Barr
  */
+
+
+
 public class CBR
 {
   /** Default port number to send and receive packets. */
@@ -63,6 +74,7 @@ public class CBR
   //////////////////////////////////////////////////
   // locals
   //
+  
 
   /** The number of clients currently transmitting. */
   private static int numClientsTransmitting = 0;
@@ -70,8 +82,18 @@ public class CBR
 
   //////////////////////////////////////////////////
   // server
-  //
-
+  //  
+   
+  private static String dados;
+  
+  public static Structure coleta = new Structure();
+  
+  private static int msgsReceived = 0;
+  
+  private static int msgsSent = 0;
+  
+  private static CommandLineOptions params; 
+  
   /**
    * The interface for server nodes in the simulation.
    */
@@ -79,6 +101,7 @@ public class CBR
   {
     /** Starts the server. */
     void run();
+    
   }
 
   /**
@@ -128,7 +151,28 @@ public class CBR
         {
           public void receive(Message msg, NetAddress src, int srcPort)
           {
-            System.out.println("Received message " + (++packetsReceived) + " from " + src);
+        	int msgNum = (++packetsReceived);
+             System.out.println("Received message " + msgNum + " from " + src);
+            //registrar("Received message " + msgNum + " from " + src);
+
+            msgsReceived++;
+           
+            if(msgsReceived == msgsSent) {
+            	
+               	try 
+            	{ 
+            		Thread.sleep(10000); 
+            	} 
+            	catch (InterruptedException ex) 
+            	{
+            	    System.out.println ("Thread sleep error "+ex);
+            	}
+            	
+            	CSVMaker csv = new CSVMaker();
+            	String fileName = csv.fileNameFormat(params.protocol, params.field.getX(),params.field.getY(), params.lossOpts, params.mobility+"");
+            	csv.makeFile(coleta, fileName);
+            	
+            }
           }
         };
 
@@ -191,6 +235,7 @@ public class CBR
       this.localAddr = localAddr;
       this.serverAddr = serverAddr;
       this.transmissions = transmissions;
+      msgsSent += transmissions;
     }
 
     /**
@@ -219,6 +264,7 @@ public class CBR
     /** {@inheritDoc} */
     public void sendMessage(int i)
     {
+     
       MessageBytes msg = new MessageBytes("message");
       udp.send(msg, serverAddr, PORT, PORT, Constants.NET_PRIORITY_NORMAL);
       if(i==transmissions)
@@ -633,6 +679,7 @@ public class CBR
     try
     {
       CommandLineOptions options = parseCommandLineOptions(args);
+      params = options;
       if(options.help) 
       {
         showUsage();
@@ -648,8 +695,35 @@ public class CBR
     catch(CmdLineParser.OptionException e)
     {
       System.out.println(e.getMessage());
+      
     }
   }
 
+  
+  public void registrar(int tipo, String info) {
+	   
+	  switch(tipo) {
+	  	
+		  case(1):
+			  	
+			    this.coleta.RTT = info; 
+		  	  	break;
+			  	
+		  case(2):
+			    this.coleta.qtdNos = info; 
+			  	break;
+			  	
+		  case(3):
+			    this.coleta.qtdRetrs.add(info);  
+			  	break;
+			  	
+		  case(4):
+			    this.coleta.tamanhoRota = info;
+			  	break;
+			  	
+	  }
+	  
+  }
+  
 } // class: CBR
 
