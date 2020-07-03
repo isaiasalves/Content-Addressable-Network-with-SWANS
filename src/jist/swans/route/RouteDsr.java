@@ -44,6 +44,8 @@ public class RouteDsr implements RouteInterface.Dsr
   //////////////////////////////////////////////////
   // constants
   //
+	
+  //COLETA DE MÉTRICAS//
   public static CBR cbr = new CBR();
 	
   /** The maximum amount of jitter before sending a packet. */ 
@@ -411,16 +413,7 @@ public class RouteDsr implements RouteInterface.Dsr
     //cbr.registrar("Quantidade de nós até o Destino: "+(routeToHere.length-1));
     cbr.registrar(2, ""+(routeToHere.length-1));
 
-	/*
-	 * System.out.println("ESCREVENDO NO ARQUIVO"); try { FileWriter myWriter = new
-	 * FileWriter("C:\\Testes\\filename.txt");
-	 * myWriter.write("Quantidade de nós até o Destino: "+(routeToHere.length-1));
-	 * myWriter.close(); System.out.println("Successfully wrote to the file."); }
-	 * catch (IOException e) { System.out.println("An error occurred.");
-	 * e.printStackTrace(); }
-	 */
-    
-    
+	
     NetMessage.Ip replyMsg = new NetMessage.Ip(reply, localAddr,
       src, Constants.NET_PROTOCOL_DSR, Constants.NET_PRIORITY_NORMAL,
       Constants.TTL_DEFAULT);
@@ -1633,27 +1626,11 @@ public class RouteDsr implements RouteInterface.Dsr
     //************************** Adição para mostrar as retransmissões que ocorreram **************************************** //
     if (numRetransmits > 0)
     {
-    	System.out.println();
-    	System.out.println(localAddr + " retransmitting from " + msg.getSrc() + " to " +msg.getDst() + "!");
     	
+    	System.out.println(localAddr + " retransmitting from " + msg.getSrc() + " to " +msg.getDst() + "!" );
+     
     	
-		//    	
-		//    	 System.out.println("ESCREVENDO NO ARQUIVO");
-		//    	    try {
-		//    		      FileWriter myWriter = new FileWriter("C:\\Testes\\filename.txt");
-		//    		      myWriter.write(localAddr + " retransmitting from " + msg.getSrc() + " to " +msg.getDst() + "!");
-		//    		      myWriter.close();
-		//    		      System.out.println("Successfully wrote to the file.");
-		//    		    } catch (IOException e) {
-		//    		      System.out.println("An error occurred.");
-		//    		      e.printStackTrace();
-		//    		    }
-		    	    
-    	    
-    	    
-    	   //cbr.registrar(localAddr + " retransmitting from " + msg.getSrc() + " to " +msg.getDst() + "!");
     	cbr.registrar(3, localAddr + " retransmitting from " + msg.getSrc() + " to " +msg.getDst());
-    	    
     }
     //************************************************************************************************************************** //
 

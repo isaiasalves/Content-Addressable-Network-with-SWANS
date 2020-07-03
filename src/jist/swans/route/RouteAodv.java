@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Set;
 
+import driver.CBR;
+
 
 /**
  * Ad-hoc On-demand Distance Vector (AODV) Routing Protocol Implementation.
@@ -36,6 +38,9 @@ import java.util.Set;
  */
 public class RouteAodv implements RouteInterface.Aodv
 {
+	
+  //COLETA DE MÉTRICAS//
+  public static CBR cbr = new CBR();
   /** debug mode. */
   public static final boolean DEBUG_MODE = false;
   /** Hello Messages setting. Should always be true, except possibly for debugging purposes. */
@@ -1460,13 +1465,19 @@ public class RouteAodv implements RouteInterface.Aodv
     {
       printlnDebug("RREQ timeout event at "+JistAPI.getTime());      
       if (rreq.getTtl() < TTL_THRESHOLD)
-      {
+      { 
+    	    	
+    	//************************** Adição para mostrar as retransmissões que ocorreram **************************************** //
+    	cbr.registrar(3, rreq.thisNode.getLocalAddr() + " is retransmitting");
+    	//************************** Adição para mostrar as retransmissões que ocorreram **************************************** //
         //broadcast new RREQ message with new RREQ ID and incremented TTL
         rreq.obtainNewRreqId();
         rreq.incTtl();
         rreq.broadcast();
         JistAPI.sleep(computeRREQTimeout(rreq.getTtl()));
         self.RREQtimeout(rreqObj);
+        
+       
       }
       else
       {
@@ -1902,6 +1913,19 @@ public class RouteAodv implements RouteInterface.Aodv
     //Case 1: This node is the originator of the route request
     if (this.netAddr.equals(rrepMsg.getOrigIp())) 
     {
+    	
+    	printDebug("handling RREP:"       
+        + " destIp=" + rrepMsg.getDestIp()
+        + " destSN=" + rrepMsg.getDestSeqNum()
+        + " origIp=" + rrepMsg.getOrigIp()
+        + " hopCnt=" + rrepMsg.getHopCount());
+    	
+    	//********************* Adição para plotar a quantidade de nós ********************* //
+        System.out.println("Quantidade de nós até o Destino: "+(rrepMsg.getHopCount()+1+":"));
+        cbr.registrar(2, ""+(rrepMsg.getHopCount()+1));
+        //*********************************************************************************** //
+        
+    	
       //go through rreqlist, setting routeFound=true, and removing them
       Iterator itr = rreqList.iterator();
       while (itr.hasNext())
@@ -2033,6 +2057,7 @@ public class RouteAodv implements RouteInterface.Aodv
     {
       stats.send.rreqPackets++;
       stats.send.aodvPackets++;
+     
     }
   }
 

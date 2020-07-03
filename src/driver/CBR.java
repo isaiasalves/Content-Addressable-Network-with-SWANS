@@ -94,6 +94,11 @@ public class CBR
   
   private static CommandLineOptions params; 
   
+  private static long startTime;
+  
+  private static Pairs pair = new Pairs();
+  
+    
   /**
    * The interface for server nodes in the simulation.
    */
@@ -153,23 +158,41 @@ public class CBR
           {
         	int msgNum = (++packetsReceived);
              System.out.println("Received message " + msgNum + " from " + src);
-            //registrar("Received message " + msgNum + " from " + src);
-
+           
             msgsReceived++;
            
             if(msgsReceived == msgsSent) {
             	
-               	try 
-            	{ 
-            		Thread.sleep(10000); 
-            	} 
-            	catch (InterruptedException ex) 
-            	{
-            	    System.out.println ("Thread sleep error "+ex);
-            	}
+//               	try 
+//            	{ 
+//            		Thread.sleep(10000); 
+//         		 
+//            	} 
+//            	catch (InterruptedException ex) 
+//            	{
+//            	    System.out.println ("Thread sleep error "+ex);
+//            	}
             	
+               	//************************************************ REGISTRANDO O TEMPO DECORRIDO **********************************************//
+               	long stopTime = System.currentTimeMillis(); 
+               	long elapsedTime = stopTime - startTime;
+               	registrar(1, elapsedTime+"");
+                System.out.println("Fim: "+stopTime);
+                System.out.println("Decorrido = "+elapsedTime);
+              
+                //************************************************ REGISTRANDO O TEMPO DECORRIDO **********************************************//
+               	
+               	
+               //***************************************** REGISTRANDO A DISTÂNCIA ENTRE OS NÓS  **********************************************//
+               	registrar(4, pair.locationOrigem.distance(pair.locationDestino)+"");
+               	System.out.println("Origem: "+pair.locationOrigem);
+               	System.out.println("Destino: "+pair.locationDestino);
+               	System.out.println("distancia: "+pair.locationOrigem.distance(pair.locationDestino)+"");
+               //***************************************** REGISTRANDO A DISTÂNCIA ENTRE OS NÓS  **********************************************//
+               	
             	CSVMaker csv = new CSVMaker();
-            	String fileName = csv.fileNameFormat(params.protocol, params.field.getX(),params.field.getY(), params.lossOpts, params.mobility+"");
+            	//roteamento-dimensao-# Nodes-loss-movement.csv
+            	String fileName = csv.fileNameFormat(params.protocol, params.field.getX(),params.field.getY(),params.nodes,params.lossOpts, params.mobilityOpts+"");
             	csv.makeFile(coleta, fileName);
             	
             }
@@ -264,7 +287,10 @@ public class CBR
     /** {@inheritDoc} */
     public void sendMessage(int i)
     {
-     
+      ////////////////////////////////////////////////**INICIA O TIMER**/////////////////////////////////////////////
+      startTime = System.currentTimeMillis();
+      System.out.println("Início: "+startTime);
+      //////////////////////////////////////////////////////////////////////////////////////////////////////////////
       MessageBytes msg = new MessageBytes("message");
       udp.send(msg, serverAddr, PORT, PORT, Constants.NET_PRIORITY_NORMAL);
       if(i==transmissions)
@@ -570,6 +596,9 @@ public class CBR
     // create each node
     for (int i=1; i<=opts.nodes; i++)
     {
+    
+      
+    	
       // alternate initializing servers and clients until there are numClients of each
       boolean isClient = (i<=opts.clients);
       boolean isServer = (opts.nodes-i<=opts.clients-1);
@@ -600,6 +629,9 @@ public class CBR
           aodv.getProxy().start();
           break;
         case Constants.NET_PROTOCOL_ZRP:
+          //REGISTRANDO A QUANTIDADE DE NÓS PADRÃO 
+          registrar(2, "1");	
+        	
           final boolean zdp = true;
           RouteZrp zrp = new RouteZrp(address, 2);
           zrp.setNetEntity(net.getProxy());
@@ -612,7 +644,7 @@ public class CBR
               {
                 public void run()
                 {
-                  System.out.println(address+": links="+iarp.getNumLinks()+" routes="+iarp.getNumRoutes());
+                  System.out.println("[CBR] "+address+": links="+iarp.getNumLinks()+" routes="+iarp.getNumRoutes());
                   iarp.showLinks();
                   iarp.showRoutes();
                 }
@@ -634,6 +666,21 @@ public class CBR
       Location location = place.getNextLocation();
       field.addRadio(radio.getRadioInfo(), radio.getProxy(), location);
 
+      //******************************************************** COLETANDO O IP E POSIÇÃO DOS NÓS QUE COMPÕEM O PAR CLIENTE/SERVIDOR **************************************************************************************//
+      
+      if(i == 1) {
+    	  pair.ipOrigem = net.getAddress().toString();
+    	  pair.locationOrigem = location;
+      }
+      if(i == opts.nodes) {
+    	  pair.ipDestino = net.getAddress().toString();
+    	  pair.locationDestino = location;
+      }
+      
+
+      //******************************************************** COLETANDO O IP E POSIÇÃO DOS NÓS QUE COMPÕEM O PAR CLIENTE/SERVIDOR **************************************************************************************//
+       
+      
       // node entity hookup
       radio.setFieldEntity(field.getProxy());
       radio.setMacEntity(mac.getProxy());
@@ -655,6 +702,7 @@ public class CBR
       {
         Client client = new Client(udp.getProxy(), opts.transmissions, address, new NetAddress(opts.nodes-i+1));
         clients.add(client.getProxy());
+        
       }
     }
 
@@ -700,25 +748,25 @@ public class CBR
   }
 
   
-  public void registrar(int tipo, String info) {
+  public static void registrar(int tipo, String info) {
 	   
 	  switch(tipo) {
 	  	
 		  case(1):
 			  	
-			    this.coleta.RTT = info; 
+			    coleta.RTT = info; 
 		  	  	break;
 			  	
 		  case(2):
-			    this.coleta.qtdNos = info; 
+			    coleta.qtdNos = info; 
 			  	break;
 			  	
 		  case(3):
-			    this.coleta.qtdRetrs.add(info);  
+			    coleta.qtdRetrs.add(info);  
 			  	break;
 			  	
 		  case(4):
-			    this.coleta.tamanhoRota = info;
+			    coleta.distancia = info;
 			  	break;
 			  	
 	  }

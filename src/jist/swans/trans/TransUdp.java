@@ -246,6 +246,7 @@ public class TransUdp implements TransInterface.TransUdpInterface
     {
       log.info("send: t="+JistAPI.getTime()+" dst="+dst+":"+dstPort+" srcPort="+srcPort+" data="+msg);
     }
+    //System.out.println("send: t="+JistAPI.getTime()+" dst="+dst+":"+dstPort+" srcPort="+srcPort+" data="+msg);
     netEntity.send(udp, dst, Constants.NET_PROTOCOL_UDP, 
         priority, Constants.TTL_DEFAULT);
   }
@@ -266,6 +267,7 @@ public class TransUdp implements TransInterface.TransUdpInterface
     {
       log.info("receive: t="+JistAPI.getTime()+" src="+src+":"+srcPort+" dstPort="+dstPort+" from="+lastHop+" data="+msg);
     }
+    //System.out.println("receive: t="+JistAPI.getTime()+" src="+src+":"+srcPort+" dstPort="+dstPort+" from="+lastHop+" data="+msg);
     handler.receive(msg, src, srcPort);
   }
 

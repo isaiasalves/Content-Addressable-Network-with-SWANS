@@ -20,6 +20,8 @@ import jist.runtime.JistAPI;
 
 import org.apache.log4j.Logger;
 
+import driver.CBR;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -36,6 +38,11 @@ import java.util.Iterator;
 public class RouteZrpIerp implements RouteInterface.Zrp.Ierp, Timer
 {
 
+  //COLETA DE MÉTRICAS//
+  public static CBR cbr = new CBR();
+
+	
+	
   /** logger for IERP events. */
   public static final Logger logIERP = Logger.getLogger(RouteZrpIerp.class.getName());
 
@@ -144,9 +151,9 @@ public class RouteZrpIerp implements RouteInterface.Zrp.Ierp, Timer
           if(ip.isFrozen()) ip = ip.copy();
           ip.setSourceRoute(new NetMessage.IpOptionSourceRoute(route));
           // send it off
-          if(logIERP.isInfoEnabled())
+          if(true)
           {
-            logIERP.info("sending off data t="+JistAPI.getTime()+" msg="+ip);
+            System.out.println("[RouteZrpIarp] sending off data t="+JistAPI.getTime()+" msg="+ip);
           }
           zrp.send(ip, route[0]);
           it.remove();
@@ -458,9 +465,12 @@ public class RouteZrpIerp implements RouteInterface.Zrp.Ierp, Timer
   /** {@inheritDoc} */
   public void receive(RouteInterface.Zrp.MessageIerp msg)
   {
-    if(logIERP.isDebugEnabled())
+	
+    if(true)
     {
-      logIERP.debug("received t="+JistAPI.getTime()+" node="+zrp.getLocalAddr()+" msg="+msg);
+      //NetMessage.Ip ip = (NetMessage.Ip)msg;
+      System.out.println("[RouteZrpIerp]  received t="+JistAPI.getTime()+" node="+zrp.getLocalAddr()+" msg="+msg );
+        
     }
     MessageIerp msgImpl = (MessageIerp)msg;
     switch(msgImpl.getType())
@@ -471,10 +481,15 @@ public class RouteZrpIerp implements RouteInterface.Zrp.Ierp, Timer
         {
           // destination in zone, send back reply
           MessageIerp reply = msgImpl.makeReply(zrp.getLocalAddr(), zrp.getIarp().getRoute(msgImpl.getDst()));
-          if(logIERP.isInfoEnabled())
+          if(true)
           {
-            logIERP.info("dst found: t="+JistAPI.getTime()+" at="+zrp.getLocalAddr()+" reply="+reply);
+        	//********************* Adição para registrar a quantidade de nós ********************* //
+            //System.out.println("[RouteZrpIerp] dst found: t="+JistAPI.getTime()+" at="+zrp.getLocalAddr()+" reply="reply);
+            System.out.println("Quantidade de nós até o Destino: "+(reply.route.length-1));
+            cbr.registrar(2, ""+(reply.route.length-1));
+            //********************* Adição para registrar a quantidade de nós ********************* //
           }
+                    
           receive(reply);
         }
         else
@@ -489,9 +504,9 @@ public class RouteZrpIerp implements RouteInterface.Zrp.Ierp, Timer
         if(zrp.getLocalAddr().equals(msgImpl.getSrc()))
         {
           // reply reached query source
-          if(logIERP.isInfoEnabled())
+          if(true)
           {
-            logIERP.info("reply received: t="+JistAPI.getTime()+" reply="+msgImpl);
+            System.out.println("[RouteZrpIerp] reply received: t="+JistAPI.getTime()+" reply="+msgImpl);
           }
           mq.sendAll(msgImpl.getDst(), zrp, (NetAddress[])Util.rest(route));
         }
@@ -508,9 +523,9 @@ public class RouteZrpIerp implements RouteInterface.Zrp.Ierp, Timer
             }
           }
           if(Main.ASSERT) Util.assertion(nextHop!=null);
-          if(logIERP.isDebugEnabled())
+          if(true)
           {
-            logIERP.debug("forwarding reply: t="+JistAPI.getTime()+" from="+zrp.getLocalAddr()+" to="+nextHop+" reply="+msgImpl);
+            System.out.println("[RouteZrpIerp] forwarding reply: t="+JistAPI.getTime()+" from="+zrp.getLocalAddr()+" to="+nextHop+" reply="+msgImpl);
           }
           // forward reply
           if(zrp.getNdp().isNeighbour(nextHop))
@@ -528,9 +543,9 @@ public class RouteZrpIerp implements RouteInterface.Zrp.Ierp, Timer
   /** {@inheritDoc} */
   public void send(NetMessage.Ip ip)
   {
-    if(logIERP.isInfoEnabled())
+    if(true)
     {
-      logIERP.info("send: t="+JistAPI.getTime()+" msg="+ip);
+      System.out.println("[RouteZrpIerp]  send: t="+JistAPI.getTime()+" msg="+ip+" ID="+ip.getId());
     }
     // todo: check if this destination is among the outstanding queries
     // no route known, so add packet to outgoing queue

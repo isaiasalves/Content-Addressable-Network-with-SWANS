@@ -10,6 +10,7 @@
 package jist.swans.route;
 
 import jist.swans.net.NetAddress;
+import jist.swans.net.NetMessage;
 import jist.swans.misc.Util;
 import jist.swans.misc.Timer;
 import jist.swans.Constants;
@@ -335,9 +336,9 @@ public class RouteZrpIarp implements RouteInterface.Zrp.Iarp, Timer
   private void neighboursChanged()
   {
     NetAddress[] n = zrp.getNdp().getNeighbours();
-    if(logIARP.isDebugEnabled())
+    if(true)
     {
-      logIARP.debug("t="+JistAPI.getTime()+" "+zrp.getLocalAddr()+"==>"+Util.stringJoin(n, ","));
+      System.out.println("[RouteZrpIarp] t="+JistAPI.getTime()+" "+zrp.getLocalAddr()+"==>"+Util.stringJoin(n, ","));
     }
     receive(new MessageIarp(zrp.getLocalAddr(), incLinkStateSeq(), (byte)(zrp.getRadius()), n, compress), null);
   }
@@ -454,14 +455,14 @@ public class RouteZrpIarp implements RouteInterface.Zrp.Iarp, Timer
    */
   public void showLinks()
   {
-    System.out.println("Links for "+zrp.getLocalAddr()+" n="+linkState.size()+" t="+JistAPI.getTimeString());
+    //System.out.println("Links for "+zrp.getLocalAddr()+" n="+linkState.size()+" t="+JistAPI.getTimeString());
     Iterator it = linkState.entrySet().iterator();
     while(it.hasNext())
     {
       Map.Entry e = (Map.Entry)it.next();
       NetAddress src = (NetAddress)e.getKey();
       LinkStateEntry lse = (LinkStateEntry)e.getValue();
-      System.out.println("  "+src+"("+lse.seq+")->"+Util.stringJoin(lse.dst, ","));
+      System.out.println("[RouteZrpIarp] "+src+"("+lse.seq+")->"+Util.stringJoin(lse.dst, ","));
     }
   }
 
@@ -470,7 +471,7 @@ public class RouteZrpIarp implements RouteInterface.Zrp.Iarp, Timer
    */
   public void showRoutes()
   {
-    System.out.println("Routes for "+zrp.getLocalAddr()+" n="+getRoutes().size()+" t="+JistAPI.getTimeString());
+    System.out.println("[RouteZrpIarp] Routes for "+zrp.getLocalAddr()+" n="+getRoutes().size()+" t="+JistAPI.getTimeString());
     int i=0;
     boolean shown=true;
     while(shown)
@@ -482,7 +483,7 @@ public class RouteZrpIarp implements RouteInterface.Zrp.Iarp, Timer
         NetAddress dst = (NetAddress)it.next();
         RouteZrpIarp.RouteEntry re = (RouteZrpIarp.RouteEntry)getRoutes().get(dst);
         if(re.route.length!=i) continue;
-        System.out.println("  "+dst+":"+Util.stringJoin(re.route, "->"));
+        System.out.println("[RouteZrpIarp]  "+dst+":"+Util.stringJoin(re.route, "->"));
         shown=true;
       }
       i++;
@@ -502,10 +503,11 @@ public class RouteZrpIarp implements RouteInterface.Zrp.Iarp, Timer
   /** {@inheritDoc} */
   public void receive(RouteInterface.Zrp.MessageIarp msg, NetAddress from)
   {
-    MessageIarp msgImpl = (MessageIarp)msg;
-    if(logIARP.isDebugEnabled())
+	MessageIarp msgImpl = (MessageIarp)msg;
+    if(true)
     {
-      logIARP.debug("receive t="+JistAPI.getTime()+" at="+zrp.getLocalAddr()+" msg="+msgImpl);
+      NetMessage.Ip ip = (NetMessage.Ip)msg;
+      System.out.println("[RouteZrpIarp] receive t="+JistAPI.getTime()+" at="+zrp.getLocalAddr()+" msg="+msgImpl+ " Id="+ip.getId());
     }
     boolean changed = updateLinkState(msgImpl.getSrc(), msgImpl.getSeq(), msgImpl.getDst());
     if(changed)
@@ -517,9 +519,10 @@ public class RouteZrpIarp implements RouteInterface.Zrp.Iarp, Timer
       if(msgImpl!=null)
       {
         JistAPI.sleep(Util.randomTime(2*JITTER));
-        if(logIARP.isInfoEnabled())
+        if(true)
         {
-          logIARP.info("send t="+JistAPI.getTime()+" at="+zrp.getLocalAddr()+" msg="+msgImpl);
+        	NetMessage.Ip ip = (NetMessage.Ip)msg;
+          System.out.println("[RouteZrpIarp]  send t="+JistAPI.getTime()+" at="+zrp.getLocalAddr()+" msg="+msgImpl+ " Id="+ip.getId());
         }
         zrp.broadcast(msgImpl);
       }

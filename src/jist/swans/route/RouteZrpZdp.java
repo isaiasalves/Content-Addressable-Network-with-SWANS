@@ -10,6 +10,7 @@
 package jist.swans.route;
 
 import jist.swans.net.NetAddress;
+import jist.swans.net.NetMessage;
 import jist.swans.misc.Timer;
 import jist.swans.misc.Util;
 import jist.swans.misc.SingletonInt;
@@ -797,24 +798,24 @@ public class RouteZrpZdp implements RouteInterface.Zrp.Iarp
    */
   public void showLinks()
   {
-    System.out.println("Links for "+zrp.getLocalAddr()+" n="+getLinks().size()+" t="+JistAPI.getTimeString());
+    //System.out.println("[RouteZrpZdp] Links for "+zrp.getLocalAddr()+" n="+getLinks().size()+" t="+JistAPI.getTimeString());
     Iterator srcs = getLinkSrcs().iterator();
     while(srcs.hasNext())
     {
       NetAddress src = (NetAddress)srcs.next();
       Collection dstsColl = getLinkDsts(src);
       Iterator dsts = dstsColl.iterator();
-      System.out.print("  "+src+" "+dstsColl.size()+":");
+      //System.out.print("[RouteZrpZdp]  "+src+" "+dstsColl.size()+":");
       int i=0;
       while(dsts.hasNext())
       {
-        if(i>0) System.out.print(",");
+        if(i>0);// System.out.print(",");
         NetAddress dst = (NetAddress)dsts.next();
         LinkEntry le = getLink(new Link(src, dst));
-        System.out.print(dst+"["+(le.isFresh()?"n":" ")+(le.isDrop()?"d":" ")+"]");
+        //System.out.print(dst+"["+(le.isFresh()?"n":" ")+(le.isDrop()?"d":" ")+"]");
         i++;
       }
-      System.out.println();
+      //System.out.println();
     }
   }
 
@@ -910,7 +911,7 @@ public class RouteZrpZdp implements RouteInterface.Zrp.Iarp
    */
   public void showRoutes()
   {
-    System.out.println("Routes for "+zrp.getLocalAddr()+" n="+getRoutes().size()+" t="+JistAPI.getTimeString());
+    //System.out.println("[RouteZrpZdp] Routes for "+zrp.getLocalAddr()+" n="+getRoutes().size()+" t="+JistAPI.getTimeString());
     int i=0;
     boolean shown=true;
     while(shown)
@@ -922,7 +923,7 @@ public class RouteZrpZdp implements RouteInterface.Zrp.Iarp
         NetAddress dst = (NetAddress)it.next();
         RouteZrpIarp.RouteEntry re = (RouteZrpIarp.RouteEntry)getRoutes().get(dst);
         if(re.route.length!=i) continue;
-        System.out.println("  "+dst+":"+Util.stringJoin(re.route, "->"));
+        //System.out.println("  "+dst+":"+Util.stringJoin(re.route, "->"));
         shown=true;
       }
       i++;
@@ -999,9 +1000,9 @@ public class RouteZrpZdp implements RouteInterface.Zrp.Iarp
     boolean changed = updateLink(link, id, drop);
     if(changed)
     {
-      if(logZDP.isDebugEnabled())
+      if(true)
       {
-        logZDP.debug("linkinfo t="+JistAPI.getTimeString()+" at="+zrp.getLocalAddr()+" link="+link+" id="+id+" drop="+drop);
+        //System.out.println("[RouteZrpZdp] linkinfo t="+JistAPI.getTimeString()+" at="+zrp.getLocalAddr()+" link="+link+" id="+id+" drop="+drop);
       }
       if(!sendScheduled)
       {
@@ -1043,9 +1044,11 @@ public class RouteZrpZdp implements RouteInterface.Zrp.Iarp
       }
       msg.freeze();
       // send packet
-      if(logZDP.isInfoEnabled())
+      if(true)
       {
-        logZDP.info("send from="+zrp.getLocalAddr()+" t="+JistAPI.getTimeString()+" msg="+msg);
+        //System.out.println("[RouteZrpZdp] send from="+zrp.getLocalAddr()+" t="+JistAPI.getTimeString()+" msg="+msg +" ID?");
+        
+        
       }
       zrp.broadcast(msg);
     }
@@ -1061,9 +1064,10 @@ public class RouteZrpZdp implements RouteInterface.Zrp.Iarp
   public void receive(RouteInterface.Zrp.MessageIarp msg, NetAddress from)
   {
     MessageZdp msgImpl = (MessageZdp)msg;
-    if(logZDP.isDebugEnabled())
+    if(true)
     {
-      logZDP.debug("receive t="+JistAPI.getTimeString()+" at="+zrp.getLocalAddr()+" msg="+msgImpl);
+    	 //NetMessage.Ip ip = (NetMessage.Ip)msg;
+      //System.out.println("[RouteZrpZdp]  receive t="+JistAPI.getTimeString()+" at="+zrp.getLocalAddr()+" msg="+msgImpl );
     }
     // process message
     for(int i=0; i<msgImpl.getNumLinks(); i++)
@@ -1085,7 +1089,7 @@ public class RouteZrpZdp implements RouteInterface.Zrp.Iarp
         removeLink(le.link, it);
       }
     }
-    if(logZDP.isDebugEnabled())
+    if(true)
     {
       showLinks();
       showRoutes();

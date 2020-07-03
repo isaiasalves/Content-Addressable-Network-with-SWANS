@@ -426,9 +426,11 @@ public class RouteZrp implements RouteInterface.Zrp
   /** {@inheritDoc} */
   public void peek(NetMessage msg, MacAddress lastHop)
   {
-    if(logZRP.isDebugEnabled())
+	  NetMessage.Ip ip = (NetMessage.Ip)msg;
+    if(true)
     {
-      logZRP.debug("peek from="+lastHop+" data="+msg);
+      //system.out.println("[RouteZrp] Peek from="+lastHop+" data="+msg);
+      //system.out.println("[RouteZrp] MSG="+msg.toString()+" ID="+ip.getId());
     }
     // todo: collect passing information
   }
@@ -438,9 +440,11 @@ public class RouteZrp implements RouteInterface.Zrp
   {
     if(!(msg instanceof NetMessage.Ip)) throw new IllegalArgumentException("illegal packet type");
     NetMessage.Ip ip = (NetMessage.Ip)msg;
-    if(logZRP.isInfoEnabled())
+    
+    if(true)
     {
-      logZRP.info("t="+JistAPI.getTime()+" at="+localAddr+" route "+ip);
+      //system.out.println("[RouteZrp] t="+JistAPI.getTime()+" at="+localAddr+" route "+ip);
+      //system.out.println("[RouteZrp] MSG="+msg.toString()+" Ip.getID="+ip.getId());
     }
     NetAddress nextHop = null;
     // compute next hop
@@ -538,9 +542,9 @@ public class RouteZrp implements RouteInterface.Zrp
   /** {@inheritDoc} */
   public void receive(Message msg, NetAddress src, MacAddress lastHop, byte macId, NetAddress dst, byte priority, byte ttl)
   {
-    if(logZRP.isDebugEnabled())
+    if(true)
     {
-      logZRP.debug("receive at="+localAddr+" from="+src+" msg="+msg);
+      //system.out.println("[RouteZrp] receive at="+localAddr+" from="+src+" msg="+msg);
     }
     if(msg instanceof RouteInterface.Zrp.MessageNdp)
     {

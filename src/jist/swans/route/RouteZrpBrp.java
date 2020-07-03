@@ -10,6 +10,7 @@
 package jist.swans.route;
 
 import jist.swans.net.NetAddress;
+import jist.swans.net.NetMessage;
 import jist.swans.misc.Util;
 import jist.swans.misc.Timer;
 import jist.swans.misc.SingletonInt;
@@ -564,9 +565,10 @@ public class RouteZrpBrp implements RouteInterface.Zrp.Brp, Timer
     if(msg==null) throw new NullPointerException("null BRP message received");
     if(from==null) throw new NullPointerException("null BRP from address");
     MessageBrp msgImpl = (MessageBrp)msg;
-    if(logBRP.isDebugEnabled())
+    if(true)
     {
-      logBRP.debug("receive t="+JistAPI.getTime()+" at="+zrp.getLocalAddr()+" from="+from+" msg="+msgImpl);
+     // NetMessage.Ip ip = (NetMessage.Ip)msg;
+      System.out.println("[RouteZrpBrp] receive t="+JistAPI.getTime()+" at="+zrp.getLocalAddr()+" from="+from+" msg="+msgImpl);
     }
     QueryCoverageEntry qce = getQueryCoverageEntry(msgImpl.getSrc(), msgImpl.getID(), false);
     qce.addFrom(from);
@@ -590,9 +592,10 @@ public class RouteZrpBrp implements RouteInterface.Zrp.Brp, Timer
   /** {@inheritDoc} */
   public void send(RouteInterface.Zrp.MessageIerp msg)
   {
-    if(logBRP.isDebugEnabled())
+    if(true)
     {
-      logBRP.debug("request t="+JistAPI.getTimeString()+" from="+zrp.getLocalAddr()+" msg="+msg);
+      //NetMessage.Ip ip = (NetMessage.Ip)msg;
+      System.out.println("[RouteZrpBrp] send request t="+JistAPI.getTimeString()+" from="+zrp.getLocalAddr()+" msg="+msg );
     }
     QueryCoverageEntry qce = getQueryCoverageEntry(msg.getSrc(), msg.getID(), true);
     if(!qce.isForwarded() && qce.isTarget())
@@ -602,9 +605,9 @@ public class RouteZrpBrp implements RouteInterface.Zrp.Brp, Timer
       if(neighbours.length>0)
       {
         MessageBrp brp = new MessageBrp(msg, neighbours);
-        if(logBRP.isInfoEnabled())
+        if(true)
         {
-          logBRP.info("send t="+JistAPI.getTimeString()+" from="+zrp.getLocalAddr()+" msg="+brp);
+          System.out.println("[RouteZrpBrp] send t="+JistAPI.getTimeString()+" from="+zrp.getLocalAddr()+" msg="+brp);
         }
         zrp.broadcast(brp);
       }

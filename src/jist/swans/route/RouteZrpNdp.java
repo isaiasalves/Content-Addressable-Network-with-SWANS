@@ -11,6 +11,7 @@ package jist.swans.route;
 
 import jist.swans.mac.MacAddress;
 import jist.swans.net.NetAddress;
+import jist.swans.net.NetMessage;
 import jist.swans.misc.Util;
 import jist.swans.misc.Timer;
 import jist.swans.Constants;
@@ -145,9 +146,10 @@ public class RouteZrpNdp implements RouteInterface.Zrp.Ndp, Timer
   /** {@inheritDoc} */
   public void receive(RouteInterface.Zrp.MessageNdp msg, NetAddress src, MacAddress macAddr, byte macId)
   {
-    if(logNDP.isDebugEnabled())
+    if(true)
     {
-      logNDP.debug("receive t="+JistAPI.getTime()+" at="+zrp.getLocalAddr()+" from="+src+" msg="+msg);
+      //NetMessage.Ip ip = null;
+      //system.out.println("[RouteZrpNdp] receive t="+JistAPI.getTime()+" at="+zrp.getLocalAddr()+" from="+src+" msg="+msg.toString() );
     }
     NeighbourState n = (NeighbourState)neighbours.get(src);
     boolean changed = false;
@@ -157,9 +159,9 @@ public class RouteZrpNdp implements RouteInterface.Zrp.Ndp, Timer
       n = new NeighbourState();
       neighbours.put(src, n);
       changed = true;
-      if(logNDP.isInfoEnabled())
+      if(true)
       {
-        logNDP.info("t="+JistAPI.getTimeString()+" "+zrp.getLocalAddr()+" found neighbour "+src);
+        //system.out.println("[RouteZrpNdp] t="+JistAPI.getTimeString()+" "+zrp.getLocalAddr()+" found neighbour "+src);
       }
     }
     n.macAddr = macAddr;
@@ -211,9 +213,10 @@ public class RouteZrpNdp implements RouteInterface.Zrp.Ndp, Timer
   {
     // send heartbeat
     MessageNdp msg = new MessageNdp();
-    if(logNDP.isDebugEnabled())
+    if(true)
     {
-      logNDP.debug("send t="+JistAPI.getTime()+" from="+zrp.getLocalAddr()+" msg="+msg);
+      //system.out.println("[RouteZrpNdp] send t="+JistAPI.getTime()+" from="+zrp.getLocalAddr()+" msg=");
+      
     }
     zrp.broadcast(msg);
     // process neighbour set
@@ -226,9 +229,9 @@ public class RouteZrpNdp implements RouteInterface.Zrp.Ndp, Timer
       if(n.beats<0)
       {
         // neighbour lost
-        if(logNDP.isInfoEnabled())
+        if(true)
         {
-          logNDP.info("t="+JistAPI.getTimeString()+" "+zrp.getLocalAddr()+" lost neighbour "+e.getKey());
+          //system.out.println("[RouteZrpNdp] t="+JistAPI.getTimeString()+" "+zrp.getLocalAddr()+" lost neighbour "+e.getKey());
         }
         zrp.getIarp().linkinfo(new Link((NetAddress)e.getKey(), zrp.getLocalAddr()), true);
         it.remove();
