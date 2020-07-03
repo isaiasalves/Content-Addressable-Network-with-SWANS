@@ -15,7 +15,7 @@ public  class CSVMaker {
 	
 				
 		try { FileWriter myWriter = new
-			FileWriter("D:\\Dropbox\\PGC\\PGCI\\Source\\Swans_CAN\\Simulacoes\\"+fileName+".csv");
+			FileWriter("D:\\Dropbox\\PGC\\PGC\\Source\\Swans_CAN\\Content-Addressable-Network-with-SWANS\\Simulacoes"+fileName+".csv");
 		    //Escreve o cabeçalho do arquivo
 			String cabecalho = "RTT(ms);Numero de Nos;Numero de Retransmissoes;Distancia(m)\n";
 		
