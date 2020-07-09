@@ -38,3 +38,11 @@
 /udp$Client.class
 /udp$Server.class
 /udp.class
+/CAN.class
+/CAN$Client.class
+/CAN$ClientInterface.class
+/CAN$CommandLineOptions.class
+/CAN$Server.class
+/CAN$ServerInterface.class
+/CAN$1.class
+/CAN$2.class

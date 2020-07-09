@@ -9,5 +9,6 @@
 	<classpathentry kind="lib" path="libs/jython.jar"/>
 	<classpathentry kind="lib" path="libs/log4j.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Starter"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/scalable-content-addressable-network-master"/>
 	<classpathentry kind="output" path="src"/>
 </classpath>
