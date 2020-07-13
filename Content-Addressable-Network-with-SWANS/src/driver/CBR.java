@@ -21,6 +21,7 @@ import jist.swans.net.NetAddress;
 import jist.swans.net.NetIp;
 import jist.swans.net.PacketLoss;
 import jist.swans.trans.TransUdp;
+ 
 import jist.swans.trans.TransInterface;
 import jist.swans.route.RouteInterface;
 import jist.swans.route.RouteDsr;
@@ -54,6 +55,8 @@ import com.ziclix.python.sql.util.Queue;
 import csvMaker.*;
 
 
+import com.can.nodes.Peer;
+//import com.can.nodes.Simulation;
 /**
  * Constant Bit Rate simulation program.  This program creates a field and
  * places nodes randomly throughout it.  Some of the nodes are designated
@@ -290,6 +293,10 @@ public class CBR
     /** {@inheritDoc} */
     public void sendMessage(int i)
     {
+    	
+  //  	Testar.eita(); 
+   	// Simulation sim = new Simulation();
+//    	sim.EITA();
       ////////////////////////////////////////////////**INICIA O TIMER**/////////////////////////////////////////////
       startTime = System.currentTimeMillis();
       System.out.println("Início: "+startTime);
