@@ -168,15 +168,15 @@ public class CBR
            
             if(msgsReceived == msgsSent) {
             	
-//               	try 
-//            	{ 
-//            		Thread.sleep(10000); 
-//         		 
-//            	} 
-//            	catch (InterruptedException ex) 
-//            	{
-//            	    System.out.println ("Thread sleep error "+ex);
-//            	}
+               	try 
+            	{ 
+            		Thread.sleep(10000); 
+         		 
+            	} 
+            	catch (InterruptedException ex) 
+            	{
+            	    System.out.println ("Thread sleep error "+ex);
+            	}
             	
                	//************************************************ REGISTRANDO O TEMPO DECORRIDO **********************************************//
                	long stopTime = System.currentTimeMillis(); 

@@ -67,6 +67,8 @@ import csvMaker.*;
  */
 
 
+import com.can.nodes.Peer;
+import com.can.nodes.Simulation;
 
 public class CAN
 {
@@ -290,6 +292,13 @@ public class CAN
     /** {@inheritDoc} */
     public void sendMessage(int i)
     {
+     try {
+		Simulation.EITA();
+	} catch (UnknownHostException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+      //Peer.heart();
       ////////////////////////////////////////////////**INICIA O TIMER**/////////////////////////////////////////////
       startTime = System.currentTimeMillis();
       System.out.println("Início: "+startTime);
@@ -727,6 +736,7 @@ public class CAN
    */
   public static void main(String[] args)
   {
+	Peer.heart();
     try
     {
       CommandLineOptions options = parseCommandLineOptions(args);
