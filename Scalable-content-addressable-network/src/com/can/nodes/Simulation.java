@@ -45,10 +45,10 @@ public class Simulation
 {
 
   public static void main(String[] args) throws UnknownHostException, InterruptedException {
-	  System.out.println("MAIN SIMULATION");
-	  Peer p = new Peer();
- 	  p.heart();
- 	  p.directStart("JOIN");
+//	  System.out.println("MAIN SIMULATION");
+//	  Peer p = new Peer();
+// 	  p.heart();
+// 	  p.directStart("JOIN");
 	  
 	  
 	  
@@ -60,9 +60,9 @@ public class Simulation
   }
   
   public static void EITA() throws UnknownHostException {
-	  System.out.println("AKI NA SIMULATION");
-	  Peer p = new Peer();
-	  p.heart();
+//	  System.out.println("AKI NA SIMULATION");
+//	  Peer p = new Peer();
+//	  p.heart();
   }
 
 } // class: CBR

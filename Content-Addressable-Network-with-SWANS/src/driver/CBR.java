@@ -623,6 +623,16 @@ public class CBR
       final NetAddress address = new NetAddress(i);
       NetIp net = new NetIp(address, protMap, loss, loss);
 
+      try {
+		InetAddress addr = InetAddress.getByName("192.168.52.134");
+		final NetAddress srvaddress = new NetAddress(i);
+		
+      
+      
+      } catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
       // routing
       RouteInterface route = null; //Interface de roteamento
       switch(opts.protocol)

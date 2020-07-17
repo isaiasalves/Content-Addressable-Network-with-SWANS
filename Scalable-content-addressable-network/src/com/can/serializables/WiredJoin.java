@@ -5,10 +5,21 @@ import java.net.InetAddress;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class WiredJoin implements Serializable {
+import jist.swans.misc.Message;
+
+public class WiredJoin implements Serializable, Message, Cloneable {
 
 	private static final long serialVersionUID = 1L;
 
+	/** Type of a Route Request option. */
+	public static final byte OPT_JOIN =           1;
+	/** Type of a Route Request option. */
+	public static final byte OPT_SEARCH =         2;
+	/** Type of a Route Request option. */
+	public static final byte OPT_LEAVE =          3;
+	/** Type of a Route Request option. */
+	public static final byte OPT_VIEW =           4;
+	
 	private String sourceHostName;
 	private InetAddress sourceIpAddress;
 	private Coordinate randomCoordinate;
@@ -135,5 +146,19 @@ public class WiredJoin implements Serializable {
 		builder.append("------------------------------------------------------------------\n");
 
 		return builder.toString();
+	}
+
+
+	@Override
+	public int getSize() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+
+	@Override
+	public void getBytes(byte[] msg, int offset) {
+		// TODO Auto-generated method stub
+		
 	}
 }

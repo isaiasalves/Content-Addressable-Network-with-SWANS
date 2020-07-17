@@ -349,10 +349,18 @@ public interface RouteInterface extends NetInterface.NetHandler, JistAPI.Proxiab
 
   } // interface: Zrp
 
+  /**
+   * CAN routing entity interface.
+   */
+  public static interface Can extends RouteInterface, Protocol
+  {
+	 ///int getPeerLimit();
+	 
+	 void setPeerLimit(int peerLimit);
+  }
   //////////////////////////////////////////////////
   // DSR
   //
-
   /**
    * DSR routing entity interface.
    */

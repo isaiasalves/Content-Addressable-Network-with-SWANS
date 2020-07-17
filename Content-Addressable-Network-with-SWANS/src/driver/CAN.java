@@ -73,7 +73,7 @@ import com.can.nodes.Simulation;
 public class CAN
 {
   /** Default port number to send and receive packets. */
-  private static final int PORT = 3001;
+  private  final static int PORT = 3001;
 
   //////////////////////////////////////////////////
   // locals
@@ -292,18 +292,12 @@ public class CAN
     /** {@inheritDoc} */
     public void sendMessage(int i)
     {
-     try {
-		Simulation.EITA();
-	} catch (UnknownHostException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
-      //Peer.heart();
+      
       ////////////////////////////////////////////////**INICIA O TIMER**/////////////////////////////////////////////
       startTime = System.currentTimeMillis();
       System.out.println("Início: "+startTime);
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      MessageBytes msg = new MessageBytes("message");
+      MessageBytes msg = new MessageBytes("PannaCotta");
       udp.send(msg, serverAddr, PORT, PORT, Constants.NET_PRIORITY_NORMAL);
       if(i==transmissions)
       {
@@ -415,6 +409,10 @@ public class CAN
         if(routeProtocolString.equalsIgnoreCase("dsr"))
         {
           cmdOpts.protocol = Constants.NET_PROTOCOL_DSR;
+        }
+        if(routeProtocolString.equalsIgnoreCase("can"))
+        {
+          cmdOpts.protocol = Constants.NET_PROTOCOL_CAN;
         }
         else if(routeProtocolString.equalsIgnoreCase("aodv"))
         {
@@ -542,8 +540,9 @@ public class CAN
    * client/server pairs and starts them.
    *
    * @param opts command-line parameters
+ * @throws UnknownHostException 
    */
-  private static void buildField(CommandLineOptions opts)
+  private static void buildField(CommandLineOptions opts) throws UnknownHostException
   {
     ArrayList servers = new ArrayList();
     ArrayList clients = new ArrayList();
@@ -629,6 +628,19 @@ public class CAN
       RouteInterface route = null; //Interface de roteamento
       switch(opts.protocol)
       {
+	    case Constants.NET_PROTOCOL_CAN:
+//	    	if(i < 10) {
+//	    		RouteDsr dsr = new RouteDsr(address);
+//	            route = dsr.getProxy();
+//	            dsr.setNetEntity(net.getProxy());
+//	            break;
+//	    	}
+	    	
+	     Peer can = new Peer(address);
+	     //can.directStart("JOIN");
+	     route = can.getProxy();
+	     can.setNetEntity(net.getProxy());
+	     break;
         case Constants.NET_PROTOCOL_DSR:
           RouteDsr dsr = new RouteDsr(address);
           route = dsr.getProxy();
@@ -705,16 +717,17 @@ public class CAN
       net.setProtocolHandler(opts.protocol, route);
 
       // initialize client/server apps
-      if(isServer)
+      if(i == 1)
       {
         Server server = new Server(udp.getProxy(), address);
         servers.add(server.getProxy());
-      }
-      if(isClient)
+      } 
+      else 
+      //if(isClient)
       {
-        Client client = new Client(udp.getProxy(), opts.transmissions, address, new NetAddress(opts.nodes-i+1));
+        Client client = new Client(udp.getProxy(), opts.transmissions, address, new NetAddress(1));
         clients.add(client.getProxy());
-        
+       
       }
     }
 
@@ -733,10 +746,11 @@ public class CAN
    *
    * @param args command-line arguments that may determine the parameters
    *   of the simulation
+ * @throws UnknownHostException 
    */
-  public static void main(String[] args)
+  public static void main(String[] args) throws UnknownHostException
   {
-	Peer.heart();
+	
     try
     {
       CommandLineOptions options = parseCommandLineOptions(args);
