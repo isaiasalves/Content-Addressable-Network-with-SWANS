@@ -637,7 +637,8 @@ public class CAN
 //	    	}
 	    	
 	     Peer can = new Peer(address);
-	     //can.directStart("JOIN");
+	     //Starts bootstrap node
+	     can.bootstrapStart();
 	     route = can.getProxy();
 	     can.setNetEntity(net.getProxy());
 	     break;
@@ -719,7 +720,8 @@ public class CAN
       // initialize client/server apps
       if(i == 1)
       {
-        Server server = new Server(udp.getProxy(), address);
+    	//Na CAN o server é equivalente ao Bootstarp Node que será sempre o nó 0.0.0.1
+    	Server server = new Server(udp.getProxy(), address);
         servers.add(server.getProxy());
       } 
       else 
@@ -732,7 +734,7 @@ public class CAN
     }
 
     // start clients and servers
-    numClientsTransmitting = opts.clients;
+    numClientsTransmitting = 9;//opts.clients;
     Iterator serverIter = servers.iterator();
     while (serverIter.hasNext()) ((ServerInterface)serverIter.next()).run();
     JistAPI.sleep(1);
