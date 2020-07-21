@@ -636,11 +636,11 @@ public class CAN
 //	            break;
 //	    	}
 	    	
-	     Peer can = new Peer(address);
+	     //Peer can = new Peer(address);
 	     //Starts bootstrap node
-	     can.bootstrapStart();
-	     route = can.getProxy();
-	     can.setNetEntity(net.getProxy());
+//	     can.bootstrapStart();
+//	     route = can.getProxy();
+//	     can.setNetEntity(net.getProxy());
 	     break;
         case Constants.NET_PROTOCOL_DSR:
           RouteDsr dsr = new RouteDsr(address);

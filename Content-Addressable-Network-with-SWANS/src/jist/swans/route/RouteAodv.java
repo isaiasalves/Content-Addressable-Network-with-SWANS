@@ -1653,7 +1653,7 @@ public class RouteAodv implements RouteInterface.Aodv
       lastHopInfo.resetHelloWaitCount();
     }
     
-    /*
+    
     printlnDebug("Calling peek()");
     printlnDebug("peek: lastHop = " + lastHop.hashCode());    
     NetMessage.Ip ipMsg = null;
@@ -1668,7 +1668,7 @@ public class RouteAodv implements RouteInterface.Aodv
       printlnDebug("peek: TTL=" + ipMsg.getTTL());
       printlnDebug("peek: msg size = " + ipMsg.getSize());
     }
-    */
+    
   }
 
   /**

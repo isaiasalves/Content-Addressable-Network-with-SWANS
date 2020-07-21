@@ -98,7 +98,6 @@ public class CBR {
 
 	private static Pairs pair = new Pairs();
 
-	private static Peer can = new Peer();
 	/**
 	 * The interface for server nodes in the simulation.
 	 */
@@ -249,7 +248,7 @@ public class CBR {
 			this.serverAddr = serverAddr;
 			this.transmissions = transmissions;
 			msgsSent += transmissions;
-			
+
 		}
 
 		/**
@@ -274,7 +273,7 @@ public class CBR {
 
 		/** {@inheritDoc} */
 		public void sendMessage(int i) {
-  
+
 			//////////////////////////////////////////////// **INICIA O
 			//////////////////////////////////////////////// TIMER**/////////////////////////////////////////////
 			startTime = System.currentTimeMillis();
@@ -383,8 +382,7 @@ public class CBR {
 			if (routeProtocolString != null) {
 				if (routeProtocolString.equalsIgnoreCase("dsr")) {
 					cmdOpts.protocol = Constants.NET_PROTOCOL_DSR;
-				}
-				if (routeProtocolString.equalsIgnoreCase("can")) {
+				} else if (routeProtocolString.equalsIgnoreCase("can")) {
 					cmdOpts.protocol = Constants.NET_PROTOCOL_CAN;
 				} else if (routeProtocolString.equalsIgnoreCase("aodv")) {
 					cmdOpts.protocol = Constants.NET_PROTOCOL_AODV;
@@ -487,11 +485,8 @@ public class CBR {
 	private static void buildField(CommandLineOptions opts) {
 		ArrayList servers = new ArrayList();
 		ArrayList clients = new ArrayList();
+		ArrayList canPeers = new ArrayList();
 
-		
-
-		
-		
 		// initialize field
 		Field field = new Field(opts.field, true);
 		// initialize shared radio information
@@ -549,19 +544,27 @@ public class CBR {
 		// create each node
 		for (int i = 1; i <= opts.nodes; i++) {
 			// alternate initializing servers and clients until there are numClients of each
-			boolean isClient = (i <= opts.clients);
-			boolean isServer = (opts.nodes - i <= opts.clients - 1);
+			boolean isClient;
+			boolean isServer;
+
+			if (opts.protocol == Constants.NET_PROTOCOL_CAN) {
+				isClient = (i <= opts.clients + 1);
+				isServer = (opts.nodes - i <= opts.clients - 1);
+			} else {
+				isClient = (i <= opts.clients);
+				isServer = (opts.nodes - i <= opts.clients - 1);
+			}
 
 			// radio
 			RadioNoise radio = new RadioNoiseIndep(i, radioInfo);
 
 			// mac
 			MacDumb mac = new MacDumb(new MacAddress(i), radio.getRadioInfo());
-
+			MacAddress macAddress = new MacAddress(i);
 			// network
 			final NetAddress address = new NetAddress(i);
 			NetIp net = new NetIp(address, protMap, loss, loss);
- 
+
 //			try {
 //				InetAddress addr = InetAddress.getByName("192.168.52.134");
 //				final NetAddress srvaddress = new NetAddress(i);
@@ -574,13 +577,20 @@ public class CBR {
 			RouteInterface route = null; // Interface de roteamento
 			switch (opts.protocol) {
 			case Constants.NET_PROTOCOL_CAN:
- 				try {
-		
+				try {
+
 					// Starts bootstrap node
- 					can = new Peer(address);
-					can.bootstrapStart();
+					Peer can = new Peer(address, macAddress);
+
 					route = can.getProxy();
 					can.setNetEntity(net.getProxy());
+					//if (i == 1) {
+						can.bootstrapStart();
+						JistAPI.sleep(1000000);
+					//} else {
+						// To make every node do a JOIN
+					//	canPeers.add(can);
+					//}
 					break;
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
@@ -657,53 +667,53 @@ public class CBR {
 			net.setProtocolHandler(Constants.NET_PROTOCOL_UDP, udp.getProxy());
 			net.setProtocolHandler(opts.protocol, route);
 
-			// initialize client/server apps
-			if (opts.protocol == Constants.NET_PROTOCOL_CAN) {
-				if (i == 1) {
-					// initialize bootstrap node as a server
-					Server server = new Server(udp.getProxy(), address);
-					servers.add(server.getProxy());
-				}
+			if (isServer) {
+				Server server = new Server(udp.getProxy(), address);
+				servers.add(server.getProxy());
+			}
 
-				else {
-
-					// start nodes and make then JOIN in the CAN
-					Client client = new Client(udp.getProxy(), opts.transmissions, address, new NetAddress(opts.nodes - i + 1));
-					
-					try {
-						can.joinCAN(address, i);
-					} catch (UnknownHostException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+			if (isClient) {
+				if (opts.protocol == Constants.NET_PROTOCOL_CAN) {
+					if (i == 1) {
+						
+						// Do nothing since the node with index 1 is the bootstrap node
+					} else {
+						Client client = new Client(udp.getProxy(), opts.transmissions, address,
+								new NetAddress(opts.nodes - i + 2));
+						clients.add(client.getProxy());
 					}
-					clients.add(client.getProxy());
-				}
 
-			} else {
-				if (isServer) {
-					Server server = new Server(udp.getProxy(), address);
-					servers.add(server.getProxy());
-				}
-				if (isClient) {
+				} else {
 					Client client = new Client(udp.getProxy(), opts.transmissions, address,
 							new NetAddress(opts.nodes - i + 1));
 					clients.add(client.getProxy());
 				}
-
 			}
+
 		}
 
-			// start clients and servers
-			numClientsTransmitting = opts.clients;
-			Iterator serverIter = servers.iterator();
-			while (serverIter.hasNext())
-				((ServerInterface) serverIter.next()).run();
-			JistAPI.sleep(1);
-			Iterator clientIter = clients.iterator();
-			while (clientIter.hasNext())
-				((ClientInterface) clientIter.next()).run();
+		// initialize client/server apps
+//		if (opts.protocol == Constants.NET_PROTOCOL_CAN) {
+//		
+//			Iterator canPeer = canPeers.iterator();
+//			while (canPeer.hasNext()) {
+//				((Peer) canPeer.next()).bootstrapStart();
+//				JistAPI.sleep(1000000);
+//			}
+//
+//		}
 
-		 // buildField
+		// start clients and servers
+		numClientsTransmitting = opts.clients;
+		Iterator serverIter = servers.iterator();
+		while (serverIter.hasNext())
+			((ServerInterface) serverIter.next()).run();
+		JistAPI.sleep(1);
+//		Iterator clientIter = clients.iterator();
+//		while (clientIter.hasNext())
+//			((ClientInterface) clientIter.next()).run();
+
+		// buildField
 	}
 
 	/**
@@ -726,7 +736,7 @@ public class CBR {
 			Constants.random = new Random(options.randseed);
 			buildField(options);
 		} catch (CmdLineParser.OptionException e) {
-			System.out.println(e.getMessage());
+			System.out.println("Error: " + e.getMessage());
 
 		}
 	}
