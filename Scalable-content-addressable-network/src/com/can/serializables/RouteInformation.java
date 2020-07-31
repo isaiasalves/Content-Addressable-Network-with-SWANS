@@ -5,18 +5,20 @@ import java.net.InetAddress;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import jist.swans.mac.MacAddress;
+
 public class RouteInformation implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private Map<String, InetAddress> routeMap = new LinkedHashMap<String, InetAddress>();
+	private Map<MacAddress, InetAddress> routeMap = new LinkedHashMap<MacAddress, InetAddress>();
 
-	public void addPeerToRoute(String identifier, InetAddress ipAddress){
+	public void addPeerToRoute(MacAddress identifier, InetAddress ipAddress){
 
 		this.routeMap.put(identifier, ipAddress);
 	}
 
-	public Map<String, InetAddress> getRoute(){
+	public Map<MacAddress, InetAddress> getRoute(){
 		return this.routeMap;
 	}
 
@@ -24,7 +26,7 @@ public class RouteInformation implements Serializable {
 	public String toString() {
 
 		StringBuilder builder = new StringBuilder("");
-		for(String hostname : this.routeMap.keySet()){
+		for(MacAddress hostname : this.routeMap.keySet()){
 			builder.append(hostname+" -> ");
 		}
 

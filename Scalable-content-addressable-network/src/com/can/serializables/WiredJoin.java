@@ -5,6 +5,7 @@ import java.net.InetAddress;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import jist.swans.mac.MacAddress;
 import jist.swans.misc.Message;
 
 public class WiredJoin implements Serializable, Message, Cloneable {
@@ -22,23 +23,27 @@ public class WiredJoin implements Serializable, Message, Cloneable {
 	
 	private String sourceHostName;
 	private InetAddress sourceIpAddress;
+	private MacAddress sourceMacAddress;
 	private Coordinate randomCoordinate;
 	private String hostnameToRoute;
 	private InetAddress ipAddressToRoute;
-	private Map<String, InetAddress> activePeersInfo;
+	private MacAddress macAddressToRoute;
+	private Map<MacAddress, InetAddress> activePeersInfo;
 	private ConcurrentHashMap<String , NeighbourInfo> routingTable;
 	private int numberOfHops;
 	private RouteInformation routeInformation;
 
 
-	public WiredJoin(String sourceHostname, InetAddress sourceIpAddress, String hostnameToRoute, InetAddress ipAddressToRoute, RouteInformation routeInformation){
+	public WiredJoin(String sourceHostname, InetAddress sourceIpAddress, MacAddress sourceMacAddress, String hostnameToRoute, InetAddress ipAddressToRoute, MacAddress macAddressToRoute, RouteInformation routeInformation){
 
 		this.sourceHostName = sourceHostname;
 		this.sourceIpAddress = sourceIpAddress;
+		this.sourceMacAddress = sourceMacAddress;
 		this.hostnameToRoute = hostnameToRoute;
 		this.ipAddressToRoute = ipAddressToRoute;
 		this.numberOfHops = 0;
 		this.routeInformation = routeInformation;
+		this.macAddressToRoute = macAddressToRoute;
 	}
 
 
@@ -66,18 +71,21 @@ public class WiredJoin implements Serializable, Message, Cloneable {
 		return sourceIpAddress;
 	}
 
+	public MacAddress getSourceMacAddress() {
+		return sourceMacAddress;
+	}
 
 	public void setSourceIpAddress(InetAddress ipAddress) {
 		this.sourceIpAddress = ipAddress;
 	}
 
 
-	public Map<String, InetAddress> getActivePeersInfo() {
+	public Map<MacAddress, InetAddress> getActivePeersInfo() {
 		return activePeersInfo;
 	}
 
 
-	public void setActivePeersInfo(Map<String, InetAddress> activePeersInfo) {
+	public void setActivePeersInfo(Map<MacAddress, InetAddress> activePeersInfo) {
 		this.activePeersInfo = activePeersInfo;
 	}
 
@@ -106,6 +114,11 @@ public class WiredJoin implements Serializable, Message, Cloneable {
 
 		this.hostnameToRoute = hostnameToRoute;
 	}
+	
+	public void setMacAddressToRoute(MacAddress macAddress)
+	{
+		this.macAddressToRoute = macAddress;
+	}
 
 	public void setIpAddressToRoute(InetAddress ipAddressToRoute){
 		this.ipAddressToRoute = ipAddressToRoute;
@@ -125,9 +138,13 @@ public class WiredJoin implements Serializable, Message, Cloneable {
 
 		return this.ipAddressToRoute;
 	}
+	
+	public MacAddress getMacAddressToRoute() {
+		return this.macAddressToRoute;
+	}
 
-	public void setRouteInformation(String hostname, InetAddress ipAddress){
-		this.routeInformation.addPeerToRoute(hostname, ipAddress);
+	public void setRouteInformation(MacAddress macAddress, InetAddress ipAddress){
+		this.routeInformation.addPeerToRoute(macAddress, ipAddress);
 	}
 
 	public RouteInformation getRouteInformation(){

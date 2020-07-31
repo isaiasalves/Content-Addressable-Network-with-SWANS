@@ -5,20 +5,23 @@ import java.net.InetAddress;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import jist.swans.mac.MacAddress;
+
 public class WiredViewActivePeersRequest implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 
-	private Map<String, InetAddress> activePeers = new ConcurrentHashMap<String, InetAddress>(10,0.75f,10);
+	private Map<MacAddress, InetAddress> activePeers = new ConcurrentHashMap<MacAddress, InetAddress>(100,0.75f,100);
 	private String sourceHostname;
 	private InetAddress sourceIpAddress;
+	private MacAddress sourceMacAddress;
 
-	public Map<String, InetAddress> getActivePeers(){
+	public Map<MacAddress, InetAddress> getActivePeers(){
 
 		return this.activePeers;
 	}
 
-	public void setActivePeers(Map<String, InetAddress> activePeers){
+	public void setActivePeers(Map<MacAddress, InetAddress> activePeers){
 
 		this.activePeers = activePeers;
 	}

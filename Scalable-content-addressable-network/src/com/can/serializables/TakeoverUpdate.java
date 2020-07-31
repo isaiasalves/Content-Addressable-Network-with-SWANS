@@ -3,17 +3,21 @@ package com.can.serializables;
 import java.io.Serializable;
 import java.net.InetAddress;
 
-public class TakeoverUpdate implements Serializable{
+import jist.swans.mac.MacAddress;
+import jist.swans.misc.Message;
+
+public class TakeoverUpdate implements Serializable, Message, Cloneable {
 
 	private static final long serialVersionUID = 1L;
 
 	private String updatedHostname;
 	private InetAddress updatedIpAddress;
+	private MacAddress updatedMacAddress;
 	private String destinationHostname;
 	private Zone updatedZone;
 	private boolean isCompleteTakeover;
 
-	public TakeoverUpdate(String updatedNodeHostname, InetAddress updateNodeIpAddress, String destinationHostname,
+	public TakeoverUpdate(String updatedNodeHostname, InetAddress updateNodeIpAddress, MacAddress updatedMacAddress,String destinationHostname,
 			Zone updatedZone, boolean isCompleteTakeover) {
 
 		this.updatedHostname = updatedNodeHostname;
@@ -21,6 +25,7 @@ public class TakeoverUpdate implements Serializable{
 		this.destinationHostname = destinationHostname;
 		this.updatedZone = updatedZone;
 		this.isCompleteTakeover = isCompleteTakeover;
+		this.updatedMacAddress = updatedMacAddress;
 	}
 
 	public String getUpdatedHostname() {
@@ -34,6 +39,10 @@ public class TakeoverUpdate implements Serializable{
 	public Zone getUpdatedZone() {
 		return this.updatedZone;
 	}
+	
+	public MacAddress getUpdatedMacAddress() {
+		return this.updatedMacAddress;
+	}
 
 	public String getDestinationHostname() {
 		return this.destinationHostname;
@@ -42,5 +51,17 @@ public class TakeoverUpdate implements Serializable{
 	public boolean isCompleteTakeover(){
 
 		return this.isCompleteTakeover;
+	}
+
+	@Override
+	public int getSize() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void getBytes(byte[] msg, int offset) {
+		// TODO Auto-generated method stub
+		
 	}
 }

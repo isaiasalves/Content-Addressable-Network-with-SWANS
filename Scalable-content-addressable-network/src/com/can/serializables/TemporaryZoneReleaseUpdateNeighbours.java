@@ -3,19 +3,24 @@ package com.can.serializables;
 import java.io.Serializable;
 import java.net.InetAddress;
 
-public class TemporaryZoneReleaseUpdateNeighbours implements Serializable{
+import jist.swans.mac.MacAddress;
+import jist.swans.misc.Message;
+
+public class TemporaryZoneReleaseUpdateNeighbours implements Serializable, Message, Cloneable{
 
 	private static final long serialVersionUID = 1L;
 
 	private String releasingHostname;
 	private InetAddress releasingIpAddress;
+	private MacAddress releasingMacAddress;
 	private String newNodeHostname;
 	private InetAddress newNodeIpAddress;
+	private MacAddress newNodeMacAddress;
 	private Zone releasedZone;
 	private String hostnameToRoute;
 	private InetAddress ipAddressToRoute;
 
-	public TemporaryZoneReleaseUpdateNeighbours(String releasingHostname, InetAddress releasingIpAddress, String newNodeHostname, InetAddress newNodeIpAddress, Zone releasedZone, String hostnameToRoute, InetAddress ipAddressToRoute) {
+	public TemporaryZoneReleaseUpdateNeighbours(String releasingHostname, InetAddress releasingIpAddress, MacAddress releasingMacAddress,String newNodeHostname, InetAddress newNodeIpAddress, MacAddress newNodeMacAddress, Zone releasedZone, String hostnameToRoute, InetAddress ipAddressToRoute) {
 
 		this.releasingHostname = releasingHostname;
 		this.releasingIpAddress = releasingIpAddress;
@@ -23,6 +28,9 @@ public class TemporaryZoneReleaseUpdateNeighbours implements Serializable{
 		this.newNodeIpAddress = newNodeIpAddress;
 		this.hostnameToRoute = hostnameToRoute;
 		this.ipAddressToRoute = ipAddressToRoute;
+		this.releasingMacAddress = releasingMacAddress;
+		this.newNodeMacAddress = newNodeMacAddress;
+		
 	}
 
 	public static long getSerialversionuid() {
@@ -36,6 +44,10 @@ public class TemporaryZoneReleaseUpdateNeighbours implements Serializable{
 	public InetAddress getReleasingIpAddress() {
 		return releasingIpAddress;
 	}
+	
+	public MacAddress getReleasingMacAddress(){
+		return releasingMacAddress;
+	}
 
 	public String getNewNodeHostname() {
 		return newNodeHostname;
@@ -43,6 +55,10 @@ public class TemporaryZoneReleaseUpdateNeighbours implements Serializable{
 
 	public InetAddress getNewNodeIpAddress() {
 		return newNodeIpAddress;
+	}
+	
+	public MacAddress getNewNodeMacAddress() {
+		return newNodeMacAddress;
 	}
 
 	public Zone getReleasedZone() {
@@ -55,6 +71,18 @@ public class TemporaryZoneReleaseUpdateNeighbours implements Serializable{
 
 	public InetAddress getIpAddressToRoute() {
 		return ipAddressToRoute;
+	}
+
+	@Override
+	public int getSize() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void getBytes(byte[] msg, int offset) {
+		// TODO Auto-generated method stub
+		
 	}
 
 

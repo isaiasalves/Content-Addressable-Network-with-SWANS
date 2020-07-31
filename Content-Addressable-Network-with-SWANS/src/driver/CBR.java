@@ -71,7 +71,7 @@ import com.can.nodes.Peer;
 
 public class CBR {
 	/** Default port number to send and receive packets. */
-	private static final int PORT = 3001;
+	private static final int PORT = 49161;
 
 	//////////////////////////////////////////////////
 	// locals
@@ -231,6 +231,8 @@ public class CBR {
 		private NetAddress serverAddr;
 		/** number of outgoing transmissions. */
 		private int transmissions;
+		
+		private Peer CAN;
 
 		/**
 		 * Creates a new <code>Client</code>.
@@ -241,13 +243,14 @@ public class CBR {
 		 * @param serverAddr    the IP address of the server to send messages to
 		 */
 		public Client(TransInterface.TransUdpInterface udp, int transmissions, NetAddress localAddr,
-				NetAddress serverAddr) {
+				NetAddress serverAddrn, Peer CAN) {
 			self = (ClientInterface) JistAPI.proxy(this, ClientInterface.class);
 			this.udp = udp;
 			this.localAddr = localAddr;
 			this.serverAddr = serverAddr;
 			this.transmissions = transmissions;
 			msgsSent += transmissions;
+			this.CAN = CAN;
 
 		}
 
@@ -262,13 +265,28 @@ public class CBR {
 
 		/** {@inheritDoc} */
 		public void run() {
-			JistAPI.sleep(100 * Constants.SECOND);
+//			MacAddress macBootstrap = new MacAddress(1);
+//			if(CAN.getMacAddress().equals(macBootstrap))
+//			{
+//				
+//			}else {
+//				this.CAN.startNodes();
+//				try {
+//					Thread.sleep(10000);
+//
+//				} catch (InterruptedException ex) {
+//					System.out.println("Thread sleep error " + ex);
+//				}
+//				
+//				 
+//				
+//			}
 			// Send the appropriate number of messages to the corresponding server
 			for (int i = 0; i < transmissions; i++) {
 				JistAPI.sleep(20 * Constants.SECOND);
 				JistAPI.sleep(Util.randomTime(5 * Constants.SECOND));
 				self.sendMessage(i + 1);
-			}
+ 			}
 		}
 
 		/** {@inheritDoc} */
@@ -464,10 +482,10 @@ public class CBR {
 
 		// Make sure there are enough nodes to support numClients distinct client/server
 		// pairs
-		if (2 * cmdOpts.clients > cmdOpts.nodes) {
-			throw new CmdLineParser.IllegalOptionValueException(opt_clients,
-					"There must be at least twice as many nodes as clients");
-		}
+//		if (2 * cmdOpts.clients > cmdOpts.nodes) {
+//			throw new CmdLineParser.IllegalOptionValueException(opt_clients,
+//					"There must be at least twice as many nodes as clients");
+//		}
 		return cmdOpts;
 
 	} // parseCommandLineOptions
@@ -481,12 +499,15 @@ public class CBR {
 	 * client/server pairs and starts them.
 	 *
 	 * @param opts command-line parameters
+	 * @throws InterruptedException 
+	 * @throws UnknownHostException 
 	 */
-	private static void buildField(CommandLineOptions opts) {
+	private static void buildField(CommandLineOptions opts) throws InterruptedException, UnknownHostException {
 		ArrayList servers = new ArrayList();
 		ArrayList clients = new ArrayList();
 		ArrayList canPeers = new ArrayList();
-
+		
+		
 		// initialize field
 		Field field = new Field(opts.field, true);
 		// initialize shared radio information
@@ -546,6 +567,7 @@ public class CBR {
 			// alternate initializing servers and clients until there are numClients of each
 			boolean isClient;
 			boolean isServer;
+			Peer CANAtualPeer;
 
 			if (opts.protocol == Constants.NET_PROTOCOL_CAN) {
 				isClient = (i <= opts.clients + 1);
@@ -575,22 +597,35 @@ public class CBR {
 //			}
 			// routing
 			RouteInterface route = null; // Interface de roteamento
+			
+			
+			
+			CANAtualPeer = new Peer(address, macAddress);
+
+			route = CANAtualPeer.getProxy();
+			CANAtualPeer.setNetEntity(net.getProxy());
+			
+			canPeers.add(CANAtualPeer);
 			switch (opts.protocol) {
 			case Constants.NET_PROTOCOL_CAN:
 				try {
 
 					// Starts bootstrap node
-					Peer can = new Peer(address, macAddress);
-
-					route = can.getProxy();
-					can.setNetEntity(net.getProxy());
-					//if (i == 1) {
-						can.bootstrapStart();
-						JistAPI.sleep(1000000);
-					//} else {
-						// To make every node do a JOIN
-					//	canPeers.add(can);
-					//}
+//					CANAtualPeer = new Peer(address, macAddress);
+//
+//					route = CANAtualPeer.getProxy();
+//					CANAtualPeer.setNetEntity(net.getProxy());
+//					if (i == 1) {
+//						can.startNodes();
+////						JistAPI.sleep(1000000000);
+//						 
+//					} else {
+//						// To make every node do a JOIN
+//					
+//					}
+//					
+//					canPeers.add(can);
+				
 					break;
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
@@ -666,56 +701,83 @@ public class CBR {
 			udp.setNetEntity(net.getProxy());
 			net.setProtocolHandler(Constants.NET_PROTOCOL_UDP, udp.getProxy());
 			net.setProtocolHandler(opts.protocol, route);
+//
+//			if (i == 1) {
+//				Server server = new Server(udp.getProxy(), address);
+//				servers.add(server.getProxy());
+//			}
 
-			if (isServer) {
-				Server server = new Server(udp.getProxy(), address);
-				servers.add(server.getProxy());
+//			if (isClient) {
+//				if (opts.protocol == Constants.NET_PROTOCOL_CAN) {
+//					if (i == 1) {
+//						
+//						// Do nothing since the node with index 1 is the bootstrap node
+//					} else {
+//						Client client = new Client(udp.getProxy(), opts.transmissions, address,
+//								new NetAddress(opts.nodes - i + 2),(Peer)canPeers.get(i));
+//						clients.add(client.getProxy());
+//					}
+//
+//				} else {
+//					Client client = new Client(udp.getProxy(), opts.transmissions, address,
+//							new NetAddress(opts.nodes - i + 1),(Peer)canPeers.get(i-1));
+//					clients.add(client.getProxy());
+				//}
+			
+			
+			
+			 
+			JistAPI.sleep(10000000);
+	 
+			
+			Client client = new Client(udp.getProxy(), opts.transmissions, address,
+ 				      new NetAddress(opts.nodes - i + 1),(Peer)canPeers.get(i-1));
+			
+			CANAtualPeer.startNodes();
+			
+			// JistAPI.sleep(1000000000);
 			}
 
-			if (isClient) {
-				if (opts.protocol == Constants.NET_PROTOCOL_CAN) {
-					if (i == 1) {
-						
-						// Do nothing since the node with index 1 is the bootstrap node
-					} else {
-						Client client = new Client(udp.getProxy(), opts.transmissions, address,
-								new NetAddress(opts.nodes - i + 2));
-						clients.add(client.getProxy());
-					}
-
-				} else {
-					Client client = new Client(udp.getProxy(), opts.transmissions, address,
-							new NetAddress(opts.nodes - i + 1));
-					clients.add(client.getProxy());
-				}
-			}
-
-		}
+//		}
+		
+		
+//
+//		System.out.println("INI - " + System.currentTimeMillis());
+//		JistAPI.sleepBlock(500 * Constants.SECOND); 
+//		System.out.println("END - " + System.currentTimeMillis());
 
 		// initialize client/server apps
 //		if (opts.protocol == Constants.NET_PROTOCOL_CAN) {
 //		
 //			Iterator canPeer = canPeers.iterator();
 //			while (canPeer.hasNext()) {
-//				((Peer) canPeer.next()).bootstrapStart();
-//				JistAPI.sleep(1000000);
+//				((Peer) canPeer.next()).startNodes();
+//				JistAPI.sleep(1000000000);
 //			}
 //
 //		}
+		
+		
+		
 
-		// start clients and servers
+		//start clients and servers
 		numClientsTransmitting = opts.clients;
-		Iterator serverIter = servers.iterator();
-		while (serverIter.hasNext())
-			((ServerInterface) serverIter.next()).run();
-		JistAPI.sleep(1);
+		
+//		Iterator serverIter = servers.iterator();
+//		while (serverIter.hasNext())
+//			((ServerInterface) serverIter.next()).run();
+//		JistAPI.sleep(1);
+//		
+//		
 //		Iterator clientIter = clients.iterator();
 //		while (clientIter.hasNext())
 //			((ClientInterface) clientIter.next()).run();
+//			JistAPI.sleep(100);
 
 		// buildField
 	}
 
+ 
 	/**
 	 * Starts the CBR simulation.
 	 *
@@ -734,7 +796,22 @@ public class CBR {
 				JistAPI.endAt(options.endTime * Constants.SECOND);
 			}
 			Constants.random = new Random(options.randseed);
-			buildField(options);
+			try {
+				
+				
+				
+				try {
+					buildField(options);
+				} catch (UnknownHostException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			
 		} catch (CmdLineParser.OptionException e) {
 			System.out.println("Error: " + e.getMessage());
 

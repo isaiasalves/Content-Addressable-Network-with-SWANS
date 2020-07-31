@@ -15,8 +15,8 @@ public class Zone implements Serializable{
 
 	public Zone(double startX, double startY, double endX, double endY){
 
-		if(startX > 10 || startX < 0 || endX > 10 || endX < 0 || startY > 10 || startY < 0 || endY > 10 || endY < 0 ){
-			Utils.printErrorMessage("Error : value of coordinates out of range.\nPlease enter a value between 0 and 10.");
+		if(startX > 100 || startX < 0 || endX > 100 || endX < 0 || startY > 100 || startY < 0 || endY > 100 || endY < 0 ){
+			Utils.printErrorMessage("Error : value of coordinates out of range.\nPlease enter a value between 0 and 100.");
 		}
 		else{
 			this.startX = startX;
@@ -28,8 +28,8 @@ public class Zone implements Serializable{
 
 	public void setStartX(double startX){
 
-//		if(startX > 10 || startX < 0){
-//			Utils.printErrorMessage("Error : value of coordinates out of range.\nPlease enter a value between 0 and 10.");
+//		if(startX > 100 || startX < 0){
+//			Utils.printErrorMessage("Error : value of coordinates out of range.\nPlease enter a value between 0 and 100.");
 //		}
 //		else{
 			this.startX = startX;
@@ -38,8 +38,8 @@ public class Zone implements Serializable{
 
 	public void setStartY(double startY){
 
-//		if(startY > 10 || startY < 0){
-//			Utils.printErrorMessage("Error : value of coordinates out of range.\nPlease enter a value between 0 and 10.");
+//		if(startY > 100 || startY < 0){
+//			Utils.printErrorMessage("Error : value of coordinates out of range.\nPlease enter a value between 0 and 100.");
 //		}
 //		else{
 			this.startY = startY;
@@ -48,8 +48,8 @@ public class Zone implements Serializable{
 
 	public void setEndX(double endX){
 
-//		if(endX > 10 || endX < 0){
-//			Utils.printErrorMessage("Error : value of coordinates out of range.\nPlease enter a value between 0 and 10.");
+//		if(endX > 100 || endX < 0){
+//			Utils.printErrorMessage("Error : value of coordinates out of range.\nPlease enter a value between 0 and 100.");
 //		}
 //		else{
 			this.endX = endX;
@@ -58,8 +58,8 @@ public class Zone implements Serializable{
 
 	public void setEndY(double endY){
 
-//		if(endY > 10 || endY < 0){
-//			Utils.printErrorMessage("Error : value of coordinates out of range.\nPlease enter a value between 0 and 10.");
+//		if(endY > 100 || endY < 0){
+//			Utils.printErrorMessage("Error : value of coordinates out of range.\nPlease enter a value between 0 and 100.");
 //		}
 //		else{
 			this.endY = endY;

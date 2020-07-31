@@ -39,8 +39,24 @@ public class Utils {
 
 		dist = Math.sqrt(Math.pow((x1-x2),2) + Math.pow((y1-y2), 2));
 
+		
+		
+		
+		//Ponto no espaço de X
+		if (zone1.getStartX() < destCoord.getXCoord() && zone1.getEndX() > destCoord.getXCoord()) {
+			//calcula a distância como uma diferença apenas de Y
+			dist =  Math.min(Math.abs(destCoord.getYCoord() - zone1.getStartY()), Math.abs(destCoord.getYCoord()-zone1.getEndY()));
+		}
+		
+		//Ponto no espaço de Y
+		if (zone1.getStartY() < destCoord.getYCoord() && zone1.getEndY() > destCoord.getYCoord()) {
+			//calcula a distância como uma diferença apenas em X
+			dist = Math.min(Math.abs(destCoord.getXCoord() - zone1.getStartX()), Math.abs(destCoord.getXCoord()-zone1.getEndX()));
+		}
+		
+		
+		
 		return dist;
-
 	}
 
 	public static Coordinate mapKeyToCoordinate(String keyword){

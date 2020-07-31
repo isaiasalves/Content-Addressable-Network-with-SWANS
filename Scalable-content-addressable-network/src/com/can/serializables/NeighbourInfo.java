@@ -3,22 +3,26 @@ package com.can.serializables;
 import java.io.Serializable;
 import java.net.InetAddress;
 
+import jist.swans.mac.MacAddress;
+
 public class NeighbourInfo implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 
 	private Zone zone, tempZone;
 	private InetAddress ipAddress;
+	private MacAddress macAddress;
 	private String hostname;
 	private int portNumber;
 
-	public NeighbourInfo(Zone zone, InetAddress ipAddress, int portNumber, String hostname) {
+	public NeighbourInfo(Zone zone, InetAddress ipAddress, MacAddress macAddress, int portNumber, String hostname) {
 
 		if(zone != null && ipAddress != null){
 			this.zone = zone;
 			this.ipAddress = ipAddress;
 			this.portNumber = portNumber;
 			this.hostname = hostname;
+			this.macAddress = macAddress;
 		}
 	}
 
@@ -35,9 +39,18 @@ public class NeighbourInfo implements Serializable{
 	public void setTempZone(Zone tempZone) {
 		this.tempZone = tempZone;
 	}
+	
+	public void setMacAddress(MacAddress macAddress) {
+		this.macAddress = macAddress;
+	}
 
+	
 	public int getPortNumber() {
 		return portNumber;
+	}
+	
+	public MacAddress getMacAddress() {
+		return macAddress;
 	}
 
 	public void setPortNumber(int portNumber) {

@@ -6,7 +6,10 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class JoinConfirmation implements Serializable{
+import jist.swans.mac.MacAddress;
+import jist.swans.misc.Message;
+
+public class JoinConfirmation implements Serializable, Message, Cloneable{
 
 	private static final long serialVersionUID = 1L;
 
@@ -15,14 +18,16 @@ public class JoinConfirmation implements Serializable{
 	private InetAddress sourceIpAddress;
 	private String sourceHostName;
 	private int numberOfSplits;
+	private MacAddress sourceMacAddress;
 	private HashSet<String> transferedFiles;
 
-	public JoinConfirmation(Zone zone, ConcurrentHashMap<String, NeighbourInfo> routingTable, InetAddress sourceIpAddress, String sourceHostName, int numberOfSplits, HashSet<String> transferedFiles){
+	public JoinConfirmation(Zone zone, ConcurrentHashMap<String, NeighbourInfo> routingTable, InetAddress sourceIpAddress, String sourceHostName, MacAddress sourceMacAddress ,int numberOfSplits, HashSet<String> transferedFiles){
 
 		this.zone = zone;
 		this.routingTable = routingTable;
 		this.sourceIpAddress = sourceIpAddress;
 		this.sourceHostName = sourceHostName;
+		this.sourceMacAddress = sourceMacAddress;
 		this.numberOfSplits = numberOfSplits;
 		if(transferedFiles != null){
 			this.transferedFiles = transferedFiles;
@@ -48,6 +53,10 @@ public class JoinConfirmation implements Serializable{
 
 		return this.sourceHostName;
 	}
+	
+	public MacAddress getSourceMaccAddres() {
+		return this.sourceMacAddress;
+	}
 
 	public int getNumberOfSplits(){
 
@@ -62,5 +71,17 @@ public class JoinConfirmation implements Serializable{
 		else{
 			return this.transferedFiles;
 		}
+	}
+
+	@Override
+	public int getSize() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void getBytes(byte[] msg, int offset) {
+		// TODO Auto-generated method stub
+		
 	}
 }
