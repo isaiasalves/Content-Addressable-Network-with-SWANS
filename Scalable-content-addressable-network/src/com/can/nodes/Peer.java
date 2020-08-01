@@ -124,8 +124,8 @@ public class Peer implements RouteInterface.Can {
 
 	// temporary routing table to store the neighbour information of the temporary
 	// zone taken over
-	private ConcurrentHashMap<String, NeighbourInfo> tempRoutingTable = new ConcurrentHashMap<String, NeighbourInfo>(100,
-			0.75f, 100);
+	private ConcurrentHashMap<String, NeighbourInfo> tempRoutingTable = new ConcurrentHashMap<String, NeighbourInfo>(
+			100, 0.75f, 100);
 
 	// singleton instance
 	public static Peer instance = null;
@@ -230,7 +230,7 @@ public class Peer implements RouteInterface.Can {
 
 			// creating the success message
 			successMessage = "INSERT operation successful.\nInserted file : " + wiredInsert.getKeyword()
-			+ ".\nPeer hostName : " + this.getHostName() + ".\nPeer ipAddress : " + this.getIpAddress();
+					+ ".\nPeer hostName : " + this.getHostName() + ".\nPeer ipAddress : " + this.getIpAddress();
 
 			/*
 			 * checking whether current peer is the source. If yes then we print the success
@@ -271,7 +271,7 @@ public class Peer implements RouteInterface.Can {
 
 			// creating the success message
 			successMessage = "INSERT operation successful.\nInserted file : " + wiredInsert.getKeyword()
-			+ ".\nPeer hostName : " + this.getHostName() + ".\nPeer ipAddress : " + this.getIpAddress();
+					+ ".\nPeer hostName : " + this.getHostName() + ".\nPeer ipAddress : " + this.getIpAddress();
 
 			/*
 			 * checking whether current peer is the source. If yes then we print the success
@@ -461,12 +461,12 @@ public class Peer implements RouteInterface.Can {
 				 * check if number of active peers is less than 10 if not then send back a
 				 * WiredFailure message indicating JOIN not possible
 				 */
-				//if (peerLimit < 10) {
+				// if (peerLimit < 10) {
 
 				/*
 				 * select some random ipAddress of active peers add them to wiredJoin set
 				 * neighbourToRoute to newNode
-
+				 * 
 				 */
 				int activePeers = 0;
 				try {
@@ -474,7 +474,6 @@ public class Peer implements RouteInterface.Can {
 				} catch (Exception e) {
 					// TODO: handle exception
 				}
-
 
 				int numberOfActivePeers = activePeers;
 
@@ -501,14 +500,16 @@ public class Peer implements RouteInterface.Can {
 
 				wiredJoin.setNumberofHops(wiredJoin.getNumberOfHops() + 1);
 				this.send(wiredJoin);
-				//				} else {
-				//					PeerInfo sourceInfo = new PeerInfo();
-				//					sourceInfo.setHostName(wiredJoin.getSourceHostname());
-				//					sourceInfo.setIpAddress(wiredJoin.getSourceIpAddress());
-				//					String statusMessage = "Sorry! Peer limit of " + peerLimit + " has already been reached.";
-				//					WiredFailure wiredFailure = new WiredFailure(CommandType.JOIN, sourceInfo, statusMessage);
-				//					this.sendMessage(wiredFailure);
-				//				}
+				// } else {
+				// PeerInfo sourceInfo = new PeerInfo();
+				// sourceInfo.setHostName(wiredJoin.getSourceHostname());
+				// sourceInfo.setIpAddress(wiredJoin.getSourceIpAddress());
+				// String statusMessage = "Sorry! Peer limit of " + peerLimit + " has already
+				// been reached.";
+				// WiredFailure wiredFailure = new WiredFailure(CommandType.JOIN, sourceInfo,
+				// statusMessage);
+				// this.sendMessage(wiredFailure);
+				// }
 			}
 			/*
 			 * executed when the WiredJoin is route from NewNode to Peer in the network here
@@ -668,10 +669,9 @@ public class Peer implements RouteInterface.Can {
 
 //					System.out.println("(D)-" + this.macAddress + " recebendo wiredJoin de "
 //							+ wiredJoin.getSourceMacAddress() + " " + System.currentTimeMillis());
-					
+
 					this.send(joinConfirmation);
-					
-					 
+
 //					this.send(joinConfirmation);
 				} else if (this.tempZone != null && isDestination(wiredJoin.getRandomCoordinate(), this.tempZone)) {
 
@@ -707,7 +707,7 @@ public class Peer implements RouteInterface.Can {
 
 //					System.out.println("(E)-" + this.macAddress + " recebendo wiredJoin de "
 //							+ wiredJoin.getSourceMacAddress() + " " + System.currentTimeMillis());
-					
+
 					this.send(joinConfirmation);
 
 					this.tempZone = null;
@@ -782,29 +782,28 @@ public class Peer implements RouteInterface.Can {
 		 * information to the routing table check whether oldPeer's updated zone is
 		 * neighbour of current peer if not then remove it from the routing table
 		 */
-		//		Zone newNodeZone;
-		//		try {
-		//			newNodeZone = joinUpdateNeighbours.getNewNodeZone();
-		//		} catch (Exception e) {
-		//			newNodeZone = null;
-		//		}
-		//		
+		// Zone newNodeZone;
+		// try {
+		// newNodeZone = joinUpdateNeighbours.getNewNodeZone();
+		// } catch (Exception e) {
+		// newNodeZone = null;
+		// }
+		//
 
-		while(this.zone == null) {
+		while (this.zone == null) {
 			JistAPI.sleep(100000);
-			 System.out.println("HERE AT "+this.localAddr+" this.zone "+this.zone);
-			 System.out.println("joinUpdateNeighbours "+joinUpdateNeighbours);
+			System.out.println("HERE AT " + this.localAddr + " this.zone " + this.zone);
+			System.out.println("joinUpdateNeighbours " + joinUpdateNeighbours);
 		}
 
-		
 		if (this.zone == null) {
 			this.startNodes();
 			return;
 		}
-		//		
-		//		System.out.println("Here at: "+this.localAddr);
-		//		System.out.println("Zona atual: "+this.zone);
-		//		System.out.println("Get zone: "+joinUpdateNeighbours.getNewNodeZone());
+		//
+		// System.out.println("Here at: "+this.localAddr);
+		// System.out.println("Zona atual: "+this.zone);
+		// System.out.println("Get zone: "+joinUpdateNeighbours.getNewNodeZone());
 
 		if (isNeighbour(this.zone, joinUpdateNeighbours.getNewNodeZone())) {
 			// checking if current peer's zone is neighbour of new node's zone
@@ -832,11 +831,11 @@ public class Peer implements RouteInterface.Can {
 
 			this.tempRoutingTable.put(joinUpdateNeighbours.getNewNodeHostname(), neighbourInfo);
 		} else
-			// if
-			// (this.routingTable.get(joinUpdateNeighbours.getActivePeerHostname()).getTempZone()
-			// != null
-			// && !isNeighbour(this.zone,
-			// this.routingTable.get(joinUpdateNeighbours.getActivePeerHostname()).getTempZone()))
+		// if
+		// (this.routingTable.get(joinUpdateNeighbours.getActivePeerHostname()).getTempZone()
+		// != null
+		// && !isNeighbour(this.zone,
+		// this.routingTable.get(joinUpdateNeighbours.getActivePeerHostname()).getTempZone()))
 		{
 			Zone tmpZone;
 			try {
@@ -939,6 +938,7 @@ public class Peer implements RouteInterface.Can {
 			PeerInfo sourceInfo = new PeerInfo();
 			sourceInfo.setHostName(this.hostname);
 			sourceInfo.setIpAddress(this.IPaddress);
+			sourceInfo.setMacAddress(this.macAddress);
 			sourceInfo.setNeighbours(this.getNeighbours());
 			sourceInfo.setZone(this.zone);
 			sourceInfo.setFileNames(this.fileNames);
@@ -973,8 +973,8 @@ public class Peer implements RouteInterface.Can {
 					isCompleteTakeOver = true;
 
 					LeaveUpdateBootstrap leaveUpdateBootstrap = new LeaveUpdateBootstrap(this.getHostName(),
-							this.getIpAddress());
-					this.send(leaveUpdateBootstrap);
+							this.getIpAddress(), this.getMacAddress());
+					send(leaveUpdateBootstrap);
 
 					if (i == 1) {
 						alongX = true;
@@ -984,8 +984,8 @@ public class Peer implements RouteInterface.Can {
 					}
 					WiredZoneTransfer wiredZoneTransfer = new WiredZoneTransfer(this.getZone(), this.fileNames,
 							routingTableEntry.getValue(), alongX, alongY, isCompleteTakeOver, this.routingTable,
-							this.getHostName(), this.getIpAddress());
-					this.send(wiredZoneTransfer);
+							this.getHostName(), this.getIpAddress(), this.getMacAddress());
+					send(wiredZoneTransfer);
 
 					/*
 					 * updating all current neighbours to remove entry corresponding to this peer
@@ -995,15 +995,14 @@ public class Peer implements RouteInterface.Can {
 					for (NeighbourInfo neighbour : getNeighbours()) {
 
 						if (!(routingTableEntry.getKey().equals(neighbour.getHostname()))) {
-							leaveUpdateNeighbours = new LeaveUpdateNeighbours(this.getHostName(), this.getIpAddress(),
-									neighbour.getIpAddress(), neighbour.getHostname(), routingTableEntry.getValue());
-							this.send(leaveUpdateNeighbours);
+							leaveUpdateNeighbours = new LeaveUpdateNeighbours(this.getHostName(), this.getIpAddress(), this.macAddress,
+									neighbour.getIpAddress(), neighbour.getHostname(), neighbour.getMacAddress(), routingTableEntry.getValue());
+							send(leaveUpdateNeighbours);
 						}
 
 						try {
-							// Thread.sleep(500);
-							JistAPI.sleep(500);
-						} catch (Exception ie) {
+							//Thread.sleep(500);
+						} catch ( Exception ie) {
 							ie.printStackTrace();
 						}
 					}
@@ -1020,8 +1019,8 @@ public class Peer implements RouteInterface.Can {
 			if (!isCompleteTakeOver) {
 
 				LeaveUpdateBootstrap leaveUpdateBootstrap = new LeaveUpdateBootstrap(this.getHostName(),
-						this.getIpAddress());
-				this.send(leaveUpdateBootstrap);
+						this.getIpAddress(), this.getMacAddress());
+				send(leaveUpdateBootstrap);
 
 				NeighbourInfo smallestZoneNeighbour = retrieveNeighbourWithSmallestZone();
 				if (smallestZoneNeighbour == null) {
@@ -1035,8 +1034,8 @@ public class Peer implements RouteInterface.Can {
 				} else {
 					WiredZoneTransfer wiredZoneTransfer = new WiredZoneTransfer(this.getZone(), this.fileNames,
 							smallestZoneNeighbour, false, false, isCompleteTakeOver, this.routingTable,
-							this.getHostName(), this.getIpAddress());
-					this.send(wiredZoneTransfer);
+							this.getHostName(), this.getIpAddress(), this.getMacAddress());
+					send(wiredZoneTransfer);
 
 					/*
 					 * updating all current neighbours to remove entry corresponding to this peer
@@ -1045,14 +1044,13 @@ public class Peer implements RouteInterface.Can {
 					LeaveUpdateNeighbours leaveUpdateNeighbours;
 					for (NeighbourInfo neighbour : getNeighbours()) {
 
-						leaveUpdateNeighbours = new LeaveUpdateNeighbours(this.getHostName(), this.getIpAddress(),
-								neighbour.getIpAddress(), neighbour.getHostname(), smallestZoneNeighbour);
-						this.send(leaveUpdateNeighbours);
+						leaveUpdateNeighbours = new LeaveUpdateNeighbours(this.getHostName(), this.getIpAddress(), this.macAddress, 
+								neighbour.getIpAddress(), neighbour.getHostname(), neighbour.getMacAddress(), smallestZoneNeighbour);
+						send(leaveUpdateNeighbours);
 
 						try {
-							// Thread.sleep(500);
-							JistAPI.sleep(500);
-						} catch (Exception ie) {
+							//Thread.sleep(500);
+						} catch ( Exception ie) {
 							ie.printStackTrace();
 						}
 					}
@@ -1110,7 +1108,7 @@ public class Peer implements RouteInterface.Can {
 			for (NeighbourInfo neighbour : this.routingTable.values()) {
 
 				TakeoverUpdate takeoverUpdate = new TakeoverUpdate(this.getHostName(), this.getIpAddress(),
-						this.getMacAddress(), neighbour.getHostname(), this.getZone(), true);
+						this.getMacAddress(), neighbour.getHostname(), this.getZone(), true, neighbour.getIpAddress(), neighbour.getMacAddress());
 				this.send(takeoverUpdate);
 			}
 
@@ -1129,7 +1127,7 @@ public class Peer implements RouteInterface.Can {
 				if (!(this.getHostName().equals(neighbour.getHostname()))) {
 
 					TakeoverUpdate takeoverUpdate = new TakeoverUpdate(this.getHostName(), this.getIpAddress(),
-							this.getMacAddress(), neighbour.getHostname(), this.getTempZone(), false);
+							this.getMacAddress(), neighbour.getHostname(), this.getTempZone(), false, neighbour.getIpAddress(), neighbour.getMacAddress());
 					this.send(takeoverUpdate);
 				}
 			}
@@ -1142,7 +1140,7 @@ public class Peer implements RouteInterface.Can {
 						|| (neighbour.getTempZone() != null && !isNeighbour(this.zone, neighbour.getTempZone()))) {
 
 					TakeoverUpdate takeoverUpdate = new TakeoverUpdate(this.getHostName(), this.getIpAddress(),
-							this.getMacAddress(), neighbour.getHostname(), this.tempZone, false);
+							this.getMacAddress(), neighbour.getHostname(), this.tempZone, false, neighbour.getIpAddress(), neighbour.getMacAddress());
 					this.send(takeoverUpdate);
 				}
 			}
@@ -1221,9 +1219,9 @@ public class Peer implements RouteInterface.Can {
 	public void removeActivePeerEntry(LeaveUpdateBootstrap leaveUpdateBootstrap) {
 
 		try {
-			if (isBootstrap() && Peer.activePeers.containsKey(leaveUpdateBootstrap.getHostname())) {
+			if (isBootstrap() && Peer.activePeers.containsKey(leaveUpdateBootstrap.getMacAddress())) {
 
-				Peer.activePeers.remove(leaveUpdateBootstrap.getHostname());
+				Peer.activePeers.remove(leaveUpdateBootstrap.getMacAddress());
 			} else {
 
 				/*
@@ -1289,7 +1287,7 @@ public class Peer implements RouteInterface.Can {
 
 			// create failure message and send it back to the leaving node
 			String statusMessage = "Could not update routing table.\nHostname : " + this.getHostName()
-			+ "\nIpAddress : " + this.getIpAddress();
+					+ "\nIpAddress : " + this.getIpAddress();
 			PeerInfo sourceInfo = new PeerInfo();
 			sourceInfo.setHostName(takeoverUpdate.getUpdatedHostname());
 			sourceInfo.setIpAddress(takeoverUpdate.getUpdatedIpAddress());
@@ -1521,9 +1519,10 @@ public class Peer implements RouteInterface.Can {
 		for (MacAddress peerHostname : activePeersRequest.getActivePeers().keySet()) {
 
 			if (!(this.getHostName().equals(peerHostname))) {
-				//				WiredView wiredView = new WiredView(this.getHostName(), this.getIpAddress(), peerHostname,
-				//						ViewCategory.MULTI);
-				//				RevisedSend.sendMessage(wiredView);
+				// WiredView wiredView = new WiredView(this.getHostName(), this.getIpAddress(),
+				// peerHostname,
+				// ViewCategory.MULTI);
+				// RevisedSend.sendMessage(wiredView);
 			}
 			try {
 				// Thread.sleep(50);
@@ -1695,8 +1694,8 @@ public class Peer implements RouteInterface.Can {
 	 * If one of the neighbours' zone/tempZone contains the coordinate then return
 	 * that neighbour Else return the closest neighbor to route
 	 */
-	public NeighbourInfo findClosestNeighbour(Coordinate destinationCoordinate, RouteInformation routeInformation, MacAddress lastHop)
-			throws ClosestNeighbourUnavailableException {
+	public NeighbourInfo findClosestNeighbour(Coordinate destinationCoordinate, RouteInformation routeInformation,
+			MacAddress lastHop) throws ClosestNeighbourUnavailableException {
 		NeighbourInfo neighbourInfo = null;
 		double minDist = -999999;
 		double dist;
@@ -1717,7 +1716,7 @@ public class Peer implements RouteInterface.Can {
 					}
 
 					dist = Utils.computeDistance(routinTableEntry.getValue().getZone(), destinationCoordinate);
-					if (minDist == -999999 && !routinTableEntry.getValue().getMacAddress().equals(lastHop) ) {
+					if (minDist == -999999 && !routinTableEntry.getValue().getMacAddress().equals(lastHop)) {
 
 						minDist = dist;
 						neighbourInfo = routinTableEntry.getValue();
@@ -1743,7 +1742,7 @@ public class Peer implements RouteInterface.Can {
 			}
 
 		} catch (Exception closestNeighbourUnavailableException) {
- 
+
 			throw closestNeighbourUnavailableException;
 		}
 
@@ -1773,8 +1772,6 @@ public class Peer implements RouteInterface.Can {
 		 * take the boundary into the zone else take value > startX (for along y) take
 		 * value > startY (for along x)
 		 */
-
-
 
 		if (destCoord.getXCoord() == Peer.LOWER_BOUND_X) {
 
@@ -1887,21 +1884,21 @@ public class Peer implements RouteInterface.Can {
 			}
 		}
 
-	if (zone != null) {
+		if (zone != null) {
 
-		if (zone.getStartX() < destCoord.getXCoord() && destCoord.getXCoord() <= zone.getEndX()) {
-			// means that the x coordinate and the y coordinate are in
-			// ((LOWER_BOUND_X,UPPER_BOUND_X) , (LOWER_BOUND_Y,UPPER_BOUND_Y))
+			if (zone.getStartX() < destCoord.getXCoord() && destCoord.getXCoord() <= zone.getEndX()) {
+				// means that the x coordinate and the y coordinate are in
+				// ((LOWER_BOUND_X,UPPER_BOUND_X) , (LOWER_BOUND_Y,UPPER_BOUND_Y))
 
-			// checking whether the y coordinate of destCoord lies within the Peer's zone
-			if (zone.getStartY() < destCoord.getYCoord() && destCoord.getYCoord() <= zone.getEndY()) {
+				// checking whether the y coordinate of destCoord lies within the Peer's zone
+				if (zone.getStartY() < destCoord.getYCoord() && destCoord.getYCoord() <= zone.getEndY()) {
 
-				return true;
-			} else {
-				return false;
+					return true;
+				} else {
+					return false;
+				}
 			}
 		}
-	}
 
 		// destCoord does not lie within Peer's zone and hence the message needs to be
 		// further routed to another peer
@@ -2014,203 +2011,211 @@ public class Peer implements RouteInterface.Can {
 		return builder.toString();
 	}
 
-	//	public void main(String[] args) throws InterruptedException {
+	// public void main(String[] args) throws InterruptedException {
 	//
-	//		possibleCommands.put(CommandType.INSERT, false);
-	//		possibleCommands.put(CommandType.SEARCH, false);
-	//		possibleCommands.put(CommandType.JOIN, true);
-	//		possibleCommands.put(CommandType.LEAVE, false);
-	//		possibleCommands.put(CommandType.VIEW, true);
+	// possibleCommands.put(CommandType.INSERT, false);
+	// possibleCommands.put(CommandType.SEARCH, false);
+	// possibleCommands.put(CommandType.JOIN, true);
+	// possibleCommands.put(CommandType.LEAVE, false);
+	// possibleCommands.put(CommandType.VIEW, true);
 	//
-	//		formats.put(CommandType.INSERT, "INSERT filename");
-	//		formats.put(CommandType.SEARCH, "SEARCH filename");
-	//		formats.put(CommandType.JOIN, "JOIN");
-	//		formats.put(CommandType.LEAVE, "LEAVE");
-	//		formats.put(CommandType.VIEW, "VIEW [hostname]");
+	// formats.put(CommandType.INSERT, "INSERT filename");
+	// formats.put(CommandType.SEARCH, "SEARCH filename");
+	// formats.put(CommandType.JOIN, "JOIN");
+	// formats.put(CommandType.LEAVE, "LEAVE");
+	// formats.put(CommandType.VIEW, "VIEW [hostname]");
 	//
-	//		try {
+	// try {
 	//
-	//			boolean isBootstrap = isBootstrap();
-	//			if (isBootstrap) {
+	// boolean isBootstrap = isBootstrap();
+	// if (isBootstrap) {
 	//
-	//				Peer bootstrap = Peer.getInstance();
-	//				/*
-	//				 * Setting bootstrap zone Here lowX = 0, lowY = 0, highX = 100, highY = 100
-	//				 */
-	//				Zone bootstrapZone = new Zone(0, 0, 100, 100);
-	//				bootstrap.setZone(bootstrapZone);
+	// Peer bootstrap = Peer.getInstance();
+	// /*
+	// * Setting bootstrap zone Here lowX = 0, lowY = 0, highX = 100, highY = 100
+	// */
+	// Zone bootstrapZone = new Zone(0, 0, 100, 100);
+	// bootstrap.setZone(bootstrapZone);
 	//
-	//				// setting active peers
-	//				Peer.activePeers = new HashMap<String, InetAddress>();
-	//				Peer.activePeers.put(Peer.BOOTSTRAP_HOSTNAME, Peer.bootstrapIp);
+	// // setting active peers
+	// Peer.activePeers = new HashMap<String, InetAddress>();
+	// Peer.activePeers.put(Peer.BOOTSTRAP_HOSTNAME, Peer.bootstrapIp);
 	//
-	//				// setting number of splits to 0
-	//				Peer.numberOfSplits = 0;
+	// // setting number of splits to 0
+	// Peer.numberOfSplits = 0;
 	//
-	//				// disabling JOIN command
-	//				possibleCommands.put(CommandType.JOIN, false);
-	//				possibleCommands.put(CommandType.INSERT, true);
-	//				possibleCommands.put(CommandType.SEARCH, true);
-	//				possibleCommands.put(CommandType.LEAVE, false);
+	// // disabling JOIN command
+	// possibleCommands.put(CommandType.JOIN, false);
+	// possibleCommands.put(CommandType.INSERT, true);
+	// possibleCommands.put(CommandType.SEARCH, true);
+	// possibleCommands.put(CommandType.LEAVE, false);
 	//
-	//				Utils.printToConsole("Bootstrap loaded and Initialized.");
+	// Utils.printToConsole("Bootstrap loaded and Initialized.");
 	//
-	//			}
+	// }
 	//
-	//		} catch (UnknownHostException e) {
+	// } catch (UnknownHostException e) {
 	//
-	//			Utils.printToConsole("Couldn't load the bootstrap node. Try again.");
-	//		}
+	// Utils.printToConsole("Couldn't load the bootstrap node. Try again.");
+	// }
 	//
-	//		/*
-	//		 * Spawning thread to listen on a port
-	//		 */
-	//		RevisedReceive r = new RevisedReceive();
-	//		r.startServer(49161);
+	// /*
+	// * Spawning thread to listen on a port
+	// */
+	// RevisedReceive r = new RevisedReceive();
+	// r.startServer(49161);
 	//
-	//		Scanner scanner = new Scanner(System.in);
-	//		Peer peerInstance;
-	//		try {
-	//			peerInstance = Peer.getInstance();
-	//			peerInstance.setHostName(InetAddress.getLocalHost().getHostName());
-	//			peerInstance.setIPaddress(InetAddress.getLocalHost());
+	// Scanner scanner = new Scanner(System.in);
+	// Peer peerInstance;
+	// try {
+	// peerInstance = Peer.getInstance();
+	// peerInstance.setHostName(InetAddress.getLocalHost().getHostName());
+	// peerInstance.setIPaddress(InetAddress.getLocalHost());
 	//
-	//			// setting bootstrap ip
-	//			Peer.bootstrapIp = InetAddress.getByName(Peer.BOOTSTRAP_HOSTNAME);
+	// // setting bootstrap ip
+	// Peer.bootstrapIp = InetAddress.getByName(Peer.BOOTSTRAP_HOSTNAME);
 	//
-	//			while (true) {
+	// while (true) {
 	//
-	//				System.out.println("Please provide a command. The possible commands are :");
-	//				for (CommandType command : possibleCommands.keySet()) {
+	// System.out.println("Please provide a command. The possible commands are :");
+	// for (CommandType command : possibleCommands.keySet()) {
 	//
-	//					if (possibleCommands.get(command)) {
-	//						System.out.println(command + " -- " + formats.get(command));
-	//					}
-	//				}
+	// if (possibleCommands.get(command)) {
+	// System.out.println(command + " -- " + formats.get(command));
+	// }
+	// }
 	//
-	//				String[] input = scanner.nextLine().split(" ");
-	//				switch (input[0].toLowerCase()) {
-	//				case "insert":
-	//					if (possibleCommands.get(CommandType.INSERT) == false) {
+	// String[] input = scanner.nextLine().split(" ");
+	// switch (input[0].toLowerCase()) {
+	// case "insert":
+	// if (possibleCommands.get(CommandType.INSERT) == false) {
 	//
-	//						Utils.printToConsole("Illegal command");
-	//					} else {
-	//						if (input.length != 2) {
-	//							Utils.printErrorMessage("Wrong format on INSERT command.");
-	//							Utils.printToConsole("Correct format : INSERT " + formats.get(CommandType.INSERT));
-	//						} else {
-	//							String filename = args[1];
-	//							WiredInsert wiredInsert = new WiredInsert(CommandType.INSERT, filename, null, null,
-	//									new RouteInformation());
-	//							peerInstance.insert(wiredInsert);
-	//						}
-	//					}
-	//					// Thread.sleep(500);
-	//					JistAPI.sleep(500 * Constants.SECOND);
-	//					break;
-	//				case "search":
-	//					if (possibleCommands.get(CommandType.SEARCH) == false) {
+	// Utils.printToConsole("Illegal command");
+	// } else {
+	// if (input.length != 2) {
+	// Utils.printErrorMessage("Wrong format on INSERT command.");
+	// Utils.printToConsole("Correct format : INSERT " +
+	// formats.get(CommandType.INSERT));
+	// } else {
+	// String filename = args[1];
+	// WiredInsert wiredInsert = new WiredInsert(CommandType.INSERT, filename, null,
+	// null,
+	// new RouteInformation());
+	// peerInstance.insert(wiredInsert);
+	// }
+	// }
+	// // Thread.sleep(500);
+	// JistAPI.sleep(500 * Constants.SECOND);
+	// break;
+	// case "search":
+	// if (possibleCommands.get(CommandType.SEARCH) == false) {
 	//
-	//						Utils.printToConsole("Illegal command.");
-	//					} else {
-	//						if (input.length != 2) {
-	//							Utils.printErrorMessage("Wrong format for SEARCH command.");
-	//							Utils.printToConsole("Correct format : SEARCH " + formats.get(CommandType.SEARCH));
-	//						} else {
-	//							String filename = args[1];
-	//							WiredSearch wiredSearch = new WiredSearch(CommandType.SEARCH, filename, null, null,
-	//									new RouteInformation());
-	//							peerInstance.search(wiredSearch);
-	//						}
-	//					}
-	//					// Thread.sleep(500);
-	//					JistAPI.sleep(500 * Constants.SECOND);
-	//					break;
-	//				case "join":
-	//					if (possibleCommands.get(CommandType.JOIN) == false) {
+	// Utils.printToConsole("Illegal command.");
+	// } else {
+	// if (input.length != 2) {
+	// Utils.printErrorMessage("Wrong format for SEARCH command.");
+	// Utils.printToConsole("Correct format : SEARCH " +
+	// formats.get(CommandType.SEARCH));
+	// } else {
+	// String filename = args[1];
+	// WiredSearch wiredSearch = new WiredSearch(CommandType.SEARCH, filename, null,
+	// null,
+	// new RouteInformation());
+	// peerInstance.search(wiredSearch);
+	// }
+	// }
+	// // Thread.sleep(500);
+	// JistAPI.sleep(500 * Constants.SECOND);
+	// break;
+	// case "join":
+	// if (possibleCommands.get(CommandType.JOIN) == false) {
 	//
-	//						Utils.printToConsole("Illegal command");
-	//					} else {
-	//						if (input.length > 1) {
-	//							Utils.printErrorMessage("Wrong format for JOIN command");
-	//							Utils.printToConsole("Correct format : " + formats.get(CommandType.JOIN));
-	//						} else {
+	// Utils.printToConsole("Illegal command");
+	// } else {
+	// if (input.length > 1) {
+	// Utils.printErrorMessage("Wrong format for JOIN command");
+	// Utils.printToConsole("Correct format : " + formats.get(CommandType.JOIN));
+	// } else {
 	//
-	//							possibleCommands.put(CommandType.INSERT, true);
-	//							possibleCommands.put(CommandType.SEARCH, true);
-	//							possibleCommands.put(CommandType.VIEW, true);
-	//							possibleCommands.put(CommandType.JOIN, false);
-	//							possibleCommands.put(CommandType.LEAVE, true);
+	// possibleCommands.put(CommandType.INSERT, true);
+	// possibleCommands.put(CommandType.SEARCH, true);
+	// possibleCommands.put(CommandType.VIEW, true);
+	// possibleCommands.put(CommandType.JOIN, false);
+	// possibleCommands.put(CommandType.LEAVE, true);
 	//
-	//							WiredJoin wiredJoin = new WiredJoin(peerInstance.getHostName(), peerInstance.getIpAddress(),
-	//									Peer.getBootstrapHostname(), Peer.getBootstrapIp(), new RouteInformation());
-	//							RevisedSend.sendMessage(wiredJoin);
+	// WiredJoin wiredJoin = new WiredJoin(peerInstance.getHostName(),
+	// peerInstance.getIpAddress(),
+	// Peer.getBootstrapHostname(), Peer.getBootstrapIp(), new RouteInformation());
+	// RevisedSend.sendMessage(wiredJoin);
 	//
-	//						}
-	//					}
-	//					// Thread.sleep(500);
-	//					JistAPI.sleep(500 * Constants.SECOND);
-	//					break;
-	//				case "leave":
-	//					if (possibleCommands.get(CommandType.LEAVE) == false) {
+	// }
+	// }
+	// // Thread.sleep(500);
+	// JistAPI.sleep(500 * Constants.SECOND);
+	// break;
+	// case "leave":
+	// if (possibleCommands.get(CommandType.LEAVE) == false) {
 	//
-	//						Utils.printToConsole("Illegal command");
-	//					} else {
-	//						if (input.length > 1) {
-	//							Utils.printErrorMessage("Wrong format for LEAVE command");
-	//							Utils.printToConsole("Correct format : " + formats.get(CommandType.LEAVE));
-	//						} else {
-	//							if (peerInstance.getTempZone() == null) {
-	//								possibleCommands.put(CommandType.INSERT, false);
-	//								possibleCommands.put(CommandType.SEARCH, false);
-	//								possibleCommands.put(CommandType.VIEW, true);
-	//								possibleCommands.put(CommandType.JOIN, true);
-	//								possibleCommands.put(CommandType.LEAVE, false);
-	//								peerInstance.leave();
-	//							} else {
-	//								Utils.printErrorMessage(
-	//										"Sorry! Cannot leave the network due to temporary take over of another zone.");
-	//							}
-	//						}
-	//					}
+	// Utils.printToConsole("Illegal command");
+	// } else {
+	// if (input.length > 1) {
+	// Utils.printErrorMessage("Wrong format for LEAVE command");
+	// Utils.printToConsole("Correct format : " + formats.get(CommandType.LEAVE));
+	// } else {
+	// if (peerInstance.getTempZone() == null) {
+	// possibleCommands.put(CommandType.INSERT, false);
+	// possibleCommands.put(CommandType.SEARCH, false);
+	// possibleCommands.put(CommandType.VIEW, true);
+	// possibleCommands.put(CommandType.JOIN, true);
+	// possibleCommands.put(CommandType.LEAVE, false);
+	// peerInstance.leave();
+	// } else {
+	// Utils.printErrorMessage(
+	// "Sorry! Cannot leave the network due to temporary take over of another
+	// zone.");
+	// }
+	// }
+	// }
 	//
-	//					// Thread.sleep(500);
-	//					JistAPI.sleep(500 * Constants.SECOND);
-	//					break;
-	//				case "view":
-	//					if (possibleCommands.get(CommandType.VIEW) == false) {
+	// // Thread.sleep(500);
+	// JistAPI.sleep(500 * Constants.SECOND);
+	// break;
+	// case "view":
+	// if (possibleCommands.get(CommandType.VIEW) == false) {
 	//
-	//						Utils.printToConsole("Illegal command");
-	//					} else {
-	//						if (input.length == 2) {
-	//							peerInstance.view(input[1].toString());
-	//						} else if (input.length == 1) {
-	//							peerInstance.view(null);
-	//						} else {
-	//							Utils.printErrorMessage("Wrong format for VIEW command");
-	//							Utils.printToConsole("Correct format : " + formats.get(CommandType.VIEW));
-	//						}
-	//					}
-	//					// Thread.sleep(500);
-	//					JistAPI.sleep(500 * Constants.SECOND);
-	//					break;
+	// Utils.printToConsole("Illegal command");
+	// } else {
+	// if (input.length == 2) {
+	// peerInstance.view(input[1].toString());
+	// } else if (input.length == 1) {
+	// peerInstance.view(null);
+	// } else {
+	// Utils.printErrorMessage("Wrong format for VIEW command");
+	// Utils.printToConsole("Correct format : " + formats.get(CommandType.VIEW));
+	// }
+	// }
+	// // Thread.sleep(500);
+	// JistAPI.sleep(500 * Constants.SECOND);
+	// break;
 	//
-	//				default:
-	//					Utils.printErrorMessage("Please enter a valid command.");
-	//				}
+	// default:
+	// Utils.printErrorMessage("Please enter a valid command.");
+	// }
 	//
-	//			}
-	//		} catch (UnknownHostException e) {
-	//			e.printStackTrace();
-	//		}
-	//	}
+	// }
+	// } catch (UnknownHostException e) {
+	// e.printStackTrace();
+	// }
+	// }
 
-	//	public void joinCAN(NetAddress nodeAddress, int i) throws UnknownHostException {
+	// public void joinCAN(NetAddress nodeAddress, int i) throws
+	// UnknownHostException {
 	//
-	//		WiredJoin wiredJoin = new WiredJoin(this.getHostName(), this.localAddr.getIP(), this.getBootstrapHostname(),
-	//				this.getBootstrapIp(), new RouteInformation());
-	//		this.sendMessage(wiredJoin);
-	//	}
+	// WiredJoin wiredJoin = new WiredJoin(this.getHostName(),
+	// this.localAddr.getIP(), this.getBootstrapHostname(),
+	// this.getBootstrapIp(), new RouteInformation());
+	// this.sendMessage(wiredJoin);
+	// }
 
 	// public void directStart(String option, InetAddress nodeHostName, InetAddress
 	// nodeIp, int nodePort) throws InterruptedException {
@@ -2252,7 +2257,6 @@ public class Peer implements RouteInterface.Can {
 			Utils.printToConsole("Couldn't load the bootstrap node. Try again.");
 		}
 
-	
 	}
 
 	public RouteInterface.Can getProxy() {
@@ -2267,122 +2271,112 @@ public class Peer implements RouteInterface.Can {
 	public void peek(NetMessage msg, MacAddress lastHop) {
 		// TODO Auto-generated method stub
 
-		//		
+		//
 //				  NetMessage.Ip ipMsg = null;
 //				  ipMsg = (NetMessage.Ip)msg;
 //				  System.out.println(localAddr+" PEEK msg from "+ ipMsg.getSrc()+" "+ipMsg );
-		//		  System.out.println("peek: src=" + ipMsg.getSrc());
-		//		  System.out.println("peek: dst=" + ipMsg.getDst());
-		//		  System.out.println("peek: payload=" + ipMsg.getPayload());
-		//		  System.out.println("peek: priority=" + ipMsg.getPriority());
-		//		  System.out.println("peek: protocol=" + ipMsg.getProtocol());
-		//		  System.out.println("peek: TTL=" + ipMsg.getTTL());
-		//		  System.out.println("peek: msg size = " + ipMsg.getSize());
-		//		System.out.println();
+		// System.out.println("peek: src=" + ipMsg.getSrc());
+		// System.out.println("peek: dst=" + ipMsg.getDst());
+		// System.out.println("peek: payload=" + ipMsg.getPayload());
+		// System.out.println("peek: priority=" + ipMsg.getPriority());
+		// System.out.println("peek: protocol=" + ipMsg.getProtocol());
+		// System.out.println("peek: TTL=" + ipMsg.getTTL());
+		// System.out.println("peek: msg size = " + ipMsg.getSize());
+		// System.out.println();
 		// final Socket socket = serverSocket.accept();
 		// ObjectInputStream objectInputStream = new
 		// ObjectInputStream(socket.getInputStream());
 
-		//		Object wiredObject = msg;/// objectInputStream.readObject();
-
+		// Object wiredObject = msg;/// objectInputStream.readObject();
 
 	}
-public static class RevisedSend implements AppJava.Runnable{
 
-	private Object wiredObject; 
-	private Peer peer;
-	
-	
-	public RevisedSend(Object wiredObject, Peer peer) {
-		this.wiredObject = wiredObject;
-		this.peer = peer;
+	public static class RevisedSend implements AppJava.Runnable {
+
+		private Object wiredObject;
+		private Peer peer;
+
+		public RevisedSend(Object wiredObject, Peer peer) {
+			this.wiredObject = wiredObject;
+			this.peer = peer;
+		}
+
+		@Override
+		public void run() throws Continuation {
+			// TODO Auto-generated method stub
+			if (this.wiredObject instanceof WiredJoin) {
+				// call send for JOIN
+				this.peer.send((WiredJoin) this.wiredObject);
+			}
+			// else if(wiredObject instanceof WiredInsert){
+			// //call send for INSERT
+			// send((WiredInsert)wiredObject);
+			// }
+			// else if(wiredObject instanceof WiredSearch){
+			// //call send for SEARCH
+			// send((WiredSearch)wiredObject);
+			// }
+			else if (wiredObject instanceof JoinUpdateNeighbours) {
+				// call send for JOIN_UPDATE
+				this.peer.send((JoinUpdateNeighbours) this.wiredObject);
+			}
+			// else if(wiredObject instanceof TemporaryZoneReleaseUpdateNeighbours){
+			// //call send for Temporary release of node udpate to the neighbours
+			// send((TemporaryZoneReleaseUpdateNeighbours)wiredObject);
+			// }
+			else if (this.wiredObject instanceof JoinUpdateBootstrap) {
+				// call send for JOIN_UPDATE_BOOTSTRAP
+				this.peer.send((JoinUpdateBootstrap) this.wiredObject);
+			} else if (this.wiredObject instanceof JoinConfirmation) {
+				// call send for join confirmation
+				this.peer.send((JoinConfirmation) this.wiredObject);
+			} else if (wiredObject instanceof LeaveUpdateBootstrap) {
+				// call send for leave update to be sent to the bootstrap node
+				this.peer.send((LeaveUpdateBootstrap) wiredObject);
+			}
+			 else if(wiredObject instanceof LeaveUpdateNeighbours){
+			 //call send for leave update to be sent to the neighbours
+				 this.peer.send((LeaveUpdateNeighbours)wiredObject);
+			 }
+			else if (wiredObject instanceof WiredZoneTransfer) {
+				// call send for transferring zone when node is leaving
+				this.peer.send((WiredZoneTransfer) wiredObject);
+			}
+			// else if(wiredObject instanceof TakeoverUpdate){
+			// //call send for updating neighbours about the change of state of current peer
+			// after taking over
+			// send((TakeoverUpdate)wiredObject);
+			// }
+			// else if(wiredObject instanceof TakeoverConfirmation){
+			// //call send for sending takeoverConfirmation back to the leaving node
+			// send((TakeoverConfirmation)wiredObject);
+			// }
+			// else if(wiredObject instanceof WiredViewActivePeersRequest){
+			// //call send for sending WiredViewActivePeersRequest to the bootstrap node
+			// send((WiredViewActivePeersRequest)wiredObject);
+			// }
+			// else if(wiredObject instanceof WiredView){
+			// //call send for sending WiredView object to all the nodes in the network
+			// send((WiredView)wiredObject);
+			// }
+			// else if(wiredObject instanceof WiredSuccess){
+			// //call send for success and failure
+			// send((WiredSuccess)wiredObject);
+			// }
+			// else if(wiredObject instanceof WiredFailure){
+			// //call send for success and failure
+			// send((WiredFailure)wiredObject);
+			// }
+		}
+
 	}
-	
-	
-	
-	@Override
-	public void run() throws Continuation {
-		// TODO Auto-generated method stub
-		if (this.wiredObject instanceof WiredJoin) {
-			// call send for JOIN
-			this.peer.send((WiredJoin) this.wiredObject);
-		}
-		//		else if(wiredObject instanceof WiredInsert){
-		//			//call send for INSERT
-		//			send((WiredInsert)wiredObject);
-		//		}
-		//		else if(wiredObject instanceof WiredSearch){
-		//			//call send for SEARCH
-		//			send((WiredSearch)wiredObject);
-		//		}
-		else if (wiredObject instanceof JoinUpdateNeighbours) {
-			// call send for JOIN_UPDATE
-			this.peer.send((JoinUpdateNeighbours) this.wiredObject);
-		}
-		//		else if(wiredObject instanceof TemporaryZoneReleaseUpdateNeighbours){
-		//			//call send for Temporary release of node udpate to the neighbours
-		//			send((TemporaryZoneReleaseUpdateNeighbours)wiredObject);
-		//		}
-		else if (this.wiredObject instanceof JoinUpdateBootstrap) {
-			// call send for JOIN_UPDATE_BOOTSTRAP
-			this.peer.send((JoinUpdateBootstrap) this.wiredObject);
-		} else if (this.wiredObject instanceof JoinConfirmation) {
-			// call send for join confirmation
-			this.peer.send((JoinConfirmation) this.wiredObject);
-		}
-		//		else if(wiredObject instanceof LeaveUpdateBootstrap){
-		//			//call send for leave update to be sent to the bootstrap node
-		//			send((LeaveUpdateBootstrap)wiredObject);
-		//		}
-		//		else if(wiredObject instanceof LeaveUpdateNeighbours){
-		//			//call send for leave update to be sent to the neighbours
-		//			send((LeaveUpdateNeighbours)wiredObject);
-		//		}
-		//		else if(wiredObject instanceof WiredZoneTransfer){
-		//			//call send for transferring zone when node is leaving
-		//			send((WiredZoneTransfer)wiredObject);
-		//		}
-		//		else if(wiredObject instanceof TakeoverUpdate){
-		//			//call send for updating neighbours about the change of state of current peer after taking over
-		//			send((TakeoverUpdate)wiredObject);
-		//		}
-		//		else if(wiredObject instanceof TakeoverConfirmation){
-		//			//call send for sending takeoverConfirmation back to the leaving node
-		//			send((TakeoverConfirmation)wiredObject);
-		//		}
-		//		else if(wiredObject instanceof WiredViewActivePeersRequest){
-		//			//call send for sending WiredViewActivePeersRequest to the bootstrap node
-		//			send((WiredViewActivePeersRequest)wiredObject);
-		//		}
-		//		else if(wiredObject instanceof WiredView){
-		//			//call send for sending WiredView object to all the nodes in the network
-		//			send((WiredView)wiredObject);
-		//		}
-		//		else if(wiredObject instanceof WiredSuccess){
-		//			//call send for success and failure
-		//			send((WiredSuccess)wiredObject);
-		//		}
-		//		else if(wiredObject instanceof WiredFailure){
-		//			//call send for success and failure
-		//			send((WiredFailure)wiredObject);
-		//		}
-	}
-	
-	
-}
-	
-	
-	
-	 
-	
+
 	@Override
 	public void send(Object wiredObject) {
 		// TODO Auto-generated method stub
-		
+
 //		System.out.println(this.macAddress + " sendMessage");
 
-		
-		
 		AppJava.Runnable worker = new RevisedSend(wiredObject, this);
 		AppJava.Runnable workerEntity = (AppJava.Runnable) JistAPI.proxy(worker, AppJava.Runnable.class);
 		Thread thread = new Thread(workerEntity);
@@ -2390,13 +2384,7 @@ public static class RevisedSend implements AppJava.Runnable{
 		// this.localAddr);
 
 		thread.start();
-		
-		
-		
-		
-		
-		
-		
+
 //		if (wiredObject instanceof WiredJoin) {
 //			// call send for JOIN
 //			send((WiredJoin) wiredObject);
@@ -2432,10 +2420,10 @@ public static class RevisedSend implements AppJava.Runnable{
 //		//			//call send for leave update to be sent to the neighbours
 //		//			send((LeaveUpdateNeighbours)wiredObject);
 //		//		}
-//		//		else if(wiredObject instanceof WiredZoneTransfer){
-//		//			//call send for transferring zone when node is leaving
-//		//			send((WiredZoneTransfer)wiredObject);
-//		//		}
+//				if(wiredObject instanceof WiredZoneTransfer){
+//					//call send for transferring zone when node is leaving
+//					send((WiredZoneTransfer)wiredObject);
+//				}
 //		//		else if(wiredObject instanceof TakeoverUpdate){
 //		//			//call send for updating neighbours about the change of state of current peer after taking over
 //		//			send((TakeoverUpdate)wiredObject);
@@ -2463,7 +2451,6 @@ public static class RevisedSend implements AppJava.Runnable{
 
 	}
 
-	
 	public void bla(Object wiredObject) {
 
 //		System.out.println(this.macAddress + " sendMessage");
@@ -2594,9 +2581,9 @@ public static class RevisedSend implements AppJava.Runnable{
 				// }
 				// connection established
 				// serializing wiredJoin to Bootstrap node
-				//				objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-				//				objectOutputStream.writeObject(wiredJoin);
-				//				objectOutputStream.flush();
+				// objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+				// objectOutputStream.writeObject(wiredJoin);
+				// objectOutputStream.flush();
 
 			} else if (wiredJoin.getNumberOfHops() == 1) {
 				n = 0;
@@ -2636,18 +2623,16 @@ public static class RevisedSend implements AppJava.Runnable{
 				}
 				// }
 				// serializing wiredJoin from Bootstrap node to new node
-				//				objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-				//				objectOutputStream.writeObject(wiredJoin);
-				//				objectOutputStream.flush();
+				// objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+				// objectOutputStream.writeObject(wiredJoin);
+				// objectOutputStream.flush();
 
 			} else {
 				n = 0;
 				// while(socket == null){
 				// trying to connect every 2 seconds until connection us established
-				
+
 				NetAddress ipDest = new NetAddress(wiredJoin.getIpAddressToRoute());
-
-
 
 				NetMessage.Ip ipMsg = new NetMessage.Ip(wiredJoin, localAddr, ipDest, Constants.NET_PROTOCOL_CAN,
 						Constants.NET_PRIORITY_NORMAL, Constants.TTL_DEFAULT);
@@ -2655,8 +2640,6 @@ public static class RevisedSend implements AppJava.Runnable{
 //				System.out.println("(3)-" + this.macAddress + " enviando wiredJoin para "
 //						+ wiredJoin.getMacAddressToRoute() + " " + System.currentTimeMillis()+"Solicitando entrada em "+"("+wiredJoin.getRandomCoordinate()+")");
 				this.netEntity.send(ipMsg, Constants.NET_INTERFACE_DEFAULT, wiredJoin.getMacAddressToRoute());
-
-				 
 
 				try {
 					// socket = new Socket(wiredJoin.getHostnameToRoute(), 49161);
@@ -2680,9 +2663,9 @@ public static class RevisedSend implements AppJava.Runnable{
 					}
 				}
 				// serializing wiredJoin from new node to peer
-				//					objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-				//					objectOutputStream.writeObject(wiredJoin);
-				//					objectOutputStream.flush();
+				// objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+				// objectOutputStream.writeObject(wiredJoin);
+				// objectOutputStream.flush();
 				// }
 
 			}
@@ -2690,24 +2673,24 @@ public static class RevisedSend implements AppJava.Runnable{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		//		finally{
-		//			if(socket != null){
-		//				try{
-		//					socket.close();
-		//				}
-		//				catch(IOException e){
-		//					e.printStackTrace();
-		//				}
-		//			}
-		//			if(objectOutputStream != null){
-		//				try{
-		//					objectOutputStream.close();
-		//				}
-		//				catch(IOException e){
-		//					e.printStackTrace();
-		//				}
-		//			}
-		//		}
+		// finally{
+		// if(socket != null){
+		// try{
+		// socket.close();
+		// }
+		// catch(IOException e){
+		// e.printStackTrace();
+		// }
+		// }
+		// if(objectOutputStream != null){
+		// try{
+		// objectOutputStream.close();
+		// }
+		// catch(IOException e){
+		// e.printStackTrace();
+		// }
+		// }
+		// }
 	}
 
 	private void send(JoinUpdateBootstrap joinUpdateBootstrap) {
@@ -2748,9 +2731,9 @@ public static class RevisedSend implements AppJava.Runnable{
 			}
 			// }
 			// serializing joinUpdateBootstrap to Bootstrap node
-			//			objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-			//			objectOutputStream.writeObject(joinUpdateBootstrap);
-			//			objectOutputStream.flush();
+			// objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+			// objectOutputStream.writeObject(joinUpdateBootstrap);
+			// objectOutputStream.flush();
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -2770,8 +2753,7 @@ public static class RevisedSend implements AppJava.Runnable{
 //		System.out.println("(YY)"+this.macAddress + " enviando joinConfirmation para " + joinConfirmation.getSourceMaccAddres()
 //		+ " " + System.currentTimeMillis());
 		this.netEntity.send(ipMsg, Constants.NET_INTERFACE_DEFAULT, joinConfirmation.getSourceMaccAddres());
- 
-		
+
 		try {
 			// while(socket == null){
 			// trying to connect every 2 seconds until connection is established
@@ -2797,9 +2779,9 @@ public static class RevisedSend implements AppJava.Runnable{
 			}
 			// }
 			// serializing joinConfirmation from peer to new joining node
-			//			objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-			//			objectOutputStream.writeObject(joinConfirmation);
-			//			objectOutputStream.flush();
+			// objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+			// objectOutputStream.writeObject(joinConfirmation);
+			// objectOutputStream.flush();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -2822,7 +2804,6 @@ public static class RevisedSend implements AppJava.Runnable{
 //				+ wiredJoinUpdate.getNeighbourToRoute().getMacAddress() + " " + System.currentTimeMillis());
 		this.netEntity.send(ipMsg, Constants.NET_INTERFACE_DEFAULT,
 				wiredJoinUpdate.getNeighbourToRoute().getMacAddress());
-
 
 		try {
 			// while(socket == null){
@@ -2851,31 +2832,303 @@ public static class RevisedSend implements AppJava.Runnable{
 			// }
 			// serializing wiredJoinUpdate from affected neighbour (whose zone has gotten
 			// split) to its neighbours
-			//			objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-			//			objectOutputStream.writeObject(wiredJoinUpdate);
-			//			objectOutputStream.flush();
+			// objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+			// objectOutputStream.writeObject(wiredJoinUpdate);
+			// objectOutputStream.flush();
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		//		finally{
-		//			if(socket != null){
-		//				try{
-		//					socket.close();
-		//				}
-		//				catch(IOException e){
-		//					e.printStackTrace();
-		//				}
-		//			}
-		//			if(objectOutputStream != null){
-		//				try{
-		//					objectOutputStream.close();
-		//				}
-		//				catch(IOException e){
-		//					e.printStackTrace();
-		//				}
-		//			}
-		//		}
+		// finally{
+		// if(socket != null){
+		// try{
+		// socket.close();
+		// }
+		// catch(IOException e){
+		// e.printStackTrace();
+		// }
+		// }
+		// if(objectOutputStream != null){
+		// try{
+		// objectOutputStream.close();
+		// }
+		// catch(IOException e){
+		// e.printStackTrace();
+		// }
+		// }
+		// }
+	}
+
+	private void send(LeaveUpdateBootstrap leaveUpdateBootstrap) {
+
+		int n = 0;
+
+		NetAddress ipDest = new NetAddress(this.bootstrapIp);
+
+		NetMessage.Ip ipMsg = new NetMessage.Ip(leaveUpdateBootstrap, localAddr, ipDest, Constants.NET_PROTOCOL_CAN,
+				Constants.NET_PRIORITY_NORMAL, Constants.TTL_DEFAULT);
+
+//		System.out.println("(X-)" + this.macAddress + " enviando wiredJoinUpdate para "
+//				+ wiredJoinUpdate.getNeighbourToRoute().getMacAddress() + " " + System.currentTimeMillis());
+		this.netEntity.send(ipMsg, Constants.NET_INTERFACE_DEFAULT, BOOTSTRAP_MACADDRESS);
+
+		try {
+			// while(socket == null){
+			// trying to connect every 2 seconds until connection is established
+
+			try {
+				// socket = new Socket(Peer.getBootstrapHostname(), 49161);
+			} catch (Exception e) {
+				try {
+					n++;
+					if (n == 3) {
+						PeerInfo sourceInfo = new PeerInfo();
+						sourceInfo.setHostName(leaveUpdateBootstrap.getHostname());
+						sourceInfo.setIpAddress(leaveUpdateBootstrap.getIpAddress());
+						String statusMessage = "FAILURE : Hostname does not exist in the netork.\n";
+						WiredFailure connectionFailure = new WiredFailure(CommandType.LEAVE, sourceInfo, statusMessage);
+						Utils.printErrorMessage(connectionFailure.toString());
+
+						Peer.possibleCommands.put(CommandType.INSERT, true);
+						Peer.possibleCommands.put(CommandType.SEARCH, true);
+						Peer.possibleCommands.put(CommandType.VIEW, true);
+						Peer.possibleCommands.put(CommandType.JOIN, false);
+						Peer.possibleCommands.put(CommandType.LEAVE, true);
+
+						;
+					}
+					Utils.printErrorMessage("Couldn't connect. Trying again...");
+					//Thread.sleep(2000);
+				} catch ( Exception ie) {
+					ie.printStackTrace();
+				}
+			}
+			// }
+			// serializing leaveUpdateBootstrap to Bootstrap node from leaving peer
+//			objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+//			objectOutputStream.writeObject(leaveUpdateBootstrap);
+//			objectOutputStream.flush();
+		} catch (Exception e) {
+			System.out.println("LeaveUpdateBootstrap Exeption");
+		}
+
+	}
+
+	private void send(WiredZoneTransfer wiredZoneTransfer) {
+
+		int n = 0;
+		
+		NetAddress ipDest = new NetAddress(wiredZoneTransfer.getNeighbourToRoute().getIpAddress());
+
+		NetMessage.Ip ipMsg = new NetMessage.Ip(wiredZoneTransfer, localAddr, ipDest, Constants.NET_PROTOCOL_CAN,
+				Constants.NET_PRIORITY_NORMAL, Constants.TTL_DEFAULT);
+
+//		System.out.println("(X-)" + this.macAddress + " enviando wiredJoinUpdate para "
+//				+ wiredJoinUpdate.getNeighbourToRoute().getMacAddress() + " " + System.currentTimeMillis());
+		this.netEntity.send(ipMsg, Constants.NET_INTERFACE_DEFAULT, wiredZoneTransfer.getNeighbourToRoute().getMacAddress());
+		
+		
+		try {
+//			while(socket == null){
+			try {
+				// trying to connect every 2 seconds until connection is established
+				// socket = new Socket(wiredZoneTransfer.getNeighbourToRoute().getHostname(),
+				// 49161);
+			} catch (Exception e) {
+				try {
+					n++;
+					if (n == 3) {
+						PeerInfo sourceInfo = new PeerInfo();
+						sourceInfo.setHostName(wiredZoneTransfer.getNeighbourToRoute().getHostname());
+						sourceInfo.setIpAddress(wiredZoneTransfer.getNeighbourToRoute().getIpAddress());
+						String statusMessage = "FAILURE : Hostname does not exist in the netork.\n";
+						WiredFailure connectionFailure = new WiredFailure(CommandType.LEAVE, sourceInfo, statusMessage);
+						Utils.printErrorMessage(connectionFailure.toString());
+						// break;
+					}
+					Utils.printErrorMessage("Couldn't connect. Trying again...");
+					//Thread.sleep(2000);
+				} catch ( Exception ie) {
+					ie.printStackTrace();
+				}
+
+				// }
+			}
+			// connection established
+			// serializing wiredZoneTransfer to the neighbour
+//			objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+//			objectOutputStream.writeObject(wiredZoneTransfer);
+//			objectOutputStream.flush();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+//		finally{
+//			if(socket != null){
+//				try{
+//					socket.close();
+//				}
+//				catch(IOException e){
+//					e.printStackTrace();
+//				}
+//			}
+//			if(objectOutputStream != null){
+//				try{
+//					objectOutputStream.close();
+//				}
+//				catch(IOException e){
+//					e.printStackTrace();
+//				}
+//			}
+//		}
+
+	}
+
+	/*
+	 * send TakeoverUpdate message to the neighbours
+	 */
+	private void send(TakeoverUpdate takeoverUpdate) {
+		int n = 0;
+		
+		
+		NetAddress ipDest = new NetAddress(takeoverUpdate.getDestinationIpAddress());
+
+		NetMessage.Ip ipMsg = new NetMessage.Ip(takeoverUpdate, localAddr, ipDest, Constants.NET_PROTOCOL_CAN,
+				Constants.NET_PRIORITY_NORMAL, Constants.TTL_DEFAULT);
+
+//		System.out.println("(X-)" + this.macAddress + " enviando wiredJoinUpdate para "
+//				+ wiredJoinUpdate.getNeighbourToRoute().getMacAddress() + " " + System.currentTimeMillis());
+		this.netEntity.send(ipMsg, Constants.NET_INTERFACE_DEFAULT, takeoverUpdate.getDestinationMacAddress());
+		
+		
+		
+		try {
+			// while(socket == null){
+			try {
+				// trying to connect every 2 seconds until connection is established
+				// socket = new Socket(takeoverUpdate.getDestinationHostname(), 49161);
+			} catch (Exception e) {
+				try {
+					n++;
+					if (n == 3) {
+						PeerInfo sourceInfo = new PeerInfo();
+						sourceInfo.setHostName(takeoverUpdate.getUpdatedHostname());
+						sourceInfo.setIpAddress(takeoverUpdate.getUpdatedIpAddress());
+						String statusMessage = "FAILURE : Hostname does not exist in the netork.\n";
+						WiredFailure connectionFailure = new WiredFailure(CommandType.LEAVE, sourceInfo, statusMessage);
+						Utils.printErrorMessage(connectionFailure.toString());
+						// break;
+					}
+					Utils.printErrorMessage("Couldn't connect. Trying again...");
+					//Thread.sleep(2000);
+				} catch ( Exception ie) {
+					ie.printStackTrace();
+				}
+
+				// }
+			}
+			// connection established
+			// serializing wiredZoneTransfer to the neighbour
+//			objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+//			objectOutputStream.writeObject(takeoverUpdate);
+//			objectOutputStream.flush();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+//		finally{
+//			if(socket != null){
+//				try{
+//					socket.close();
+//				}
+//				catch(IOException e){
+//					e.printStackTrace();
+//				}
+//			}
+//			if(objectOutputStream != null){
+//				try{
+//					objectOutputStream.close();
+//				}
+//				catch(IOException e){
+//					e.printStackTrace();
+//				}
+//			}
+//		}
+
+	}
+	
+	
+	private void send(LeaveUpdateNeighbours leaveUpdateNeighbours){
+
+		int n = 0;
+
+		NetAddress ipDest = new NetAddress(leaveUpdateNeighbours.getDestinationIpAddress());
+
+		NetMessage.Ip ipMsg = new NetMessage.Ip(leaveUpdateNeighbours, localAddr, ipDest, Constants.NET_PROTOCOL_CAN,
+				Constants.NET_PRIORITY_NORMAL, Constants.TTL_DEFAULT);
+
+//		System.out.println("(X-)" + this.macAddress + " enviando wiredJoinUpdate para "
+//				+ wiredJoinUpdate.getNeighbourToRoute().getMacAddress() + " " + System.currentTimeMillis());
+		this.netEntity.send(ipMsg, Constants.NET_INTERFACE_DEFAULT, leaveUpdateNeighbours.getDestinationMacAddress());
+				
+		
+		try{
+			//while(socket == null){
+				//trying to connect every 2 seconds until connection is established
+				try{
+					//socket = new Socket(leaveUpdateNeighbours.getDestinationHostName(), 49161);
+				}
+				catch( Exception e){
+					try{
+						n++;
+						if(n == 3){
+							PeerInfo sourceInfo = new PeerInfo();
+							sourceInfo.setHostName(leaveUpdateNeighbours.getDestinationHostName());
+							sourceInfo.setIpAddress(leaveUpdateNeighbours.getDestinationIpAddress());
+							String statusMessage = "FAILURE : Hostname does not exist in the netork.\n";
+							WiredFailure connectionFailure = new WiredFailure(CommandType.LEAVE, sourceInfo, statusMessage);
+							Utils.printErrorMessage(connectionFailure.toString());
+
+							Peer.possibleCommands.put(CommandType.INSERT, true);
+							Peer.possibleCommands.put(CommandType.SEARCH, true);
+							Peer.possibleCommands.put(CommandType.VIEW, true);
+							Peer.possibleCommands.put(CommandType.JOIN, false);
+							Peer.possibleCommands.put(CommandType.LEAVE, true);
+
+							//break;
+						}
+						Utils.printErrorMessage("Couldn't connect. Trying again...");
+						//Thread.sleep(2000);
+					}
+					catch( Exception ie){
+						ie.printStackTrace();
+					}
+				//}
+			}
+			//serializing leaveUpdateNeighbours to the neighbours from the leaving node
+//			objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+//			objectOutputStream.writeObject(leaveUpdateNeighbours);
+//			objectOutputStream.flush();
+		}
+		catch( Exception e){
+			e.printStackTrace();
+		}
+//		finally{
+//			if(socket != null){
+//				try{
+//					socket.close();
+//				}
+//				catch(IOException e){
+//					e.printStackTrace();
+//				}
+//			}
+//			if(objectOutputStream != null){
+//				try{
+//					objectOutputStream.close();
+//				}
+//				catch(IOException e){
+//					e.printStackTrace();
+//				}
+//			}
+//		}
 	}
 
 	@Override
@@ -2883,31 +3136,35 @@ public static class RevisedSend implements AppJava.Runnable{
 		// TODO Auto-generated method stub
 		// System.out.println("SEEEEEND");
 		//
-		//		WiredJoin wiredJoin = new WiredJoin(this.getHostName(), localAddr.getIP(), this.getBootstrapHostname(),
-		//				this.getBootstrapIp(), new RouteInformation());
-		//		// this.sendMessage(wiredJoin);
+		// WiredJoin wiredJoin = new WiredJoin(this.getHostName(), localAddr.getIP(),
+		// this.getBootstrapHostname(),
+		// this.getBootstrapIp(), new RouteInformation());
+		// // this.sendMessage(wiredJoin);
 		//
-		//		NetAddress ipDest = new NetAddress(this.getBootstrapIp());
+		// NetAddress ipDest = new NetAddress(this.getBootstrapIp());
 		//
-		//		NetMessage.Ip ipMsg = new NetMessage.Ip(wiredJoin, localAddr, ipDest, Constants.NET_PROTOCOL_CAN,
-		//				Constants.NET_PRIORITY_NORMAL, Constants.TTL_DEFAULT);
-		//		
-		//		 
+		// NetMessage.Ip ipMsg = new NetMessage.Ip(wiredJoin, localAddr, ipDest,
+		// Constants.NET_PROTOCOL_CAN,
+		// Constants.NET_PRIORITY_NORMAL, Constants.TTL_DEFAULT);
 		//
-		//		//this.netEntity.send(ipMsg, ipDest, Constants.NET_PROTOCOL_CAN,Constants.NET_PRIORITY_NORMAL,Constants.TTL_DEFAULT);
-		//		
-		//		 this.netEntity.send(ipMsg, Constants.NET_INTERFACE_DEFAULT, BOOTSTRAP_MACADDRESS);
-		//		
+		//
+		//
+		// //this.netEntity.send(ipMsg, ipDest,
+		// Constants.NET_PROTOCOL_CAN,Constants.NET_PRIORITY_NORMAL,Constants.TTL_DEFAULT);
+		//
+		// this.netEntity.send(ipMsg, Constants.NET_INTERFACE_DEFAULT,
+		// BOOTSTRAP_MACADDRESS);
+		//
 
 	}
 
-	//	public interface ServerInterface extends JistAPI.Proxiable {
-	//		/** Starts the server. */
-	//		void run();
+	// public interface ServerInterface extends JistAPI.Proxiable {
+	// /** Starts the server. */
+	// void run();
 	//
-	//	}
-	//	
-	
+	// }
+	//
+
 	public static class RevisedReceive implements AppJava.Runnable {
 		private Message msg;
 		private NetAddress src;
@@ -2936,7 +3193,7 @@ public static class RevisedSend implements AppJava.Runnable{
 		public void run() {
 			// TODO Auto-generated method stub
 
-			//			System.out.println("AKI na thread at "+JistAPI.getTime());
+			// System.out.println("AKI na thread at "+JistAPI.getTime());
 
 			Object wiredObject = msg;
 
@@ -2960,32 +3217,32 @@ public static class RevisedSend implements AppJava.Runnable{
 
 //				System.out.println(this.peer.macAddress + " recebendo joinUpdateNeighbours de "
 //						+ joinUpdateNeighbours.getActivePeerMacAddress() + " " + System.currentTimeMillis());
-				
+
 				this.peer.updateRoutingTableForNewNode(joinUpdateNeighbours);
 			} else if (wiredObject instanceof TemporaryZoneReleaseUpdateNeighbours) {
 
 				TemporaryZoneReleaseUpdateNeighbours temporaryZoneReleaseUpdateNeighbours = (TemporaryZoneReleaseUpdateNeighbours) wiredObject;
-				
+
 //				System.out.println(this.peer.macAddress + " recebendo temporaryZoneReleaseUpdateNeighbours de "
 //						+ System.currentTimeMillis());
-				
+
 				this.peer.updateTempZoneRelease(temporaryZoneReleaseUpdateNeighbours);
 			} else if (wiredObject instanceof JoinUpdateBootstrap) {
 
 				JoinUpdateBootstrap joinUpdateBootstrap = (JoinUpdateBootstrap) wiredObject;
-				
+
 //				System.out.println(
 //						this.peer.macAddress + " recebendo joinUpdateBootstrap de " + System.currentTimeMillis());
-				
+
 				this.peer.updateActivePeers(joinUpdateBootstrap);
 
 			} else if (wiredObject instanceof JoinConfirmation) {
-				
+
 				JoinConfirmation joinConfirmation = (JoinConfirmation) wiredObject;
-				
+
 //				System.out.println(this.peer.macAddress + " recebendo joinConfirmation de "
 //						+ joinConfirmation.getSourceMaccAddres() +" "+ System.currentTimeMillis());
-				
+
 				this.peer.initializeState(joinConfirmation);
 			} else if (wiredObject instanceof LeaveUpdateBootstrap) {
 
@@ -3019,38 +3276,38 @@ public static class RevisedSend implements AppJava.Runnable{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				//			} else if (wiredObject instanceof WiredView) {
+				// } else if (wiredObject instanceof WiredView) {
 				//
-				//				WiredView view = (WiredView) wiredObject;
-				//				if (view.getViewCategory().equals(ViewCategory.MULTI)) {
-				//					if (view.getSourceHostname().equals(this.peer.getHostName())) {
-				//						this.peer.peerInformation.add(view.getPeerInformation());
-				//						this.peer.peerviewsReturned++;
-				//						StringBuilder builder = new StringBuilder("");
-				//						if (this.peer.viewsReturned == totalViewsRequired) {
+				// WiredView view = (WiredView) wiredObject;
+				// if (view.getViewCategory().equals(ViewCategory.MULTI)) {
+				// if (view.getSourceHostname().equals(this.peer.getHostName())) {
+				// this.peer.peerInformation.add(view.getPeerInformation());
+				// this.peer.peerviewsReturned++;
+				// StringBuilder builder = new StringBuilder("");
+				// if (this.peer.viewsReturned == totalViewsRequired) {
 				//
-				//							for (String peerInfo : peerInformation) {
-				//								builder.append(peerInfo);
-				//							}
+				// for (String peerInfo : peerInformation) {
+				// builder.append(peerInfo);
+				// }
 				//
-				//							// adding current peer's information to builder
-				//							builder.append(this.toString());
+				// // adding current peer's information to builder
+				// builder.append(this.toString());
 				//
-				//							Utils.printToConsole(builder.toString());
-				//							totalViewsRequired = 0;
-				//							viewsReturned = 1;
-				//							peerInformation.clear();
-				//						}
-				//					} else {
-				//						this.retrievePeerInformation(view);
-				//					}
-				//				} else {
-				//					if (this.getHostName().equals(view.getSourceHostname())) {
-				//						Utils.printToConsole(view.getPeerInformation());
-				//					} else {
-				//						this.retrievePeerInformation(view);
-				//					}
-				//				}
+				// Utils.printToConsole(builder.toString());
+				// totalViewsRequired = 0;
+				// viewsReturned = 1;
+				// peerInformation.clear();
+				// }
+				// } else {
+				// this.retrievePeerInformation(view);
+				// }
+				// } else {
+				// if (this.getHostName().equals(view.getSourceHostname())) {
+				// Utils.printToConsole(view.getPeerInformation());
+				// } else {
+				// this.retrievePeerInformation(view);
+				// }
+				// }
 
 			} else if (wiredObject instanceof WiredSuccess) {
 
@@ -3066,24 +3323,10 @@ public static class RevisedSend implements AppJava.Runnable{
 
 	}
 
-//	public static class worker implements AppJava.Runnable {
-//		private int threadid, count;
-//
-//		public worker(int id, int count) {
-//			this.threadid = id;
-//			this.count = count;
-//		}
-//
-//		public void run() {
-//			for (int i = 0; i < count; i++) {
-//				try {
-//					// Thread.sleep(50);
-//				} catch (Exception e) {
-//				}
-//				System.out.println("t=" + JistAPI.getTime() + " run " + threadid + ": " + i);
-//			}
-//		}
-//	}
+	 
+	public void eita() {
+		System.out.println("EITAAA");
+	}
 
 	@Override
 	public void receive(Message msg, NetAddress src, MacAddress lastHop, byte macId, NetAddress dst, byte priority,
@@ -3091,10 +3334,10 @@ public static class RevisedSend implements AppJava.Runnable{
 		java.util.Date d = new Date();
 		// if(src.toString().equals("0.0.0.3"))
 		// {
-		//		 System.out.println("Client " + src + " JOINED at= " + this.localAddr);
+		// System.out.println("Client " + src + " JOINED at= " + this.localAddr);
 		// }
 
-		 //Thread thread = new Thread() ;
+		// Thread thread = new Thread() ;
 
 		// note: Java threads call runnable objects;
 		// SWANS simulation time threads call runnable entities
@@ -3106,8 +3349,9 @@ public static class RevisedSend implements AppJava.Runnable{
 
 		thread.start();
 
-		//		RevisedReceive srv = new RevisedReceive(msg, src, lastHop, macId, dst, priority, ttl, this);
-		//		srv.run(); 
+		// RevisedReceive srv = new RevisedReceive(msg, src, lastHop, macId, dst,
+		// priority, ttl, this);
+		// srv.run();
 
 //				Object wiredObject = msg;
 //		
@@ -3255,5 +3499,4 @@ public static class RevisedSend implements AppJava.Runnable{
 		totalViewsRequired = n;
 	}
 
-	
 }

@@ -55,6 +55,11 @@ import com.ziclix.python.sql.util.Queue;
 import csvMaker.*;
 
 import com.can.nodes.Peer;
+import com.can.nodes.Peer.CommandType;
+import com.can.serializables.RouteInformation;
+import com.can.serializables.WiredInsert;
+import com.can.serializables.WiredSearch;
+import com.can.utilities.Utils;
 
 //import com.can.nodes.Simulation;
 /**
@@ -98,6 +103,7 @@ public class CBR {
 
 	private static Pairs pair = new Pairs();
 
+	private static ArrayList canPeers = new ArrayList();
 	/**
 	 * The interface for server nodes in the simulation.
 	 */
@@ -265,6 +271,7 @@ public class CBR {
 
 		/** {@inheritDoc} */
 		public void run() {
+			this.CAN.leave();
 //			MacAddress macBootstrap = new MacAddress(1);
 //			if(CAN.getMacAddress().equals(macBootstrap))
 //			{
@@ -505,7 +512,7 @@ public class CBR {
 	private static void buildField(CommandLineOptions opts) throws InterruptedException, UnknownHostException {
 		ArrayList servers = new ArrayList();
 		ArrayList clients = new ArrayList();
-		ArrayList canPeers = new ArrayList();
+		
 		
 		
 		// initialize field
@@ -624,7 +631,7 @@ public class CBR {
 //					
 //					}
 //					
-//					canPeers.add(can);
+  				//canPeers.add(CANAtualPeer);
 				
 					break;
 				} catch (Exception e) {
@@ -719,9 +726,12 @@ public class CBR {
 //					}
 //
 //				} else {
-//					Client client = new Client(udp.getProxy(), opts.transmissions, address,
-//							new NetAddress(opts.nodes - i + 1),(Peer)canPeers.get(i-1));
-//					clients.add(client.getProxy());
+			if (i == 5) {
+				
+				Client client = new Client(udp.getProxy(), opts.transmissions, address,
+						new NetAddress(opts.nodes - i + 1),(Peer)canPeers.get(i-1));
+				clients.add(client.getProxy());
+			}
 				//}
 			
 			
@@ -736,9 +746,15 @@ public class CBR {
 			CANAtualPeer.startNodes();
 			
 			// JistAPI.sleep(1000000000);
+			
+			
+				 
 			}
 
 //		}
+		
+		
+		
 		
 		
 //
@@ -769,14 +785,118 @@ public class CBR {
 //		JistAPI.sleep(1);
 //		
 //		
-//		Iterator clientIter = clients.iterator();
-//		while (clientIter.hasNext())
-//			((ClientInterface) clientIter.next()).run();
-//			JistAPI.sleep(100);
+		Iterator clientIter = clients.iterator();
+		while (clientIter.hasNext())
+			((ClientInterface) clientIter.next()).run();
+			JistAPI.sleep(100);
 
 		// buildField
+		 
 	}
 
+	
+	
+	public static void canCommands() {
+		Scanner scanner = new Scanner(System.in);
+ 		while(true){
+ 
+			System.out.println("Please provide a command. The possible commands are :");
+			System.out.println("INSERT");
+			System.out.println("VIEW");
+			System.out.println("LEAVE");
+			System.out.println("SEARCH");
+			
+			 			
+			String[] input = scanner.nextLine().split(" ");
+			int option = 666;
+			
+			if (input[0].toUpperCase() == "LEAVE") {
+				option = 2;
+			}
+			
+			
+			switch (option) {
+			case 0:
+//				if(possibleCommands.get(CommandType.INSERT) == false){
+//
+//					Utils.printToConsole("Illegal command");
+//				}
+//				else{
+//					if(input.length != 2){
+//						Utils.printErrorMessage("Wrong format on INSERT command.");
+//						Utils.printToConsole("Correct format : INSERT "+formats.get(CommandType.INSERT));
+//					}
+//					else{
+//						String filename = input[1];
+//						WiredInsert wiredInsert = new WiredInsert(CommandType.INSERT, filename, null, null, new RouteInformation());
+//						this.insert(wiredInsert);
+//					}
+				//}
+				//Thread.sleep(500);
+				break;
+			case 3:
+//				if(possibleCommands.get(CommandType.SEARCH) == false){
+//
+//					Utils.printToConsole("Illegal command.");
+//				}
+//				else{
+//					if(input.length != 2){
+//						Utils.printErrorMessage("Wrong format for SEARCH command.");
+//						Utils.printToConsole("Correct format : SEARCH "+formats.get(CommandType.SEARCH));
+//					}
+//					else{
+//						String filename = input[1];
+//						WiredSearch wiredSearch = new WiredSearch(CommandType.SEARCH, filename , null, null, new RouteInformation());
+//						this.search(wiredSearch);
+//					}
+//				}
+//				//Thread.sleep(500);
+//				break;
+			case 2:
+				System.out.println();
+				System.out.println("HERE at LEAVE ");
+				 
+					if(input.length > 2){
+						Utils.printErrorMessage("Wrong format for LEAVE command");
+						Utils.printToConsole("Correct format : LEAVE 5");
+					}
+					else{
+						//this.canPeers.get(input[1]);
+						int nodeMac = Integer.parseInt(input[1]);
+						System.out.println("O Nó a ser expulso é: "+nodeMac);
+						System.out.println(""+canPeers.get(nodeMac));
+				}
+
+//				Thread.sleep(500);
+				break;
+			case 1:
+				
+//				if(possibleCommands.get(CommandType.VIEW) == false){
+//
+//					Utils.printToConsole("Illegal command");
+//				}
+//				else{
+//					if(input.length == 2){
+//						this.view(input[1].toString());
+//					}
+//					else if(input.length == 1){
+//						this.view(null);
+//					}
+//					else{
+//						Utils.printErrorMessage("Wrong format for VIEW command");
+//						Utils.printToConsole("Correct format : "+formats.get(CommandType.VIEW));
+//					}
+//				}
+//				//Thread.sleep(500);
+//				break;
+
+
+			default:
+				Utils.printErrorMessage("Please enter a valid command.");
+			}
+
+		}
+	}
  
 	/**
 	 * Starts the CBR simulation.
@@ -802,6 +922,9 @@ public class CBR {
 				
 				try {
 					buildField(options);
+					 
+					 
+					
 				} catch (UnknownHostException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

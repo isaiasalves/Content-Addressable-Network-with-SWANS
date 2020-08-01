@@ -14,11 +14,13 @@ public class TakeoverUpdate implements Serializable, Message, Cloneable {
 	private InetAddress updatedIpAddress;
 	private MacAddress updatedMacAddress;
 	private String destinationHostname;
+	private InetAddress destinationIpAddress;
+	private MacAddress destinationdMacAddress;
 	private Zone updatedZone;
 	private boolean isCompleteTakeover;
 
 	public TakeoverUpdate(String updatedNodeHostname, InetAddress updateNodeIpAddress, MacAddress updatedMacAddress,String destinationHostname,
-			Zone updatedZone, boolean isCompleteTakeover) {
+			Zone updatedZone, boolean isCompleteTakeover, InetAddress destinationIpAddress, MacAddress destinationdMacAddress) {
 
 		this.updatedHostname = updatedNodeHostname;
 		this.updatedIpAddress = updateNodeIpAddress;
@@ -26,6 +28,8 @@ public class TakeoverUpdate implements Serializable, Message, Cloneable {
 		this.updatedZone = updatedZone;
 		this.isCompleteTakeover = isCompleteTakeover;
 		this.updatedMacAddress = updatedMacAddress;
+		this.destinationIpAddress = destinationIpAddress;
+		this.destinationdMacAddress = destinationdMacAddress;
 	}
 
 	public String getUpdatedHostname() {
@@ -48,6 +52,14 @@ public class TakeoverUpdate implements Serializable, Message, Cloneable {
 		return this.destinationHostname;
 	}
 
+	public InetAddress getDestinationIpAddress() {
+		return this.destinationIpAddress;
+	}
+	
+	public MacAddress getDestinationMacAddress() {
+		return this.destinationdMacAddress;
+	}
+	
 	public boolean isCompleteTakeover(){
 
 		return this.isCompleteTakeover;

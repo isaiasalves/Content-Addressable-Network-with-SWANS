@@ -7,12 +7,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class PeerInfo implements Serializable{
+import jist.swans.mac.MacAddress;
+import jist.swans.misc.Message;
+
+public class PeerInfo implements Serializable, Message, Cloneable {
 
 	private static final long serialVersionUID = 1L;
 
 	private String hostname;
 	private InetAddress ipAddress;
+	private MacAddress macAddress;
 	private Zone zone;
 	private List<NeighbourInfo> neighbours = new ArrayList<NeighbourInfo>();
 	private HashSet<String> fileNames = new HashSet<String>();
@@ -22,6 +26,12 @@ public class PeerInfo implements Serializable{
 	}
 	public void setHostName(String hostname) {
 		this.hostname = hostname;
+	}
+	public void setMacAddress(MacAddress macAddress) {
+		this.macAddress = macAddress;
+	}
+	public MacAddress getMacAddress() {
+		return this.macAddress;
 	}
 	public InetAddress getIpAddress() {
 		return ipAddress;
@@ -75,6 +85,16 @@ public class PeerInfo implements Serializable{
 			builder.setLength(builder.length()-1);
 		}
 		return builder.toString();
+	}
+	@Override
+	public int getSize() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	@Override
+	public void getBytes(byte[] msg, int offset) {
+		// TODO Auto-generated method stub
+		
 	}
 
 
