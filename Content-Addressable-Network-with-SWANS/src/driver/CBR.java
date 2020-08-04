@@ -271,7 +271,14 @@ public class CBR {
 
 		/** {@inheritDoc} */
 		public void run() {
+			 
+		 
 			this.CAN.leave();
+			JistAPI.sleep(1000000000);
+			this.CAN.insert(null);
+			
+			
+			
 //			MacAddress macBootstrap = new MacAddress(1);
 //			if(CAN.getMacAddress().equals(macBootstrap))
 //			{

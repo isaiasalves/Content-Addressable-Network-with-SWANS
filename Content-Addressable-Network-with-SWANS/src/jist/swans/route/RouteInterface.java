@@ -359,7 +359,12 @@ public interface RouteInterface extends NetInterface.NetHandler, JistAPI.Proxiab
 	 void setPeerLimit(int peerLimit);
 	 
 	 
-	 void send (Object wiredObject);
+	 //void send (Object wiredObject);
+
+
+	 void sendThreaded(Object wiredObject);
+
+
   }
   //////////////////////////////////////////////////
   // DSR

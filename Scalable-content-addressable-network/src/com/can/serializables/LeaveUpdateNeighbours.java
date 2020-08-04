@@ -25,6 +25,7 @@ public class LeaveUpdateNeighbours implements Serializable,  Message, Cloneable 
 		this.destinationIpAddress = destinationIpAddress;
 		this.destinationHostName = destinationHostName;
 		this.neighbourTakingOver = neighbourTakingOver;
+		this.destinationMacAddress = destinationMacAddress;
 	}
 
 	public String getDestinationHostName() {

@@ -48,6 +48,10 @@ public class WiredZoneTransfer implements Serializable, Message, Cloneable {
 	public InetAddress getSourceIpAddress() {
 		return sourceIpAddress;
 	}
+	
+	public MacAddress getSourceMacAddress() {
+		return this.sourceMacAddress;
+	}
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;

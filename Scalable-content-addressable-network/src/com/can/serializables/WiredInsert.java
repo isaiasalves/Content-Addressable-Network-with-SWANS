@@ -4,7 +4,9 @@ import java.io.Serializable;
 
 import com.can.nodes.Peer.CommandType;
 
-public class WiredInsert implements Serializable {
+import jist.swans.misc.Message;
+
+public class WiredInsert implements Serializable, Message, Cloneable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -52,6 +54,18 @@ public class WiredInsert implements Serializable {
 	}
 	public void setRouteInformation(RouteInformation routeInformation) {
 		this.routeInformation = routeInformation;
+	}
+
+	@Override
+	public int getSize() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void getBytes(byte[] msg, int offset) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
