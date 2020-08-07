@@ -4,7 +4,9 @@ import java.io.Serializable;
 
 import com.can.nodes.Peer.CommandType;
 
-public class WiredSearch implements Serializable {
+import jist.swans.misc.Message;
+
+public class WiredSearch implements Serializable, Message, Cloneable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -65,6 +67,18 @@ public class WiredSearch implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	@Override
+	public int getSize() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void getBytes(byte[] msg, int offset) {
+		// TODO Auto-generated method stub
+		
 	}
 
 

@@ -104,6 +104,7 @@ public class CBR {
 	private static Pairs pair = new Pairs();
 
 	private static ArrayList canPeers = new ArrayList();
+
 	/**
 	 * The interface for server nodes in the simulation.
 	 */
@@ -237,7 +238,7 @@ public class CBR {
 		private NetAddress serverAddr;
 		/** number of outgoing transmissions. */
 		private int transmissions;
-		
+
 		private Peer CAN;
 
 		/**
@@ -271,14 +272,14 @@ public class CBR {
 
 		/** {@inheritDoc} */
 		public void run() {
-			 
-		 
-			this.CAN.leave();
-			JistAPI.sleep(1000000000);
+
+//		 
+//			this.CAN.leave();
+			JistAPI.sleep(100000000);
 			this.CAN.insert(null);
-			
-			
-			
+			JistAPI.sleep(1000000000);
+			this.CAN.search(null);
+
 //			MacAddress macBootstrap = new MacAddress(1);
 //			if(CAN.getMacAddress().equals(macBootstrap))
 //			{
@@ -300,7 +301,7 @@ public class CBR {
 				JistAPI.sleep(20 * Constants.SECOND);
 				JistAPI.sleep(Util.randomTime(5 * Constants.SECOND));
 				self.sendMessage(i + 1);
- 			}
+			}
 		}
 
 		/** {@inheritDoc} */
@@ -513,15 +514,13 @@ public class CBR {
 	 * client/server pairs and starts them.
 	 *
 	 * @param opts command-line parameters
-	 * @throws InterruptedException 
-	 * @throws UnknownHostException 
+	 * @throws InterruptedException
+	 * @throws UnknownHostException
 	 */
 	private static void buildField(CommandLineOptions opts) throws InterruptedException, UnknownHostException {
 		ArrayList servers = new ArrayList();
 		ArrayList clients = new ArrayList();
-		
-		
-		
+
 		// initialize field
 		Field field = new Field(opts.field, true);
 		// initialize shared radio information
@@ -611,14 +610,12 @@ public class CBR {
 //			}
 			// routing
 			RouteInterface route = null; // Interface de roteamento
-			
-			
-			
+
 			CANAtualPeer = new Peer(address, macAddress);
 
 			route = CANAtualPeer.getProxy();
 			CANAtualPeer.setNetEntity(net.getProxy());
-			
+
 			canPeers.add(CANAtualPeer);
 			switch (opts.protocol) {
 			case Constants.NET_PROTOCOL_CAN:
@@ -638,8 +635,8 @@ public class CBR {
 //					
 //					}
 //					
-  				//canPeers.add(CANAtualPeer);
-				
+					// canPeers.add(CANAtualPeer);
+
 					break;
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
@@ -734,36 +731,26 @@ public class CBR {
 //
 //				} else {
 			if (i == 5) {
-				
+
 				Client client = new Client(udp.getProxy(), opts.transmissions, address,
-						new NetAddress(opts.nodes - i + 1),(Peer)canPeers.get(i-1));
+						new NetAddress(opts.nodes - i + 1), (Peer) canPeers.get(i - 1));
 				clients.add(client.getProxy());
 			}
-				//}
-			
-			
-			
-			 
+			// }
+
 			JistAPI.sleep(10000000);
-	 
-			
-			Client client = new Client(udp.getProxy(), opts.transmissions, address,
- 				      new NetAddress(opts.nodes - i + 1),(Peer)canPeers.get(i-1));
-			
+
+			Client client = new Client(udp.getProxy(), opts.transmissions, address, new NetAddress(opts.nodes - i + 1),
+					(Peer) canPeers.get(i - 1));
+
 			CANAtualPeer.startNodes();
-			
+
 			// JistAPI.sleep(1000000000);
-			
-			
-				 
-			}
+
+		}
 
 //		}
-		
-		
-		
-		
-		
+
 //
 //		System.out.println("INI - " + System.currentTimeMillis());
 //		JistAPI.sleepBlock(500 * Constants.SECOND); 
@@ -779,13 +766,10 @@ public class CBR {
 //			}
 //
 //		}
-		
-		
-		
 
-		//start clients and servers
+		// start clients and servers
 		numClientsTransmitting = opts.clients;
-		
+
 //		Iterator serverIter = servers.iterator();
 //		while (serverIter.hasNext())
 //			((ServerInterface) serverIter.next()).run();
@@ -795,33 +779,29 @@ public class CBR {
 		Iterator clientIter = clients.iterator();
 		while (clientIter.hasNext())
 			((ClientInterface) clientIter.next()).run();
-			JistAPI.sleep(100);
+		JistAPI.sleep(100);
 
 		// buildField
-		 
+
 	}
 
-	
-	
 	public static void canCommands() {
 		Scanner scanner = new Scanner(System.in);
- 		while(true){
- 
+		while (true) {
+
 			System.out.println("Please provide a command. The possible commands are :");
 			System.out.println("INSERT");
 			System.out.println("VIEW");
 			System.out.println("LEAVE");
 			System.out.println("SEARCH");
-			
-			 			
+
 			String[] input = scanner.nextLine().split(" ");
 			int option = 666;
-			
+
 			if (input[0].toUpperCase() == "LEAVE") {
 				option = 2;
 			}
-			
-			
+
 			switch (option) {
 			case 0:
 //				if(possibleCommands.get(CommandType.INSERT) == false){
@@ -838,8 +818,8 @@ public class CBR {
 //						WiredInsert wiredInsert = new WiredInsert(CommandType.INSERT, filename, null, null, new RouteInformation());
 //						this.insert(wiredInsert);
 //					}
-				//}
-				//Thread.sleep(500);
+				// }
+				// Thread.sleep(500);
 				break;
 			case 3:
 //				if(possibleCommands.get(CommandType.SEARCH) == false){
@@ -862,22 +842,21 @@ public class CBR {
 			case 2:
 				System.out.println();
 				System.out.println("HERE at LEAVE ");
-				 
-					if(input.length > 2){
-						Utils.printErrorMessage("Wrong format for LEAVE command");
-						Utils.printToConsole("Correct format : LEAVE 5");
-					}
-					else{
-						//this.canPeers.get(input[1]);
-						int nodeMac = Integer.parseInt(input[1]);
-						System.out.println("O Nó a ser expulso é: "+nodeMac);
-						System.out.println(""+canPeers.get(nodeMac));
+
+				if (input.length > 2) {
+					Utils.printErrorMessage("Wrong format for LEAVE command");
+					Utils.printToConsole("Correct format : LEAVE 5");
+				} else {
+					// this.canPeers.get(input[1]);
+					int nodeMac = Integer.parseInt(input[1]);
+					System.out.println("O Nó a ser expulso é: " + nodeMac);
+					System.out.println("" + canPeers.get(nodeMac));
 				}
 
 //				Thread.sleep(500);
 				break;
 			case 1:
-				
+
 //				if(possibleCommands.get(CommandType.VIEW) == false){
 //
 //					Utils.printToConsole("Illegal command");
@@ -897,14 +876,13 @@ public class CBR {
 //				//Thread.sleep(500);
 //				break;
 
-
 			default:
 				Utils.printErrorMessage("Please enter a valid command.");
 			}
 
 		}
 	}
- 
+
 	/**
 	 * Starts the CBR simulation.
 	 *
@@ -924,14 +902,10 @@ public class CBR {
 			}
 			Constants.random = new Random(options.randseed);
 			try {
-				
-				
-				
+
 				try {
 					buildField(options);
-					 
-					 
-					
+
 				} catch (UnknownHostException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -940,8 +914,7 @@ public class CBR {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
-			
+
 		} catch (CmdLineParser.OptionException e) {
 			System.out.println("Error: " + e.getMessage());
 

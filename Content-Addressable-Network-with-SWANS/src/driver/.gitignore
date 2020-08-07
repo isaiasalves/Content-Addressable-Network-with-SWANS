@@ -51,3 +51,11 @@
 /CBR$threaded$worker.class
 /CBR$threaded.class
 /CBR$worker.class
+/CBRPGC$1.class
+/CBRPGC$2.class
+/CBRPGC$Client.class
+/CBRPGC$ClientInterface.class
+/CBRPGC$CommandLineOptions.class
+/CBRPGC$Server.class
+/CBRPGC$ServerInterface.class
+/CBRPGC.class

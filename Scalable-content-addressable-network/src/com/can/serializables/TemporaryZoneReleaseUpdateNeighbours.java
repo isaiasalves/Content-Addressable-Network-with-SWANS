@@ -19,8 +19,9 @@ public class TemporaryZoneReleaseUpdateNeighbours implements Serializable, Messa
 	private Zone releasedZone;
 	private String hostnameToRoute;
 	private InetAddress ipAddressToRoute;
+	private MacAddress macAddressToRoute;
 
-	public TemporaryZoneReleaseUpdateNeighbours(String releasingHostname, InetAddress releasingIpAddress, MacAddress releasingMacAddress,String newNodeHostname, InetAddress newNodeIpAddress, MacAddress newNodeMacAddress, Zone releasedZone, String hostnameToRoute, InetAddress ipAddressToRoute) {
+	public TemporaryZoneReleaseUpdateNeighbours(String releasingHostname, InetAddress releasingIpAddress, MacAddress releasingMacAddress,String newNodeHostname, InetAddress newNodeIpAddress, MacAddress newNodeMacAddress, Zone releasedZone, String hostnameToRoute, InetAddress ipAddressToRoute, MacAddress macAddressToRoute) {
 
 		this.releasingHostname = releasingHostname;
 		this.releasingIpAddress = releasingIpAddress;
@@ -30,6 +31,7 @@ public class TemporaryZoneReleaseUpdateNeighbours implements Serializable, Messa
 		this.ipAddressToRoute = ipAddressToRoute;
 		this.releasingMacAddress = releasingMacAddress;
 		this.newNodeMacAddress = newNodeMacAddress;
+		this.macAddressToRoute = macAddressToRoute;
 		
 	}
 
@@ -71,6 +73,10 @@ public class TemporaryZoneReleaseUpdateNeighbours implements Serializable, Messa
 
 	public InetAddress getIpAddressToRoute() {
 		return ipAddressToRoute;
+	}
+	
+	public MacAddress getMacAddressToRoute() {
+		return macAddressToRoute;
 	}
 
 	@Override

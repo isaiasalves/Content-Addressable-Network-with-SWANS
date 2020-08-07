@@ -194,7 +194,7 @@ public class Peer implements RouteInterface.Can {
 		if (wiredInsert == null) {
 			String file = "C:\\Testes\\ArchTest.txt";
 			wiredInsert = new WiredInsert(CommandType.INSERT, file, null, null, new RouteInformation());
-			this.insert(wiredInsert);
+			// this.insert(wiredInsert);
 		}
 
 		Coordinate mappedCoordinate;
@@ -251,7 +251,7 @@ public class Peer implements RouteInterface.Can {
 				// machine is the source)
 				WiredSuccess wiredSuccess = new WiredSuccess(CommandType.INSERT, wiredInsert.getSourceInfo(),
 						wiredInsert.getSourceInfo(), successMessage, wiredInsert.getRouteInformation());
-				JistAPI.sleep(10000000);
+				//JistAPI.sleep(10000000);
 				this.sendThreaded(wiredSuccess);
 			} else {
 
@@ -337,6 +337,11 @@ public class Peer implements RouteInterface.Can {
 
 	public synchronized void search(WiredSearch wiredSearch) {
 
+		if (wiredSearch == null) {
+			String file = "C:\\Testes\\ArchTest.txt";
+			wiredSearch = new WiredSearch(CommandType.SEARCH, file, null, null, new RouteInformation());
+			// this.search(wiredSearch);
+		}
 		/*
 		 * Map keyword to coordinate space. Check whether sourceInfo is null. If yes
 		 * then the source is the current peer. Check whether current peer is the
@@ -357,6 +362,7 @@ public class Peer implements RouteInterface.Can {
 			PeerInfo sourceInfo = new PeerInfo();
 			sourceInfo.setHostName(this.getHostName());
 			sourceInfo.setIpAddress(this.getIpAddress());
+			sourceInfo.setMacAddress(this.macAddress);
 			sourceInfo.setFileNames(this.getFileNames());
 			sourceInfo.setNeighbours(this.getNeighbours());
 			sourceInfo.setZone(this.zone);
@@ -372,6 +378,7 @@ public class Peer implements RouteInterface.Can {
 					PeerInfo affectedPeer = new PeerInfo();
 					affectedPeer.setHostName(this.getHostName());
 					affectedPeer.setIpAddress(this.getIpAddress());
+					affectedPeer.setMacAddress(this.macAddress);
 					affectedPeer.setNeighbours(this.getNeighbours());
 					affectedPeer.setFileNames(this.getFileNames());
 					affectedPeer.setZone(this.getZone());
@@ -389,7 +396,7 @@ public class Peer implements RouteInterface.Can {
 
 						Utils.printToConsole(wiredSuccess.toString());
 					} else {
-
+						//JistAPI.sleep(10000000);
 						this.sendThreaded(wiredSuccess);
 					}
 				}
@@ -398,7 +405,7 @@ public class Peer implements RouteInterface.Can {
 				String failureMessage = "Failure";
 				WiredFailure wiredFailure = new WiredFailure(CommandType.SEARCH, wiredSearch.getSourceInfo(),
 						failureMessage);
-
+				//JistAPI.sleep(10000000);
 				this.sendThreaded(wiredFailure);
 			}
 		} else if (this.tempZone != null && isDestination(mappedCoordinate, this.tempZone)) {
@@ -408,6 +415,7 @@ public class Peer implements RouteInterface.Can {
 				PeerInfo affectedPeer = new PeerInfo();
 				affectedPeer.setHostName(this.getHostName());
 				affectedPeer.setIpAddress(this.getIpAddress());
+				affectedPeer.setMacAddress(this.macAddress);
 				affectedPeer.setNeighbours(this.getNeighbours());
 				affectedPeer.setFileNames(this.tempFileNames);
 				affectedPeer.setZone(this.tempZone);
@@ -416,13 +424,14 @@ public class Peer implements RouteInterface.Can {
 				wiredSearch.getRouteInformation().addPeerToRoute(this.getMacAddress(), this.getIpAddress());
 				WiredSuccess wiredSuccess = new WiredSuccess(CommandType.SEARCH, affectedPeer,
 						wiredSearch.getSourceInfo(), successMessage, wiredSearch.getRouteInformation());
+				//JistAPI.sleep(10000000);
 				this.sendThreaded(wiredSuccess);
 			} else {
 
 				String failureMessage = "Failure";
 				WiredFailure wiredFailure = new WiredFailure(CommandType.SEARCH, wiredSearch.getSourceInfo(),
 						failureMessage);
-
+				//JistAPI.sleep(10000000);
 				this.sendThreaded(wiredFailure);
 			}
 		} else {
@@ -433,6 +442,7 @@ public class Peer implements RouteInterface.Can {
 				wiredSearch.getRouteInformation().addPeerToRoute(this.getMacAddress(), this.getIpAddress());
 				wiredSearch.setNeighbourToRoute(neighbourToRoute);
 
+				//JistAPI.sleep(10000000);
 				this.sendThreaded(wiredSearch);
 			} catch (Exception e) {
 
@@ -440,6 +450,7 @@ public class Peer implements RouteInterface.Can {
 				WiredFailure wiredFailure = new WiredFailure(CommandType.SEARCH, wiredSearch.getSourceInfo(),
 						failureMessage);
 
+				//JistAPI.sleep(10000000);
 				this.sendThreaded(wiredFailure);
 			}
 		}
@@ -450,6 +461,10 @@ public class Peer implements RouteInterface.Can {
 	 */
 	public synchronized void join(WiredJoin wiredJoin, MacAddress lastHop) {
 
+		MacAddress eita = new MacAddress(1000);
+		if (wiredJoin.getSourceMacAddress().equals(eita)) {
+			System.out.println();
+		}
 		/*
 		 * check if current peer is bootstrap and whether neighbourToRoute information
 		 * is null. if yes then we select random ipAddresses of some active peers and
@@ -693,9 +708,9 @@ public class Peer implements RouteInterface.Can {
 					for (Map.Entry<String, NeighbourInfo> tempRoutingEntry : this.tempRoutingTable.entrySet()) {
 
 						zoneReleaseUpdateNeighbours = new TemporaryZoneReleaseUpdateNeighbours(this.getHostName(),
-								this.getIpAddress(), wiredJoin.getSourceMacAddress(), wiredJoin.getSourceHostname(),
+								this.getIpAddress(), this.macAddress, wiredJoin.getSourceHostname(),
 								wiredJoin.getSourceIpAddress(), wiredJoin.getSourceMacAddress(), this.getTempZone(),
-								tempRoutingEntry.getValue().getHostname(), tempRoutingEntry.getValue().getIpAddress());
+								tempRoutingEntry.getValue().getHostname(), tempRoutingEntry.getValue().getIpAddress(), tempRoutingEntry.getValue().getMacAddress());
 						this.sendThreaded(zoneReleaseUpdateNeighbours);
 						try {
 							// Thread.sleep(500);
@@ -1134,7 +1149,7 @@ public class Peer implements RouteInterface.Can {
 						neighbour.getMacAddress());
 				this.sendThreaded(takeoverUpdate);
 			}
-			
+
 			JistAPI.sleep(1000000);
 			TakeoverConfirmation takeoverConfirmation = new TakeoverConfirmation(wiredZoneTransfer.getSourceHostname(),
 					wiredZoneTransfer.getSourceIpAddress(), wiredZoneTransfer.getSourceMacAddress());
@@ -1748,6 +1763,8 @@ public class Peer implements RouteInterface.Can {
 		try {
 			for (Map.Entry<String, NeighbourInfo> routinTableEntry : this.routingTable.entrySet()) {
 
+				
+				
 				if (!routeInformation.getRoute().containsKey(routinTableEntry.getKey())) {
 
 					// checking if neighbour's zone contains the coordinates
@@ -2353,20 +2370,18 @@ public class Peer implements RouteInterface.Can {
 				this.peer.send((WiredJoin) this.wiredObject);
 			} else if (wiredObject instanceof WiredInsert) {
 				// call send for INSERT
-				this.peer.send((WiredInsert) wiredObject); 
-			}
-			// else if(wiredObject instanceof WiredSearch){
-			// //call send for SEARCH
-			// send((WiredSearch)wiredObject);
-			// }
-			else if (wiredObject instanceof JoinUpdateNeighbours) {
+				this.peer.send((WiredInsert) wiredObject);
+			} else if (wiredObject instanceof WiredSearch) {
+				// call send for SEARCH
+				this.peer.send((WiredSearch) wiredObject);
+			} else if (wiredObject instanceof JoinUpdateNeighbours) {
 				// call send for JOIN_UPDATE
 				this.peer.send((JoinUpdateNeighbours) this.wiredObject);
 			}
-			// else if(wiredObject instanceof TemporaryZoneReleaseUpdateNeighbours){
-			// //call send for Temporary release of node udpate to the neighbours
-			// send((TemporaryZoneReleaseUpdateNeighbours)wiredObject);
-			// }
+			 else if(wiredObject instanceof TemporaryZoneReleaseUpdateNeighbours){
+			 //call send for Temporary release of node udpate to the neighbours
+			 this.peer.send((TemporaryZoneReleaseUpdateNeighbours)wiredObject);
+			 }
 			else if (this.wiredObject instanceof JoinUpdateBootstrap) {
 				// call send for JOIN_UPDATE_BOOTSTRAP
 				this.peer.send((JoinUpdateBootstrap) this.wiredObject);
@@ -2407,12 +2422,10 @@ public class Peer implements RouteInterface.Can {
 			else if (wiredObject instanceof WiredSuccess) {
 				// call send for success and failure
 				this.peer.send((WiredSuccess) wiredObject);
-			}
-			// else if(wiredObject instanceof WiredFailure){
-			// //call send for success and failure
-			// send((WiredFailure)wiredObject);
-			// }
-			else if (true) {
+			} else if (wiredObject instanceof WiredFailure) {
+				// call send for success and failure
+				this.peer.send((WiredFailure) wiredObject);
+			} else if (true) {
 
 				System.out.println("LOSING SEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEND"
 						+ this.wiredObject);
@@ -2967,11 +2980,11 @@ public class Peer implements RouteInterface.Can {
 //		}
 
 	}
-	
-	private void send(TakeoverConfirmation takeoverConfirmation){
+
+	private void send(TakeoverConfirmation takeoverConfirmation) {
 
 		int n = 0;
-		
+
 		NetAddress ipDest = new NetAddress(takeoverConfirmation.getDestinationIpAddress());
 
 		NetMessage.Ip ipMsg = new NetMessage.Ip(takeoverConfirmation, localAddr, ipDest, Constants.NET_PROTOCOL_CAN,
@@ -2980,43 +2993,39 @@ public class Peer implements RouteInterface.Can {
 //		System.out.println("(X-)" + this.macAddress + " enviando wiredJoinUpdate para "
 //				+ wiredJoinUpdate.getNeighbourToRoute().getMacAddress() + " " + System.currentTimeMillis());
 		this.netEntity.send(ipMsg, Constants.NET_INTERFACE_DEFAULT, takeoverConfirmation.getDestinationMacAddress());
-		
-		
-		try{
-			//while(socket == null){
-				try{
-					//trying to connect every 2 seconds until connection is established
-					//socket = new Socket(takeoverConfirmation.getDestinationHostname(), 49161);
+
+		try {
+			// while(socket == null){
+			try {
+				// trying to connect every 2 seconds until connection is established
+				// socket = new Socket(takeoverConfirmation.getDestinationHostname(), 49161);
+			} catch (Exception e) {
+				try {
+					n++;
+					if (n == 3) {
+						PeerInfo sourceInfo = new PeerInfo();
+						sourceInfo.setHostName(this.getHostName());
+						sourceInfo.setIpAddress(this.getIPaddress());
+						String statusMessage = "FAILURE : Hostname does not exist in the netork.\n";
+						WiredFailure connectionFailure = new WiredFailure(CommandType.LEAVE, sourceInfo, statusMessage);
+						Utils.printErrorMessage(connectionFailure.toString());
+						// break;
+					}
+					Utils.printErrorMessage("Couldn't connect. Trying again...");
+					Thread.sleep(2000);
+
+				} catch (InterruptedException ie) {
+					ie.printStackTrace();
 				}
-				catch(Exception e){
-					try{
-						n++;
-						if(n == 3){
-							PeerInfo sourceInfo = new PeerInfo();
-							sourceInfo.setHostName(this.getHostName());
-							sourceInfo.setIpAddress(this.getIPaddress());
-							String statusMessage = "FAILURE : Hostname does not exist in the netork.\n";
-							WiredFailure connectionFailure = new WiredFailure(CommandType.LEAVE, sourceInfo, statusMessage);
-							Utils.printErrorMessage(connectionFailure.toString());
-							//break;
-						}
-						Utils.printErrorMessage("Couldn't connect. Trying again...");
-						Thread.sleep(2000);
 
-					}
-					catch(InterruptedException ie){
-						ie.printStackTrace();
-					}
-
-				//}
+				// }
 			}
-			//connection established
-			//serializing wiredZoneTransfer to the neighbour
+			// connection established
+			// serializing wiredZoneTransfer to the neighbour
 //			objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
 //			objectOutputStream.writeObject(takeoverConfirmation);
 //			objectOutputStream.flush();
-		}
-		catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 //		finally{
@@ -3038,8 +3047,6 @@ public class Peer implements RouteInterface.Can {
 //			}
 //		}
 	}
-	
-	
 
 	private void send(LeaveUpdateNeighbours leaveUpdateNeighbours) {
 
@@ -3051,7 +3058,7 @@ public class Peer implements RouteInterface.Can {
 				Constants.NET_PRIORITY_NORMAL, Constants.TTL_DEFAULT);
 
 		System.out
-				.println("(0)Enviando leaveUpdateNeighbours para: " + leaveUpdateNeighbours.getDestinationMacAddress());
+				.println("(j)Enviando leaveUpdateNeighbours para: " + leaveUpdateNeighbours.getDestinationMacAddress());
 		this.netEntity.send(ipMsg, Constants.NET_INTERFACE_DEFAULT, leaveUpdateNeighbours.getDestinationMacAddress());
 
 		try {
@@ -3188,7 +3195,7 @@ public class Peer implements RouteInterface.Can {
 				Constants.NET_PRIORITY_NORMAL, Constants.TTL_DEFAULT);
 
 		System.out.println(
-				"(0)Enviando leaveUpdateNeighbours para: " + wiredInsert.getNeighbourToRoute().getMacAddress());
+				"(send) "+this.macAddress+" Enviando wiredInsert para: " + wiredInsert.getNeighbourToRoute().getMacAddress());
 		this.netEntity.send(ipMsg, Constants.NET_INTERFACE_DEFAULT, wiredInsert.getNeighbourToRoute().getMacAddress());
 
 		// NeighbourInfo neighbourToRoute = wiredInsert.getNeighbourToRoute();
@@ -3245,6 +3252,76 @@ public class Peer implements RouteInterface.Can {
 //			}
 //		}
 	}
+	
+	
+	private void send(TemporaryZoneReleaseUpdateNeighbours tempZoneReleaseUpdateNeighbours){
+
+		int n = 0;
+		
+		NetAddress ipDest = new NetAddress(tempZoneReleaseUpdateNeighbours.getIpAddressToRoute());
+
+		NetMessage.Ip ipMsg = new NetMessage.Ip(tempZoneReleaseUpdateNeighbours, localAddr, ipDest, Constants.NET_PROTOCOL_CAN,
+				Constants.NET_PRIORITY_NORMAL, Constants.TTL_DEFAULT);
+
+		System.out.println(
+				"(send)Enviando tempZoneReleaseUpdateNeighbours para: " + tempZoneReleaseUpdateNeighbours.getMacAddressToRoute());
+		this.netEntity.send(ipMsg, Constants.NET_INTERFACE_DEFAULT, tempZoneReleaseUpdateNeighbours.getMacAddressToRoute());
+
+		
+		try{
+			//while(socket == null){
+				//trying to connect every 2 seconds until connection is established
+				try{
+					//socket = new Socket(tempZoneReleaseUpdateNeighbours.getHostnameToRoute(), 49161);
+				}
+				catch(Exception e){
+					try{
+						n++;
+						if(n == 3){
+							PeerInfo sourceInfo = new PeerInfo();
+							sourceInfo.setHostName(tempZoneReleaseUpdateNeighbours.getHostnameToRoute());
+							sourceInfo.setIpAddress(tempZoneReleaseUpdateNeighbours.getIpAddressToRoute());
+							String statusMessage = "FAILURE : Hostname does not exist in the netork.\n";
+							WiredFailure connectionFailure = new WiredFailure(CommandType.LEAVE, sourceInfo, statusMessage);
+							Utils.printErrorMessage(connectionFailure.toString());
+							//break;
+						}
+						Utils.printErrorMessage("Couldn't connect. Trying again...");
+						Thread.sleep(2000);
+					}
+					catch(Exception ie){
+						ie.printStackTrace();
+					}
+				//}
+			}
+			//serializing wiredJoinUpdate from affected neighbour (whose zone has gotten split) to its neighbours
+//			objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+//			objectOutputStream.writeObject(tempZoneReleaseUpdateNeighbours);
+//			objectOutputStream.flush();
+
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+//		finally{
+//			if(socket != null){
+//				try{
+//					socket.close();
+//				}
+//				catch(IOException e){
+//					e.printStackTrace();
+//				}
+//			}
+//			if(objectOutputStream != null){
+//				try{
+//					objectOutputStream.close();
+//				}
+//				catch(IOException e){
+//					e.printStackTrace();
+//				}
+//			}
+//		}
+	}
 
 	// public interface ServerInterface extends JistAPI.Proxiable {
 	// /** Starts the server. */
@@ -3252,7 +3329,145 @@ public class Peer implements RouteInterface.Can {
 	//
 	// }
 	//
+	private void send(WiredSearch wiredSearch){
+		int n = 0;
+		//NeighbourInfo neighbourToRoute = wiredSearch.getNeighbourToRoute();
 
+		
+		NetAddress ipDest = new NetAddress(wiredSearch.getNeighbourToRoute().getIpAddress());
+
+		NetMessage.Ip ipMsg = new NetMessage.Ip(wiredSearch, localAddr, ipDest, Constants.NET_PROTOCOL_CAN,
+				Constants.NET_PRIORITY_NORMAL, Constants.TTL_DEFAULT);
+
+		System.out.println(
+				"(k)Enviando wiredSearch para: " + wiredSearch.getNeighbourToRoute().getMacAddress());
+		this.netEntity.send(ipMsg, Constants.NET_INTERFACE_DEFAULT, wiredSearch.getNeighbourToRoute().getMacAddress());
+
+		
+		
+		try{
+			//while(socket == null){
+				//trying to connect every 2 seconds until connection is established
+				try{
+					//socket = new Socket(neighbourToRoute.getHostname(),49161);
+				}
+				catch(Exception e){
+					try{
+						n++;
+						if(n == 3){
+							PeerInfo sourceInfo = new PeerInfo();
+							sourceInfo.setHostName(wiredSearch.getSourceInfo().getHostname());
+							sourceInfo.setIpAddress(wiredSearch.getSourceInfo().getIpAddress());
+							String statusMessage = "FAILURE : Hostname does not exist in the netork.\n";
+							WiredFailure connectionFailure = new WiredFailure(CommandType.SEARCH, sourceInfo, statusMessage);
+							Utils.printErrorMessage(connectionFailure.toString());
+							//break;
+						}
+						Utils.printErrorMessage("Couldn't connect. Trying again...");
+						Thread.sleep(2000);
+					}
+					catch(InterruptedException ie){
+						ie.printStackTrace();
+					}
+				//}
+			}
+			//connection established
+			//serializing wiredSearch
+//			objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+//			objectOutputStream.writeObject(wiredSearch);
+
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+//		finally{
+//			if(socket != null){
+//				try{
+//					socket.close();
+//				}
+//				catch(IOException e){
+//					e.printStackTrace();
+//				}
+//			}
+//			if(objectOutputStream != null){
+//				try{
+//					objectOutputStream.close();
+//				}
+//				catch(IOException e){
+//					e.printStackTrace();
+//				}
+//			}
+//		}
+	}
+	
+	
+	private void send(WiredFailure wiredFailure){
+
+		int n = 0;
+		
+		NetAddress ipDest = new NetAddress(wiredFailure.getSourceInfo().getIpAddress());
+
+		NetMessage.Ip ipMsg = new NetMessage.Ip(wiredFailure, localAddr, ipDest, Constants.NET_PROTOCOL_CAN,
+				Constants.NET_PRIORITY_NORMAL, Constants.TTL_DEFAULT);
+
+		this.netEntity.send(ipMsg, Constants.NET_INTERFACE_DEFAULT, wiredFailure.getSourceInfo().getMacAddress());
+
+		
+		try{
+			//while(socket == null){
+				//trying to connect every 2 seconds until connection is established
+				try{
+					//socket = new Socket(wiredFailure.getSourceInfo().getHostname(),49161);
+				}
+				catch(Exception e){
+					try{
+						n++;
+						if(n == 3){
+							PeerInfo sourceInfo = new PeerInfo();
+							sourceInfo.setHostName(wiredFailure.getSourceInfo().getHostname());
+							sourceInfo.setIpAddress(wiredFailure.getSourceInfo().getIpAddress());
+							String statusMessage = "FAILURE : Hostname does not exist in the netork.\n";
+							WiredFailure connectionFailure = new WiredFailure(wiredFailure.getCommand(), sourceInfo, statusMessage);
+							Utils.printErrorMessage(connectionFailure.toString());
+							//break;
+						}
+						Utils.printErrorMessage("Couldn't connect. Trying again...");
+						Thread.sleep(2000);
+					}
+					catch(InterruptedException ie){
+						ie.printStackTrace();
+					}
+			//	}
+			}
+			//serializing wiredFailure back to the source node
+//			objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+//			objectOutputStream.writeObject(wiredFailure);
+//			objectOutputStream.flush();
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+//		finally{
+//			if(socket != null){
+//				try{
+//					socket.close();
+//				}
+//				catch(IOException e){
+//					e.printStackTrace();
+//				}
+//			}
+//			if(objectOutputStream != null){
+//				try{
+//					objectOutputStream.close();
+//				}
+//				catch(IOException e){
+//					e.printStackTrace();
+//				}
+//			}
+//		}
+	}
+	
+	
 	public static class RevisedReceive implements AppJava.Runnable {
 		private Message msg;
 		private NetAddress src;
