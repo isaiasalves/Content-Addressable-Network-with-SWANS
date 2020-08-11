@@ -153,42 +153,33 @@ public class CAN {
 					msgsReceived++;
 
 					if (msgsReceived == msgsSent) {
+						fimSimulacao();
 
-//               	try 
-//            	{ 
-//            		Thread.sleep(10000); 
-//         		 
-//            	} 
-//            	catch (InterruptedException ex) 
-//            	{
-//            	    System.out.println ("Thread sleep error "+ex);
-//            	}
-
-						// ************************************************ REGISTRANDO O TEMPO
-						// DECORRIDO **********************************************//
-						long stopTime = System.currentTimeMillis();
-						long elapsedTime = stopTime - startTime;
-						registrar(1, elapsedTime + "");
-						System.out.println("Fim: " + stopTime);
-						System.out.println("Decorrido = " + elapsedTime);
-
-						// ************************************************ REGISTRANDO O TEMPO
-						// DECORRIDO **********************************************//
-
-						// ***************************************** REGISTRANDO A DISTÂNCIA ENTRE OS
-						// NÓS **********************************************//
-						registrar(4, pair.locationOrigem.distance(pair.locationDestino) + "");
-						System.out.println("Origem: " + pair.locationOrigem);
-						System.out.println("Destino: " + pair.locationDestino);
-						System.out.println("distancia: " + pair.locationOrigem.distance(pair.locationDestino) + "");
-						// ***************************************** REGISTRANDO A DISTÂNCIA ENTRE OS
-						// NÓS **********************************************//
-
-						CSVMaker csv = new CSVMaker();
-						// roteamento-dimensao-# Nodes-loss-movement.csv
-						String fileName = csv.fileNameFormat(params.protocol, params.field.getX(), params.field.getY(),
-								params.nodes, params.lossOpts, params.mobilityOpts + "");
-						csv.makeFile(coleta, fileName);
+//						// ************************************************ REGISTRANDO O TEMPO
+//						// DECORRIDO **********************************************//
+//						long stopTime = System.currentTimeMillis();
+//						long elapsedTime = stopTime - startTime;
+//						registrar(1, elapsedTime + "");
+//						System.out.println("Fim: " + stopTime);
+//						System.out.println("Decorrido = " + elapsedTime);
+//
+//						// ************************************************ REGISTRANDO O TEMPO
+//						// DECORRIDO **********************************************//
+//
+//						// ***************************************** REGISTRANDO A DISTÂNCIA ENTRE OS
+//						// NÓS **********************************************//
+//						registrar(4, pair.locationOrigem.distance(pair.locationDestino) + "");
+//						System.out.println("Origem: " + pair.locationOrigem);
+//						System.out.println("Destino: " + pair.locationDestino);
+//						System.out.println("distancia: " + pair.locationOrigem.distance(pair.locationDestino) + "");
+//						// ***************************************** REGISTRANDO A DISTÂNCIA ENTRE OS
+//						// NÓS **********************************************//
+//
+//						CSVMaker csv = new CSVMaker();
+//						// roteamento-dimensao-# Nodes-loss-movement.csv
+//						String fileName = csv.fileNameFormat(params.protocol, params.field.getX(), params.field.getY(),
+//								params.nodes, params.lossOpts, params.mobilityOpts + "");
+//						csv.makeFile(coleta, fileName);
 
 					}
 				}
@@ -267,20 +258,27 @@ public class CAN {
 		/** {@inheritDoc} */
 		public void run() {
 			if (this.CAN != null) {
-			
-				//this.CAN.leave();
+				////////////////////////////////////////////////**INICIA O
+				//////////////////////////////////////////////// TIMER PARA A CAN**/////////////////////////////////////////////
+				startTime = System.currentTimeMillis();
+				System.out.println("Início: " + startTime);
+				//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+				
+				
+				
+				this.CAN.leave();
 				JistAPI.sleep(100000000);
 				this.CAN.insert(null);
 				JistAPI.sleep(1000000000);
 				this.CAN.search(null);
-			}
-			
-			JistAPI.sleep(100 * Constants.SECOND);
-			// Send the appropriate number of messages to the corresponding server
-			for (int i = 0; i < transmissions; i++) {
-				JistAPI.sleep(20 * Constants.SECOND);
-				JistAPI.sleep(Util.randomTime(5 * Constants.SECOND));
-				self.sendMessage(i + 1);
+			} else {
+				JistAPI.sleep(100 * Constants.SECOND);
+				// Send the appropriate number of messages to the corresponding server
+				for (int i = 0; i < transmissions; i++) {
+					JistAPI.sleep(20 * Constants.SECOND);
+					JistAPI.sleep(Util.randomTime(5 * Constants.SECOND));
+					self.sendMessage(i + 1);
+				}
 			}
 		}
 
@@ -295,7 +293,6 @@ public class CAN {
 			udp.send(msg, serverAddr, PORT, PORT, Constants.NET_PRIORITY_NORMAL);
 			if (i == transmissions) {
 				numClientsTransmitting--;
-				// System.out.println("Memory: " + jist.runtime.Util.getUsedMemory());
 			}
 		}
 	}
@@ -336,9 +333,7 @@ public class CAN {
 		private int transmissions = 10;
 		/** Random number generator seed. */
 		private int randseed = 0;
-		
-		
-		
+
 		/** CAN Only. */
 		private int canLeave = 0;
 		private int canInsert = 0;
@@ -384,7 +379,7 @@ public class CAN {
 		CmdLineParser.Option opt_clients = parser.addIntegerOption('c', "clients");
 		CmdLineParser.Option opt_transmissions = parser.addIntegerOption('t', "transmissions");
 		CmdLineParser.Option opt_seed = parser.addIntegerOption('r', "randomseed");
-		
+
 		CmdLineParser.Option opt_canLeave = parser.addIntegerOption('v', "leave");
 		CmdLineParser.Option opt_canInsert = parser.addIntegerOption('i', "insert");
 		CmdLineParser.Option opt_canSearch = parser.addIntegerOption('s', "search");
@@ -658,13 +653,12 @@ public class CAN {
 			if (opts.protocol == Constants.NET_PROTOCOL_CAN) {
 				JistAPI.sleep(10000000);
 
-				Client client = new Client(udp.getProxy(), opts.transmissions, address, 
-						new NetAddress(opts.nodes - i + 1),
-						(Peer) canPeers.get(i - 1));
+				Client client = new Client(udp.getProxy(), opts.transmissions, address,
+						new NetAddress(opts.nodes - i + 1), (Peer) canPeers.get(i - 1));
 
 				CANAtualPeer.startNodes();
-				
-				//Sets the client that will do special commands in CAN
+
+				// Sets the client that will do special commands in CAN
 				MacAddress macAddressCANClient = new MacAddress(5);
 				if (macAddress.equals(macAddressCANClient)) {
 					clients.add(client.getProxy());
@@ -763,6 +757,35 @@ public class CAN {
 
 		}
 
+	}
+	
+	
+	public static void fimSimulacao() {
+		// ************************************************ REGISTRANDO O TEMPO
+		// DECORRIDO **********************************************//
+		long stopTime = System.currentTimeMillis();
+		long elapsedTime = stopTime - startTime;
+		registrar(1, elapsedTime + "");
+		System.out.println("Fim: " + stopTime);
+		System.out.println("Decorrido = " + elapsedTime);
+
+		// ************************************************ REGISTRANDO O TEMPO
+		// DECORRIDO **********************************************//
+
+		// ***************************************** REGISTRANDO A DISTÂNCIA ENTRE OS
+		// NÓS **********************************************//
+		registrar(4, pair.locationOrigem.distance(pair.locationDestino) + "");
+		System.out.println("Origem: " + pair.locationOrigem);
+		System.out.println("Destino: " + pair.locationDestino);
+		System.out.println("distancia: " + pair.locationOrigem.distance(pair.locationDestino) + "");
+		// ***************************************** REGISTRANDO A DISTÂNCIA ENTRE OS
+		// NÓS **********************************************//
+
+		CSVMaker csv = new CSVMaker();
+		// roteamento-dimensao-# Nodes-loss-movement.csv
+		String fileName = csv.fileNameFormat(params.protocol, params.field.getX(), params.field.getY(),
+				params.nodes, params.lossOpts, params.mobilityOpts + "");
+		csv.makeFile(coleta, fileName);
 	}
 
 } // class: CBR

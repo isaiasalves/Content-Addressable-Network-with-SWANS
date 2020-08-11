@@ -44,6 +44,7 @@ import com.can.serializables.WiredZoneTransfer;
 import com.can.serializables.Zone;
 import com.can.utilities.Utils;
 
+import driver.CAN;
 import driver.CBR.ServerInterface;
 import driver.threaded.worker;
 import jist.runtime.JistAPI;
@@ -3619,6 +3620,11 @@ public class Peer implements RouteInterface.Can {
 
 				WiredSuccess wiredSuccess = (WiredSuccess) wiredObject;
 				Utils.printToConsole(wiredSuccess.toString());
+				
+				if (wiredSuccess.getStatusMessage() == "Search successful") {
+					CAN can = new CAN();
+					can.fimSimulacao();
+				}
 			} else if (wiredObject instanceof WiredFailure) {
 
 				WiredFailure wiredFailure = (WiredFailure) wiredObject;
@@ -3629,151 +3635,21 @@ public class Peer implements RouteInterface.Can {
 
 	}
 
-	public void eita() {
-		System.out.println("EITAAA");
-	}
+
 
 	@Override
 	public void receive(Message msg, NetAddress src, MacAddress lastHop, byte macId, NetAddress dst, byte priority,
 			byte ttl) {
 		java.util.Date d = new Date();
-		// if(src.toString().equals("0.0.0.3"))
-		// {
-		// System.out.println("Client " + src + " JOINED at= " + this.localAddr);
-		// }
-
-		// Thread thread = new Thread() ;
-
-		// note: Java threads call runnable objects;
-		// SWANS simulation time threads call runnable entities
+		
 		AppJava.Runnable worker = new RevisedReceive(msg, src, lastHop, macId, dst, priority, ttl, this);
 		AppJava.Runnable workerEntity = (AppJava.Runnable) JistAPI.proxy(worker, AppJava.Runnable.class);
 		Thread thread = new Thread(workerEntity);
-		// System.out.println("Spawning thread: "+ thread.getName()+" em "+
-		// this.localAddr);
+		
 
 		thread.start();
 
-		// RevisedReceive srv = new RevisedReceive(msg, src, lastHop, macId, dst,
-		// priority, ttl, this);
-		// srv.run();
 
-//				Object wiredObject = msg;
-//		
-//		
-//				if (wiredObject instanceof WiredInsert) {
-//		
-//					WiredInsert wiredInsert = (WiredInsert) wiredObject;
-//		
-//					this.insert(wiredInsert);
-//				} else if (wiredObject instanceof WiredSearch) {
-//		
-//					WiredSearch wiredSearch = (WiredSearch) wiredObject;
-//					this.search(wiredSearch);
-//				} else if (wiredObject instanceof WiredJoin) {
-//		
-//					WiredJoin wiredJoin = (WiredJoin) wiredObject;
-//					
-//					System.out.println(this.macAddress+" recebendo wiredJoin de "+wiredJoin.getSourceMacAddress()+" "+System.currentTimeMillis());
-//					this.join(wiredJoin);
-//				} else if (wiredObject instanceof JoinUpdateNeighbours) {
-//		
-//					JoinUpdateNeighbours joinUpdateNeighbours = (JoinUpdateNeighbours) wiredObject;
-//					
-//					System.out.println(this.macAddress+" recebendo joinUpdateNeighbours de "+joinUpdateNeighbours.getActivePeerMacAddress()+" "+System.currentTimeMillis());
-//					this.updateRoutingTableForNewNode(joinUpdateNeighbours);
-//				} else if (wiredObject instanceof TemporaryZoneReleaseUpdateNeighbours) {
-//		
-//					TemporaryZoneReleaseUpdateNeighbours temporaryZoneReleaseUpdateNeighbours = (TemporaryZoneReleaseUpdateNeighbours) wiredObject;
-//					System.out.println(this.macAddress+" recebendo temporaryZoneReleaseUpdateNeighbours de "+System.currentTimeMillis());
-//					this.updateTempZoneRelease(temporaryZoneReleaseUpdateNeighbours);
-//				} else if (wiredObject instanceof JoinUpdateBootstrap) {
-//		
-//					JoinUpdateBootstrap joinUpdateBootstrap = (JoinUpdateBootstrap) wiredObject;
-//					System.out.println(this.macAddress+" recebendo joinUpdateBootstrap de "+System.currentTimeMillis());
-//					this.updateActivePeers(joinUpdateBootstrap);
-//					
-//				} else if (wiredObject instanceof JoinConfirmation) {
-//					JoinConfirmation joinConfirmation = (JoinConfirmation) wiredObject;
-//					System.out.println(this.macAddress+" recebendo joinConfirmation de "+joinConfirmation.getSourceMaccAddres()+System.currentTimeMillis());
-//					this.initializeState(joinConfirmation);
-//				} else if (wiredObject instanceof LeaveUpdateBootstrap) {
-//		
-//					LeaveUpdateBootstrap leaveUpdateBootstrap = (LeaveUpdateBootstrap) wiredObject;
-//					this.removeActivePeerEntry(leaveUpdateBootstrap);
-//				} else if (wiredObject instanceof LeaveUpdateNeighbours) {
-//		
-//					LeaveUpdateNeighbours leaveUpdateNeighbours = (LeaveUpdateNeighbours) wiredObject;
-//					this.removeNeighbourFromRoutingTable(leaveUpdateNeighbours);
-//				} else if (wiredObject instanceof TakeoverUpdate) {
-//		
-//					TakeoverUpdate takeoverUpdate = (TakeoverUpdate) wiredObject;
-//					this.updateNeighbourState(takeoverUpdate);
-//				} else if (wiredObject instanceof TakeoverConfirmation) {
-//		
-//					this.deinitializeState();
-//				} else if (wiredObject instanceof WiredZoneTransfer) {
-//		
-//					WiredZoneTransfer wiredZoneTransfer = (WiredZoneTransfer) wiredObject;
-//					this.takeover(wiredZoneTransfer);
-//				} else if (wiredObject instanceof WiredViewActivePeersRequest) {
-//		
-//					WiredViewActivePeersRequest activePeersRequest = (WiredViewActivePeersRequest) wiredObject;
-//					try {
-//						if (this.isBootstrap()) {
-//							this.retrieveActivePeers(activePeersRequest);
-//						} else {
-//							this.forwardWiredView( Request);
-//						}
-//					} catch (UnknownHostException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-//				} else if (wiredObject instanceof WiredView) {
-//		
-//					WiredView view = (WiredView) wiredObject;
-//					if (view.getViewCategory().equals(ViewCategory.MULTI)) {
-//						if (view.getSourceHostname().equals(this.getHostName())) {
-//							peerInformation.add(view.getPeerInformation());
-//							viewsReturned++;
-//							StringBuilder builder = new StringBuilder("");
-//							if (viewsReturned == totalViewsRequired) {
-//		
-//								for (String peerInfo : peerInformation) {
-//									builder.append(peerInfo);
-//								}
-//		
-//								// adding current peer's information to builder
-//								builder.append(this.toString());
-//		
-//								Utils.printToConsole(builder.toString());
-//								totalViewsRequired = 0;
-//								viewsReturned = 1;
-//								peerInformation.clear();
-//							}
-//						} else {
-//							this.retrievePeerInformation(view);
-//						}
-//					} else {
-//						if (this.getHostName().equals(view.getSourceHostname())) {
-//							Utils.printToConsole(view.getPeerInformation());
-//						} else {
-//							this.retrievePeerInformation(view);
-//						}
-//					}
-//		
-//				} else if (wiredObject instanceof WiredSuccess) {
-//		
-//					WiredSuccess wiredSuccess = (WiredSuccess) wiredObject;
-//					Utils.printToConsole(wiredSuccess.toString());
-//				} else if (wiredObject instanceof WiredFailure) {
-//		
-//					WiredFailure wiredFailure = (WiredFailure) wiredObject;
-//					Utils.printErrorMessage(wiredFailure.toString());
-//				}
-
-		// TODO Auto-generated method stub
-		// JistAPI.sleep(1000000000);
 	}
 
 	/** {@inheritDoc} */
