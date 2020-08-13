@@ -266,7 +266,7 @@ public class CAN {
 				
 				
 				
-				this.CAN.leave();
+				//this.CAN.leave();
 				JistAPI.sleep(100000000);
 				this.CAN.insert(null);
 				JistAPI.sleep(1000000000);
@@ -774,10 +774,10 @@ public class CAN {
 
 		// ***************************************** REGISTRANDO A DISTÂNCIA ENTRE OS
 		// NÓS **********************************************//
-		registrar(4, pair.locationOrigem.distance(pair.locationDestino) + "");
+		//registrar(4, pair.locationOrigem.distance(pair.locationDestino) + "");
 		System.out.println("Origem: " + pair.locationOrigem);
 		System.out.println("Destino: " + pair.locationDestino);
-		System.out.println("distancia: " + pair.locationOrigem.distance(pair.locationDestino) + "");
+		//System.out.println("distancia: " + pair.locationOrigem.distance(pair.locationDestino) + "");
 		// ***************************************** REGISTRANDO A DISTÂNCIA ENTRE OS
 		// NÓS **********************************************//
 
