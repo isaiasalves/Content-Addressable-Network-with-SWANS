@@ -13,8 +13,9 @@ import jist.swans.net.NetAddress;
 import jist.swans.misc.Message;
 import jist.swans.trans.TransTcp.TcpMessage;
 import jist.swans.Constants;
-
+import jist.swans.mac.MacAddress;
 import jist.runtime.JistAPI;
+import jist.runtime.JistAPI.Continuation;
 import jist.runtime.Channel;
 
 import java.net.Socket;
@@ -424,10 +425,16 @@ public class TcpServerSocket implements SocketInterface.TcpServerSocketInterface
     }
 
     /** {@inheritDoc} */
-    public void receive(Message msg, NetAddress src, int srcPort)
+    public void receive(Message msg, NetAddress src, int srcPort, MacAddress lastHop)
     {
       serverSocketEntity.checkPacketandState ((TcpMessage)msg, src);
     }
+
+	public void receive(Message msg, NetAddress src, MacAddress lastHop, byte macId, NetAddress dst, byte priority,
+			byte ttl) throws Continuation {
+		// TODO Auto-generated method stub
+		
+	}
 
   } // class: TcpServerSocketCallback
 

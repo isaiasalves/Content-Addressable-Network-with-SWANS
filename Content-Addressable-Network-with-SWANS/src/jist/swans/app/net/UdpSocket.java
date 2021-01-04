@@ -10,6 +10,7 @@
 package jist.swans.app.net;
 
 import jist.swans.app.AppInterface;
+import jist.swans.mac.MacAddress;
 import jist.swans.trans.TransInterface;
 import jist.swans.net.NetAddress;
 import jist.swans.misc.Message;
@@ -17,6 +18,7 @@ import jist.swans.misc.MessageBytes;
 import jist.swans.Constants;
 
 import jist.runtime.JistAPI;
+import jist.runtime.JistAPI.Continuation;
 import jist.runtime.Channel;
 
 import java.net.DatagramPacket;
@@ -185,7 +187,7 @@ public class UdpSocket
     }
 
     /** {@inheritDoc} */
-    public void receive(Message msg, NetAddress src, int srcPort)
+    public void receive(Message msg, NetAddress src, int srcPort, MacAddress lastHop)
     {
       MessageBytes bytes = (MessageBytes)msg;
       DatagramPacket p = new DatagramPacket(
@@ -194,6 +196,12 @@ public class UdpSocket
       p.setSocketAddress(new InetSocketAddress(src.getIP(), srcPort));
       channel.sendNonBlock(p, true, false);
     }
+
+	public void receive(Message msg, NetAddress src, MacAddress lastHop, byte macId, NetAddress dst, byte priority,
+			byte ttl) throws Continuation {
+		// TODO Auto-generated method stub
+		
+	}
   }
 
 } // class: UdpSocket

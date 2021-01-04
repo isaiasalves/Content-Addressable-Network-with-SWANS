@@ -25,7 +25,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Set;
 
-import driver.CBR;
+import csvMaker.Structure;
+import driver.CAN;
+//import driver.CBR;
 
 
 /**
@@ -40,7 +42,7 @@ public class RouteAodv implements RouteInterface.Aodv
 {
 	
   //COLETA DE MÉTRICAS//
-  public static CBR cbr = new CBR();
+  public static CAN can = new CAN();
   /** debug mode. */
   public static final boolean DEBUG_MODE = false;
   /** Hello Messages setting. Should always be true, except possibly for debugging purposes. */
@@ -1410,6 +1412,8 @@ public class RouteAodv implements RouteInterface.Aodv
   // statistics
   /** statistics accumulator. */
   private AodvStats stats;
+  
+  public Structure coletaAODV;
 
   /**
    * Constructs new RouteAodv instance.
@@ -1446,6 +1450,8 @@ public class RouteAodv implements RouteInterface.Aodv
     //route to self
     routeTable.add(this.netAddr, new RouteTableEntry(MacAddress.NULL, this.seqNum, 0));
     routeTable.printTable();
+    
+    this.coletaAODV = new Structure();
         
   }
 
@@ -1468,7 +1474,7 @@ public class RouteAodv implements RouteInterface.Aodv
       { 
     	    	
     	//************************** Adição para mostrar as retransmissões que ocorreram **************************************** //
-    	cbr.registrar(3, rreq.thisNode.getLocalAddr() + " is retransmitting");
+    	can.registrar(3, rreq.thisNode.getLocalAddr() + " is retransmitting");
     	//************************** Adição para mostrar as retransmissões que ocorreram **************************************** //
         //broadcast new RREQ message with new RREQ ID and incremented TTL
         rreq.obtainNewRreqId();
@@ -1922,7 +1928,8 @@ public class RouteAodv implements RouteInterface.Aodv
     	
     	//********************* Adição para plotar a quantidade de nós ********************* //
         System.out.println("Quantidade de nós até o Destino: "+(rrepMsg.getHopCount()+1+":"));
-        cbr.registrar(2, ""+(rrepMsg.getHopCount()+1));
+        can.registrar(2, ""+(rrepMsg.getHopCount()+1));
+       
         //*********************************************************************************** //
         
     	
@@ -2199,6 +2206,10 @@ public class RouteAodv implements RouteInterface.Aodv
   public NetAddress getLocalAddr()
   {
     return this.netAddr;
+  }
+  
+  public Structure getColetaAODV() {
+	  return this.coletaAODV;
   }
 
   /**

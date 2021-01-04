@@ -20,7 +20,8 @@ import jist.runtime.JistAPI;
 
 import org.apache.log4j.Logger;
 
-import driver.CBR;
+import driver.CAN;
+//import driver.CBR;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -39,7 +40,9 @@ public class RouteZrpIerp implements RouteInterface.Zrp.Ierp, Timer
 {
 
   //COLETA DE MÉTRICAS//
-  public static CBR cbr = new CBR();
+//  public static CBR cbr = new CBR();
+  
+  public static CAN can = new CAN();
 
 	
 	
@@ -153,7 +156,7 @@ public class RouteZrpIerp implements RouteInterface.Zrp.Ierp, Timer
           // send it off
           if(true)
           {
-            System.out.println("[RouteZrpIarp] sending off data t="+JistAPI.getTime()+" msg="+ip);
+            //System.out.println("[RouteZrpIarp] sending off data t="+JistAPI.getTime()+" msg="+ip);
           }
           zrp.send(ip, route[0]);
           it.remove();
@@ -469,7 +472,7 @@ public class RouteZrpIerp implements RouteInterface.Zrp.Ierp, Timer
     if(true)
     {
       //NetMessage.Ip ip = (NetMessage.Ip)msg;
-      System.out.println("[RouteZrpIerp]  received t="+JistAPI.getTime()+" node="+zrp.getLocalAddr()+" msg="+msg );
+      //System.out.println("[RouteZrpIerp]  received t="+JistAPI.getTime()+" node="+zrp.getLocalAddr()+" msg="+msg );
         
     }
     MessageIerp msgImpl = (MessageIerp)msg;
@@ -481,15 +484,7 @@ public class RouteZrpIerp implements RouteInterface.Zrp.Ierp, Timer
         {
           // destination in zone, send back reply
           MessageIerp reply = msgImpl.makeReply(zrp.getLocalAddr(), zrp.getIarp().getRoute(msgImpl.getDst()));
-          if(true)
-          {
-        	//********************* Adição para registrar a quantidade de nós ********************* //
-            //System.out.println("[RouteZrpIerp] dst found: t="+JistAPI.getTime()+" at="+zrp.getLocalAddr()+" reply="reply);
-            System.out.println("Quantidade de nós até o Destino: "+(reply.route.length-1));
-            cbr.registrar(2, ""+(reply.route.length-1));
-            //********************* Adição para registrar a quantidade de nós ********************* //
-          }
-                    
+                              
           receive(reply);
         }
         else
@@ -506,7 +501,12 @@ public class RouteZrpIerp implements RouteInterface.Zrp.Ierp, Timer
           // reply reached query source
           if(true)
           {
-            System.out.println("[RouteZrpIerp] reply received: t="+JistAPI.getTime()+" reply="+msgImpl);
+        	//********************* Adição para registrar a quantidade de nós ********************* //
+              //System.out.println("[RouteZrpIerp] dst found: t="+JistAPI.getTime()+" at="+zrp.getLocalAddr()+" reply="reply);
+              System.out.println("Quantidade de nós até o Destino: "+(route.length-1));
+              can.registrar(2, ""+(route.length-1));
+              //********************* Adição para registrar a quantidade de nós ********************* //
+            //System.out.println("[RouteZrpIerp] reply received: t="+JistAPI.getTime()+" reply="+msgImpl);
           }
           mq.sendAll(msgImpl.getDst(), zrp, (NetAddress[])Util.rest(route));
         }

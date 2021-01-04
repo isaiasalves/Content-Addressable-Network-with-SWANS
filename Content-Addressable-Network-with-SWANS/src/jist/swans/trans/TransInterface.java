@@ -11,6 +11,7 @@ package jist.swans.trans;
 
 import jist.swans.net.NetInterface;
 import jist.swans.net.NetAddress;
+import jist.swans.mac.MacAddress;
 import jist.swans.misc.Message;
 
 import jist.runtime.JistAPI;
@@ -74,8 +75,9 @@ public interface TransInterface extends JistAPI.Proxiable, NetInterface.NetHandl
      * @param srcPort packet source port
      * @throws JistAPI.Continuation never; blocking event
      */
-    void receive(Message msg, NetAddress src, int srcPort) throws JistAPI.Continuation;
-
+    void receive(Message msg, NetAddress src, MacAddress lastHop,  
+    	      byte macId, NetAddress dst, byte priority, byte ttl ) throws JistAPI.Continuation;
+ 
     /**
      * Defines the interface for TCP socket callback.
      */

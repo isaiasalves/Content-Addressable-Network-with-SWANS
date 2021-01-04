@@ -756,7 +756,7 @@ public class TransTcp implements TransInterface.TransTcpInterface
       return;
     }
     JistAPI.sleep(Constants.TRANS_DELAY);
-    handler.receive(msg, src, ((TcpMessage)msg).getDstPort());
+    handler.receive(msg, src,lastHop,   macId,   dst, priority, ttl);
   }
 
   /** {@inheritDoc} */
