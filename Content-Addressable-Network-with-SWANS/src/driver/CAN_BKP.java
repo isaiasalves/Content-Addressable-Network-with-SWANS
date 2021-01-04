@@ -82,7 +82,7 @@ public class CAN_BKP {
 	//
 
 	public static Structure coleta = new Structure();
-	
+
 	private static int msgsReceived = 0;
 
 	private static int msgsSent = 0;
@@ -117,8 +117,8 @@ public class CAN_BKP {
 		private NetAddress localAddr;
 		/** The number of packets this node has received. */
 		private int packetsReceived;
-		
-	
+
+
 		/**
 		 * Creates a new <code>Server</code>.
 		 *
@@ -130,7 +130,7 @@ public class CAN_BKP {
 			this.udp = udp;
 			this.localAddr = localAddr;
 			this.packetsReceived = 0;
-			
+
 		}
 
 		/**
@@ -167,14 +167,14 @@ public class CAN_BKP {
 //						// ************************************************ REGISTRANDO O TEMPO
 //						// DECORRIDO **********************************************//
 //
-//						// ***************************************** REGISTRANDO A DISTÂNCIA ENTRE OS
-//						// NÓS **********************************************//
+//						// ***************************************** REGISTRANDO A DISTï¿½NCIA ENTRE OS
+//						// Nï¿½S **********************************************//
 //						registrar(4, pair.locationOrigem.distance(pair.locationDestino) + "");
 //						System.out.println("Origem: " + pair.locationOrigem);
 //						System.out.println("Destino: " + pair.locationDestino);
 //						System.out.println("distancia: " + pair.locationOrigem.distance(pair.locationDestino) + "");
-//						// ***************************************** REGISTRANDO A DISTÂNCIA ENTRE OS
-//						// NÓS **********************************************//
+//						// ***************************************** REGISTRANDO A DISTï¿½NCIA ENTRE OS
+//						// Nï¿½S **********************************************//
 //
 //						CSVMaker csv = new CSVMaker();
 //						// roteamento-dimensao-# Nodes-loss-movement.csv
@@ -262,11 +262,11 @@ public class CAN_BKP {
 				////////////////////////////////////////////////**INICIA O
 				//////////////////////////////////////////////// TIMER PARA A CAN**/////////////////////////////////////////////
 				startTime = System.currentTimeMillis();
-				System.out.println("Início: " + startTime);
+				System.out.println("Inï¿½cio: " + startTime);
 				//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-				
-				
-				
+
+
+
 				//this.CAN.leave();
 				JistAPI.sleep(100000000);
 				this.CAN.insert(null);
@@ -288,7 +288,7 @@ public class CAN_BKP {
 			//////////////////////////////////////////////// **INICIA O
 			//////////////////////////////////////////////// TIMER**/////////////////////////////////////////////
 			startTime = System.currentTimeMillis();
-			System.out.println("Início: " + startTime);
+			System.out.println("Inï¿½cio: " + startTime);
 			//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			MessageBytes msg = new MessageBytes("message");
 			udp.send(msg, serverAddr, PORT, PORT, Constants.NET_PRIORITY_NORMAL);
@@ -609,7 +609,7 @@ public class CAN_BKP {
 				aodv.getProxy().start();
 				break;
 			case Constants.NET_PROTOCOL_ZRP:
-				// REGISTRANDO A QUANTIDADE DE NÓS PADRÃO
+				// REGISTRANDO A QUANTIDADE DE Nï¿½S PADRï¿½O
 				registrar(2, "1");
 				final boolean zdp = true;
 				RouteZrp zrp = new RouteZrp(address, 2);
@@ -666,7 +666,7 @@ public class CAN_BKP {
 			} else {
 
 				// ******************************************************** COLETANDO O IP E
-				// POSIÇÃO DOS NÓS QUE COMPÕEM O PAR CLIENTE/SERVIDOR
+				// POSIï¿½ï¿½O DOS Nï¿½S QUE COMPï¿½EM O PAR CLIENTE/SERVIDOR
 				// **************************************************************************************//
 
 				if (i == 1) {
@@ -679,7 +679,7 @@ public class CAN_BKP {
 				}
 
 				// ******************************************************** COLETANDO O IP E
-				// POSIÇÃO DOS NÓS QUE COMPÕEM O PAR CLIENTE/SERVIDOR
+				// POSIï¿½ï¿½O DOS Nï¿½S QUE COMPï¿½EM O PAR CLIENTE/SERVIDOR
 				// **************************************************************************************//
 				// initialize client/server apps
 				if (isServer) {
@@ -758,9 +758,9 @@ public class CAN_BKP {
 		}
 
 	}
-	 
-	
-	
+
+
+
 	public static void fimSimulacao() {
 		// ************************************************ REGISTRANDO O TEMPO
 		// DECORRIDO **********************************************//
@@ -773,14 +773,14 @@ public class CAN_BKP {
 		// ************************************************ REGISTRANDO O TEMPO
 		// DECORRIDO **********************************************//
 
-		// ***************************************** REGISTRANDO A DISTÂNCIA ENTRE OS
-		// NÓS **********************************************//
+		// ***************************************** REGISTRANDO A DISTï¿½NCIA ENTRE OS
+		// Nï¿½S **********************************************//
 		registrar(4, pair.locationOrigem.distance(pair.locationDestino) + "");
 		System.out.println("Origem: " + pair.locationOrigem);
 		System.out.println("Destino: " + pair.locationDestino);
 		//System.out.println("distancia: " + pair.locationOrigem.distance(pair.locationDestino) + "");
-		// ***************************************** REGISTRANDO A DISTÂNCIA ENTRE OS
-		// NÓS **********************************************//
+		// ***************************************** REGISTRANDO A DISTï¿½NCIA ENTRE OS
+		// Nï¿½S **********************************************//
 
 		CSVMaker csv = new CSVMaker();
 		// roteamento-dimensao-# Nodes-loss-movement.csv
