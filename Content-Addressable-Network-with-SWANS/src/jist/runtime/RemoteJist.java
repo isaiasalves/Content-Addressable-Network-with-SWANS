@@ -16,6 +16,7 @@ import java.rmi.*;
 import java.rmi.server.*;
 import java.rmi.registry.*;
 import org.apache.bcel.classfile.*;
+import org.apache.bcel.util.ClassPath;
 
 /** 
  * All the JiST client-server related remote classes.
@@ -502,10 +503,16 @@ public class RemoteJist
       {
         String classfile = Rewriter.classToFileName(className);
         byte[] b = null;
-        if(Rewriter.isIgnoredStatic(className))
+//        if (className.startsWith("java.lang.StringBuilder"))
+//  	  	{
+//  		  System.out.println("CORRE");
+//  	  	}
+        if(Rewriter.isIgnoredStatic(className)) //&& !(className.startsWith("java.lang.StringBuilder")))
         {
           // if(out!=null) out.println("  local load: "+className);
-          b = Util.getResourceBytes(classfile);
+          
+             b = Util.getResourceBytes(classfile);
+         
         }
         else
         {
@@ -539,6 +546,13 @@ public class RemoteJist
     {
       cache = new HashMap();
     }
+
+	//@Override
+	public ClassPath getClassPath() {
+		// TODO Auto-generated method stub
+		System.out.println("GETCLASPATH_RemoteJist.Java");
+		return null;
+	}
 
   } // class: RemoteRepository
 

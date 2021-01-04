@@ -233,6 +233,8 @@ public final class Constants
   /** network level (IP) protocol number. */
   public static final short NET_PROTOCOL_DSR            = 135;
   /** network level (IP) protocol number. */
+  public static final short NET_PROTOCOL_CAN            = 13;
+  /** network level (IP) protocol number. */
   public static final short NET_PROTOCOL_ODMRP          = 145;
   /** network level (IP) protocol number. */
   public static final short NET_PROTOCOL_LAR1           = 110;

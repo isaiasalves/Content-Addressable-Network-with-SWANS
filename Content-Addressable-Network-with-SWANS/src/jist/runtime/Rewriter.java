@@ -464,6 +464,10 @@ public final class Rewriter extends ClassLoader
   public JavaClass lookupJavaClass(String name) throws ClassNotFoundException
   {
     // look in cache
+//	  if (name.startsWith("java.lang.StringBuilder"))
+//	  {
+//		  System.out.println("CORRE");
+//	  }
     JavaClass jcl = (JavaClass)lookupCache.get(name);
     if(jcl!=null) return jcl;
     // otherwise, look in repository (eventually disk)

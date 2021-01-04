@@ -711,7 +711,7 @@ public final class Controller implements ControllerRemote, Runnable
       }
       currentCaller = null;
       callbackState = null;
-    }
+   }
     catch(InvocationTargetException e)
     {
       Throwable t = e.getTargetException();
