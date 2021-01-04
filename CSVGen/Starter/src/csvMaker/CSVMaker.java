@@ -53,6 +53,10 @@ public  class CSVMaker {
 			loss = 0+"";
 		}
 		
+		//Formata o padrão de mobilidade
+		if(mobility == "") {
+			mobility = 0+"";
+		}
 		
 		return protocolo+"-"+x+"x"+y+"-"+nodes+"-"+loss+'-'+mobility;
 		

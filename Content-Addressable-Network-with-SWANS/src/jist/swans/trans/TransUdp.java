@@ -252,7 +252,7 @@ public class TransUdp implements TransInterface.TransUdpInterface
   }
 
   /** {@inheritDoc} */
-  public void receive(Message msg, NetAddress src, MacAddress lastHop, 
+  public void receive(Message msg, NetAddress src, MacAddress lastHop,  
       byte macId, NetAddress dst, byte priority, byte ttl)
   {
     UdpMessage udp = (UdpMessage)msg;
@@ -268,7 +268,7 @@ public class TransUdp implements TransInterface.TransUdpInterface
       log.info("receive: t="+JistAPI.getTime()+" src="+src+":"+srcPort+" dstPort="+dstPort+" from="+lastHop+" data="+msg);
     }
     //System.out.println("receive: t="+JistAPI.getTime()+" src="+src+":"+srcPort+" dstPort="+dstPort+" from="+lastHop+" data="+msg);
-    handler.receive(msg, src, srcPort);
+    handler.receive(msg, src, lastHop, macId, dst, priority, ttl );
   }
 
 } // class: TransUdp

@@ -64,10 +64,9 @@ import driver.CBR.Client;
  *
  * @author Ben Viglietta
  * @author Rimon Barr
- * 
  */
 
-public class CAN {
+public class CAN_BKP {
 	/** Default port number to send and receive packets. */
 	private static final int PORT = 3001;
 
@@ -83,7 +82,7 @@ public class CAN {
 	//
 
 	public static Structure coleta = new Structure();
-
+	
 	private static int msgsReceived = 0;
 
 	private static int msgsSent = 0;
@@ -118,7 +117,8 @@ public class CAN {
 		private NetAddress localAddr;
 		/** The number of packets this node has received. */
 		private int packetsReceived;
-
+		
+	
 		/**
 		 * Creates a new <code>Server</code>.
 		 *
@@ -130,7 +130,7 @@ public class CAN {
 			this.udp = udp;
 			this.localAddr = localAddr;
 			this.packetsReceived = 0;
-
+			
 		}
 
 		/**
@@ -146,10 +146,10 @@ public class CAN {
 		public void run() {
 			// Create a UDP event handler that just makes a note of incoming packets
 			TransInterface.SocketHandler handler = new TransInterface.SocketHandler() {
-				public void receive(Message msg, NetAddress src, MacAddress lastHop, byte macId, NetAddress dst,
-						byte priority, byte ttl) {
+				public void receive(Message msg, NetAddress src, MacAddress lastHop, byte macId, NetAddress dst, byte priority,
+						byte ttl) {
 					int msgNum = (++packetsReceived);
-					System.out.println("***Received message " + msgNum + " from " + src + " Here at: " + localAddr);
+					System.out.println("Received message " + msgNum + " from " + src);
 
 					msgsReceived++;
 
@@ -258,28 +258,29 @@ public class CAN {
 
 		/** {@inheritDoc} */
 		public void run() {
-			// if (this.CAN != null) {
-			//////////////////////////////////////////////// **INICIA O
-			//////////////////////////////////////////////// TIMER PARA A
-			// CAN**/////////////////////////////////////////////
-			startTime = System.currentTimeMillis();
-			System.out.println("Início: " + startTime);
-			//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-			// this.CAN.leave();
-			// JistAPI.sleep(100000000);
-			// this.CAN.insert(null);
-			// JistAPI.sleep(1000000000);
-			// this.CAN.search(null);
-			// } else {
-			JistAPI.sleep(100 * Constants.SECOND);
-			// Send the appropriate number of messages to the corresponding server
-			for (int i = 0; i < transmissions; i++) {
-				JistAPI.sleep(20 * Constants.SECOND);
-				JistAPI.sleep(Util.randomTime(5 * Constants.SECOND));
-				self.sendMessage(i + 1);
+			if (this.CAN != null) {
+				////////////////////////////////////////////////**INICIA O
+				//////////////////////////////////////////////// TIMER PARA A CAN**/////////////////////////////////////////////
+				startTime = System.currentTimeMillis();
+				System.out.println("Início: " + startTime);
+				//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+				
+				
+				
+				//this.CAN.leave();
+				JistAPI.sleep(100000000);
+				this.CAN.insert(null);
+				JistAPI.sleep(1000000000);
+				this.CAN.search(null);
+			} else {
+				JistAPI.sleep(100 * Constants.SECOND);
+				// Send the appropriate number of messages to the corresponding server
+				for (int i = 0; i < transmissions; i++) {
+					JistAPI.sleep(20 * Constants.SECOND);
+					JistAPI.sleep(Util.randomTime(5 * Constants.SECOND));
+					self.sendMessage(i + 1);
+				}
 			}
-			// }
 		}
 
 		/** {@inheritDoc} */
@@ -569,7 +570,12 @@ public class CAN {
 
 			// alternate initializing servers and clients until there are numClients of each
 			isServer = (opts.nodes - i <= opts.clients - 1);
-			isClient = (i <= opts.clients);
+
+			if (opts.protocol == Constants.NET_PROTOCOL_CAN) {
+				isClient = (i <= opts.clients + 1);
+			} else {
+				isClient = (i <= opts.clients);
+			}
 
 			// radio
 			RadioNoise radio = new RadioNoiseIndep(i, radioInfo);
@@ -586,8 +592,7 @@ public class CAN {
 			RouteInterface route = null;
 			switch (opts.protocol) {
 			case Constants.NET_PROTOCOL_CAN:
-				// CANAtualPeer = new Peer(address, macAddress);
-				// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+				//CANAtualPeer = new Peer(address, macAddress); +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 				route = CANAtualPeer.getProxy();
 				CANAtualPeer.setNetEntity(net.getProxy());
 				canPeers.add(CANAtualPeer);
@@ -677,81 +682,32 @@ public class CAN {
 				// POSIÇÃO DOS NÓS QUE COMPÕEM O PAR CLIENTE/SERVIDOR
 				// **************************************************************************************//
 				// initialize client/server apps
-				// if (isServer) {
-//					Server server = new Server(udp.getProxy(), address);
-//					servers.add(server.getProxy());
-				// }
-				// if (isClient) {
-//					Client client = new Client(udp.getProxy(), opts.transmissions, address,
-//							new NetAddress(1), null);
+				if (isServer) {
+					Server server = new Server(udp.getProxy(), address);
+					servers.add(server.getProxy());
+				}
+				if (isClient) {
+					Client client = new Client(udp.getProxy(), opts.transmissions, address,
+							new NetAddress(opts.nodes - i + 1), null);
+					clients.add(client.getProxy());
 
-				CANAtualPeer = new Peer(address, macAddress, udp.getProxy());
-				canPeers.add(CANAtualPeer);
-				// clients.add(client.getProxy());
-
-				// }
+				}
 			}
 
 		}
- 
-	 
 
-		
-		
-//		 start clients and servers
-//		numClientsTransmitting = opts.clients;
-//		Iterator serverIter = servers.iterator();
-//		while (serverIter.hasNext())
-//			((ServerInterface) serverIter.next()).run();
-//		
-
-//		Iterator clientIter = clients.iterator();
-//		while (clientIter.hasNext()) {
-//			JistAPI.sleep(999999999);
-//			((ClientInterface) clientIter.next()).run();
-//		}
-//		
-
-//		while (clientIter.hasNext())
-//			((ClientInterface) clientIter.next()).sendMessage(2);;
-//		
-
-		Iterator canNodesIter = canPeers.iterator();
-		
-			 
- 		while (canNodesIter.hasNext()) {
-
-//			Peer noAtual = ((Peer) canNodesIter.next());
-//			
-//			noAtual.startNodes();
-//			
-//			JistAPI.sleep(20000 * Constants.SECOND);
-//			    
-//			  
-//			for (int i=0 ; i < 4; i++) {
-//				if (noAtual.getZone() == null) {
-//					JistAPI.sleep(20000 * Constants.SECOND);
-//					System.out.println("ESPERANDOESPERANDOESPERANDOESPERANDOESPERANDOESPERANDOESPERANDOESPERANDOESPERANDO");
-//				} 
-//			}
-//			
-//			System.out.println("A Zona do Nó "+ noAtual.getHostName()+" é : "+ noAtual.getZone());
-			 JistAPI.sleep(20000 * Constants.SECOND);
-			 JistAPI.sleep(70000 * Constants.SECOND);
-			 JistAPI.sleep(20000 * Constants.SECOND);
-			 JistAPI.sleep(20000 * Constants.SECOND);
-			((Peer) canNodesIter.next()).startNodes();
-			   
-		}
-		
-		
+		// start clients and servers
+		numClientsTransmitting = opts.clients;
+		Iterator serverIter = servers.iterator();
+		while (serverIter.hasNext())
+			((ServerInterface) serverIter.next()).run();
+		JistAPI.sleep(1);
+		Iterator clientIter = clients.iterator();
+		while (clientIter.hasNext())
+			((ClientInterface) clientIter.next()).run();
 
 	} // buildField
 
-	
-	public void processa(Peer noAtual) {
-		
-	}
 	/**
 	 * Starts the CBR simulation.
 	 *
@@ -802,7 +758,9 @@ public class CAN {
 		}
 
 	}
-
+	 
+	
+	
 	public static void fimSimulacao() {
 		// ************************************************ REGISTRANDO O TEMPO
 		// DECORRIDO **********************************************//
@@ -820,15 +778,14 @@ public class CAN {
 		registrar(4, pair.locationOrigem.distance(pair.locationDestino) + "");
 		System.out.println("Origem: " + pair.locationOrigem);
 		System.out.println("Destino: " + pair.locationDestino);
-		// System.out.println("distancia: " +
-		// pair.locationOrigem.distance(pair.locationDestino) + "");
+		//System.out.println("distancia: " + pair.locationOrigem.distance(pair.locationDestino) + "");
 		// ***************************************** REGISTRANDO A DISTÂNCIA ENTRE OS
 		// NÓS **********************************************//
 
 		CSVMaker csv = new CSVMaker();
 		// roteamento-dimensao-# Nodes-loss-movement.csv
-		String fileName = csv.fileNameFormat(params.protocol, params.field.getX(), params.field.getY(), params.nodes,
-				params.lossOpts, params.mobilityOpts);
+		String fileName = csv.fileNameFormat(params.protocol, params.field.getX(), params.field.getY(),
+				params.nodes, params.lossOpts, params.mobilityOpts );
 		csv.makeFile(coleta, fileName);
 	}
 
