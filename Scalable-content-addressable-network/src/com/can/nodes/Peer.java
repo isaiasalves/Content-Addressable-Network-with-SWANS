@@ -343,7 +343,7 @@ public class Peer implements RouteInterface.Can {
 			NeighbourInfo neighbourToRoute;
 			try {
 
-				neighbourToRoute = findClosestNeighbour(mappedCoordinate, wiredInsert.getRouteInformation(), null);
+				neighbourToRoute = findClosestNeighbour(mappedCoordinate, wiredInsert.getRouteInformation(), null, null);
 				wiredInsert.setNeighbourToRoute(neighbourToRoute);
 				wiredInsert.getRouteInformation().addPeerToRoute(this.getMacAddress(), this.getIpAddress());
 
@@ -461,7 +461,7 @@ public class Peer implements RouteInterface.Can {
 
 			NeighbourInfo neighbourToRoute;
 			try {
-				neighbourToRoute = findClosestNeighbour(mappedCoordinate, wiredSearch.getRouteInformation(), null);
+				neighbourToRoute = findClosestNeighbour(mappedCoordinate, wiredSearch.getRouteInformation(), null, null);
 				wiredSearch.getRouteInformation().addPeerToRoute(this.getMacAddress(), this.getIpAddress());
 				wiredSearch.setNeighbourToRoute(neighbourToRoute);
 
@@ -664,7 +664,7 @@ public class Peer implements RouteInterface.Can {
 					
 					this.sendThreaded(joinConfirmation);
 					
-					JistAPI.sleep(100000000);
+					JistAPI.sleep(1000000000);
 					
 					this.sendThreaded(joinConfirmation);
 					
@@ -684,6 +684,7 @@ public class Peer implements RouteInterface.Can {
 
 //						System.out.println("XXXXXXXX- "+localAddr+ "Enviando joinUpdateNeighbours");
 						this.sendThreaded(joinUpdateNeighbours);
+						JistAPI.sleep(1000000000);
 					}
 
 					/*
@@ -776,12 +777,13 @@ public class Peer implements RouteInterface.Can {
 					NeighbourInfo neighbourToRoute;
 					try {
 						neighbourToRoute = findClosestNeighbour(wiredJoin.getRandomCoordinate(),
-								wiredJoin.getRouteInformation(), lastHop);
+								wiredJoin.getRouteInformation(), lastHop, wiredJoin.getNodesVisiteds());
 						if (neighbourToRoute != null) {
 
 							wiredJoin.setHostnameToRoute(neighbourToRoute.getHostname());
 							wiredJoin.setIpAddressToRoute(neighbourToRoute.getIpAddress());
 							wiredJoin.setMacAddressToRoute(neighbourToRoute.getMacAddress());
+							//wiredJoin.setNodesVisiteds(this.getMacAddress());
 							this.sendThreaded(wiredJoin);
 						} else {
 
@@ -975,7 +977,8 @@ public class Peer implements RouteInterface.Can {
 		Utils.printToConsole("IP of New Peer : " + joinConfirmation.getSourceIpAddress());
 		Utils.printToConsole("MAC of New Peer : " + joinConfirmation.getSourceMaccAddres());
 		Utils.printToConsole("Hostname of New Peer : " + joinConfirmation.getSourceHostName());
-		Utils.printToConsole("Zone of New Peer : " + joinConfirmation.getZone());
+		Utils.printToConsole("Zone of New Peer : " + joinConfirmation.getZone()); 
+		Utils.printToConsole("Neighbours: "+ joinConfirmation.getRoutingTable());
 		Utils.printToConsole("----------------------------------------------------------------------");
 	}
 
@@ -1787,11 +1790,15 @@ public class Peer implements RouteInterface.Can {
 	 * that neighbour Else return the closest neighbor to route
 	 */
 	public NeighbourInfo findClosestNeighbour(Coordinate destinationCoordinate, RouteInformation routeInformation,
-			MacAddress lastHop) throws ClosestNeighbourUnavailableException {
+			MacAddress lastHop, ArrayList<MacAddress> nodesVisited) throws ClosestNeighbourUnavailableException {
 		NeighbourInfo neighbourInfo = null;
 		double minDist = -999999;
 		double dist;
 		Zone tempZone;
+		
+		System.out.println();
+		System.out.println("HERE AT: "+this.getIpAddress());
+		System.out.println("Coordenada buscada: "+ destinationCoordinate);
 
 		try {
 			for (Map.Entry<String, NeighbourInfo> routinTableEntry : this.routingTable.entrySet()) {
@@ -1810,6 +1817,13 @@ public class Peer implements RouteInterface.Can {
 					}
 
 					dist = Utils.computeDistance(routinTableEntry.getValue().getZone(), destinationCoordinate);
+					
+					System.out.println("Nó análisado: "+ routinTableEntry.getKey());
+					System.out.println("Nó: "+ routeInformation);
+					System.out.println("dist: "+ dist);
+					System.out.println("neighbourInfo: "+ routinTableEntry.getValue());
+					
+					
 					if (minDist == -999999 && !routinTableEntry.getValue().getMacAddress().equals(lastHop)) {
 
 						minDist = dist;

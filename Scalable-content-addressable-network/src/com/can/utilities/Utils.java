@@ -4,8 +4,10 @@ import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import com.can.exceptions.ClosestNeighbourUnavailableException;
 import com.can.serializables.Coordinate;
 import com.can.serializables.Zone;
+import com.sun.istack.internal.Nullable;
 
 public class Utils {
 
@@ -28,6 +30,12 @@ public class Utils {
 
 		double lowY1 = zone1.getStartY();
 		double highY1 = zone1.getEndY();
+		
+		
+		double XA = 0;
+		double XB = 0;
+		double YA = 0;
+		double YB = 0;
 
 		/*
 		 * computing mid point in the zones
@@ -37,10 +45,9 @@ public class Utils {
 		double y1 = lowY1 + Math.abs(lowY1 - highY1)/2;
 		double y2 = destCoord.getYCoord();
 
-		dist = Math.sqrt(Math.pow((x1-x2),2) + Math.pow((y1-y2), 2));
+		//dist = Math.sqrt(Math.pow((x1-x2),2) + Math.pow((y1-y2), 2));
 
-		
-		
+		dist = 0;
 		
 		//Ponto no espaço de X
 		if (zone1.getStartX() <= destCoord.getXCoord() && zone1.getEndX() >= destCoord.getXCoord()) {
@@ -54,6 +61,35 @@ public class Utils {
 			dist = Math.min(Math.abs(destCoord.getXCoord() - zone1.getStartX()), Math.abs(destCoord.getXCoord()-zone1.getEndX()));
 		}
 		
+		//Será necessário calcular a distância entre dois pontos
+		if ( dist ==0 ) {
+			
+			//Definindo as variáveis: XA e XB
+			if (destCoord.getXCoord() > highX1 ) {
+				XA = highX1;
+				XB = destCoord.getXCoord();
+			} else {
+				XA = destCoord.getXCoord();
+				XB = lowX1;
+			}
+			
+			//Definindo as variáveis: YA e YB 
+			if (destCoord.getYCoord() > highY1) {
+				YA = highY1;
+				YB = destCoord.getYCoord();
+			} else {
+				YA = destCoord.getYCoord();
+				YB = lowY1;
+			}
+			
+			//Pitagoras
+			if (XA > 0 && XB  > 0 && YA > 0 && YB > 0 ) {
+				dist = Math.sqrt(Math.pow((XB - XA), 2) + Math.pow((YB - YA), 2));
+			} else {
+				System.err.println("ERROR WHEN TRYING TO FIND SHORTER PATH TO POINT");
+				 
+			}
+		}
 		
 		
 		return dist;
