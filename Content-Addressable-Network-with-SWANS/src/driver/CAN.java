@@ -95,6 +95,8 @@ public class CAN {
 	private static Pairs pair = new Pairs();
 
 	private static ArrayList canPeers = new ArrayList();
+	
+	private static Peer specialCANNode;
 
 	/**
 	 * The interface for server nodes in the simulation.
@@ -380,6 +382,7 @@ public class CAN {
 		CmdLineParser.Option opt_transmissions = parser.addIntegerOption('t', "transmissions");
 		CmdLineParser.Option opt_seed = parser.addIntegerOption('r', "randomseed");
 
+		//CAN Options
 		CmdLineParser.Option opt_canLeave = parser.addIntegerOption('v', "leave");
 		CmdLineParser.Option opt_canInsert = parser.addIntegerOption('i', "insert");
 		CmdLineParser.Option opt_canSearch = parser.addIntegerOption('s', "search");
@@ -653,11 +656,7 @@ public class CAN {
 
 				CANAtualPeer.startNodes();
 
-				// Sets the client that will do special commands in CAN
-				MacAddress macAddressCANClient = new MacAddress(5);
-				if (macAddress.equals(macAddressCANClient)) {
-					clients.add(client.getProxy());
-				}
+			
 			} else {
 
 				// ******************************************************** COLETANDO O IP E
@@ -685,13 +684,24 @@ public class CAN {
 //					Client client = new Client(udp.getProxy(), opts.transmissions, address,
 //							new NetAddress(1), null);
 
+				
+				
+				
+				
+				
 				CANAtualPeer = new Peer(address, macAddress, udp.getProxy());
 				canPeers.add(CANAtualPeer);
 				// clients.add(client.getProxy());
 
+				// Sets the client that will do special commands in CAN
+				MacAddress macAddressCANClient = new MacAddress(3);
+				if (macAddress.equals(macAddressCANClient)) {
+					specialCANNode = CANAtualPeer;
+				}
 				// }
 			}
-
+			
+			
 		}
  
 	 
@@ -737,12 +747,18 @@ public class CAN {
 //			
 //			System.out.println("A Zona do Nó "+ noAtual.getHostName()+" é : "+ noAtual.getZone());
 			 JistAPI.sleep(20000 * Constants.SECOND);
-			 JistAPI.sleep(70000 * Constants.SECOND);
-			 JistAPI.sleep(20000 * Constants.SECOND);
-			 JistAPI.sleep(20000 * Constants.SECOND);
+//			 JistAPI.sleep(70000 * Constants.SECOND);
+//			 JistAPI.sleep(20000 * Constants.SECOND);
+//			 JistAPI.sleep(20000 * Constants.SECOND);
 			((Peer) canNodesIter.next()).startNodes();
 			   
 		}
+ 		
+ 		
+ 		//Execute CAN Operations
+ 		if (specialCANNode != null) {
+ 			specialCANNode.insert(null);
+ 		}
 		
 		
 

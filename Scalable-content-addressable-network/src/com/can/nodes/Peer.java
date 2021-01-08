@@ -1995,12 +1995,12 @@ public class Peer implements RouteInterface.Can {
 
 		if (zone != null) {
 
-			if (zone.getStartX() < destCoord.getXCoord() && destCoord.getXCoord() <= zone.getEndX()) {
+			if (zone.getStartX() <= destCoord.getXCoord() && destCoord.getXCoord() <= zone.getEndX()) {
 				// means that the x coordinate and the y coordinate are in
 				// ((LOWER_BOUND_X,UPPER_BOUND_X) , (LOWER_BOUND_Y,UPPER_BOUND_Y))
 
 				// checking whether the y coordinate of destCoord lies within the Peer's zone
-				if (zone.getStartY() < destCoord.getYCoord() && destCoord.getYCoord() <= zone.getEndY()) {
+				if (zone.getStartY() <= destCoord.getYCoord() && destCoord.getYCoord() <= zone.getEndY()) {
 
 					return true;
 				} else {

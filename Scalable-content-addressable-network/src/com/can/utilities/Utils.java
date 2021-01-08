@@ -83,7 +83,7 @@ public class Utils {
 			}
 			
 			//Pitagoras
-			if (XA > 0 && XB  > 0 && YA > 0 && YB > 0 ) {
+			if (XA >= 0 && XB  > 0 && YA >= 0 && YB > 0 ) {
 				dist = Math.sqrt(Math.pow((XB - XA), 2) + Math.pow((YB - YA), 2));
 			} else {
 				System.err.println("ERROR WHEN TRYING TO FIND SHORTER PATH TO POINT");
