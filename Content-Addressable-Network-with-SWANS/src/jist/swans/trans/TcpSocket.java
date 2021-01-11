@@ -16,6 +16,7 @@ import jist.swans.trans.TransTcp.TcpMessage;
 import jist.swans.Constants;
 
 import jist.runtime.JistAPI;
+import jist.runtime.JistAPI.Continuation;
 import jist.runtime.Channel;
 
 import java.nio.channels.SocketChannel;
@@ -27,6 +28,8 @@ import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import jist.swans.app.io.InputStream;
 import jist.swans.app.io.OutputStream;
+import jist.swans.mac.MacAddress;
+
 import java.io.IOException;
 
 /**
@@ -2285,10 +2288,16 @@ public class TcpSocket implements SocketInterface.TcpSocketInterface
     }
 
     /** {@inheritDoc} */
-    public void receive(Message msg, NetAddress src, int srcPort)
+    public void receive(Message msg, NetAddress src, int srcPort, MacAddress lastHop)
     {
       socketEntity.checkPacketandState((TcpMessage)msg, src);
     }
+
+	public void receive(Message msg, NetAddress src, MacAddress lastHop, byte macId, NetAddress dst, byte priority,
+			byte ttl) throws Continuation {
+		// TODO Auto-generated method stub
+		
+	}
     
   }// class: TcpSocketCallback
 

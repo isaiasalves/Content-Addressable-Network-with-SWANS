@@ -21,7 +21,8 @@ import jist.runtime.JistAPI;
 
 import org.apache.log4j.Logger;
 
-import driver.CBR;
+import driver.CAN;
+//import driver.CBR;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -44,11 +45,11 @@ public class RouteDsr implements RouteInterface.Dsr
   //////////////////////////////////////////////////
   // constants
   //
-	
-  //COLETA DE MÉTRICAS//
-  public static CBR cbr = new CBR();
-	
-  /** The maximum amount of jitter before sending a packet. */ 
+
+  //COLETA DE Mï¿½TRICAS//
+  public static CAN can = new CAN();
+
+  /** The maximum amount of jitter before sending a packet. */
   public static final long BROADCAST_JITTER       = 10 * Constants.MILLI_SECOND;
   /** The maximum amount of time a packet can remain in the Send Buffer. */
   public static final long SEND_BUFFER_TIMEOUT    = 30 * Constants.SECOND;
@@ -98,7 +99,7 @@ public class RouteDsr implements RouteInterface.Dsr
   //////////////////////////////////////////////////
   // locals
   //
-  
+
   private long startTime;
   private long stopTime;
 
@@ -288,7 +289,7 @@ public class RouteDsr implements RouteInterface.Dsr
    */
   private Hashtable routeRequestTable;
 
-  /** The next ID number to use when sending a route request. */ 
+  /** The next ID number to use when sending a route request. */
   private short nextRequestId;
 
   /** The next ID number to use when sending an acknowledgement request. */
@@ -306,12 +307,13 @@ public class RouteDsr implements RouteInterface.Dsr
   /** The proxy interface for this object. */
   private RouteInterface.Dsr self;
 
+  public Structure coletaDSR;
 
   //////////////////////////////////////////////////
   // initialization
   //
 
-  /** 
+  /**
    * Creates a new RouteDsr object.
    *
    * @param localAddr local node address
@@ -357,6 +359,10 @@ public class RouteDsr implements RouteInterface.Dsr
     return self;
   }
 
+
+  public Structure getColetaDSR() {
+	  return this.coletaDSR;
+  }
   //////////////////////////////////////////////////
   // Helper methods
   //
@@ -375,45 +381,45 @@ public class RouteDsr implements RouteInterface.Dsr
     {
       routeToHere[i] = opt.getAddress(i-1);
     }
-    
+
     routeToHere[routeToHere.length - 1] = localAddr;
-    
+
     NetAddress[] routeFromHere = new NetAddress[routeToHere.length - 2];
     for (int i = 0; i < routeFromHere.length; i++)
     {
       routeFromHere[i] = routeToHere[routeToHere.length - i - 2];
     }
-    
+
     // Add a Route Reply option indicating how to get here from the
     // source and a Source Route option indicating how to get to the
     // source from here.
     RouteDsrMsg reply = new RouteDsrMsg(null);
     reply.addOption(RouteDsrMsg.OptionRouteReply.create(routeToHere));
-    
+
     if (routeFromHere.length > 0)
     {
       reply.addOption(RouteDsrMsg.OptionSourceRoute.create(0,
         routeFromHere.length, routeFromHere));
-     
-    }
-    
-    
-    //********************* Adição para plotar a quantidade de nós ********************* //
-    System.out.println("Quantidade de nós até o Destino: "+(routeToHere.length-1)+":");
-    //*********************************************************************************** //
-    
-    //******************** Adição para plotar os nós até o destino ********************* //
-    for	(int i=0; i < routeToHere.length; i++)	
-    {
-    	System.out.print(routeToHere[i]+", ");
-    	
-    }
-    System.out.println();
-    //*********************************************************************************** //
-    //cbr.registrar("Quantidade de nós até o Destino: "+(routeToHere.length-1));
-    cbr.registrar(2, ""+(routeToHere.length-1));
 
-	
+    }
+
+
+    //********************* Adiï¿½ï¿½o para plotar a quantidade de nï¿½s ********************* //
+//    System.out.println("Quantidade de nï¿½s atï¿½ o Destino: "+(routeToHere.length-1)+":");
+//    //*********************************************************************************** //
+//
+//    //******************** Adiï¿½ï¿½o para plotar os nï¿½s atï¿½ o destino ********************* //
+//    for	(int i=0; i < routeToHere.length; i++)
+//    {
+//    	System.out.print(routeToHere[i]+", ");
+//
+//    }
+//    System.out.println();
+//    //*********************************************************************************** //
+//    //cbr.registrar("Quantidade de nï¿½s atï¿½ o Destino: "+(routeToHere.length-1));
+//    can.registrar(2, ""+(routeToHere.length-1));
+
+
     NetMessage.Ip replyMsg = new NetMessage.Ip(reply, localAddr,
       src, Constants.NET_PROTOCOL_DSR, Constants.NET_PRIORITY_NORMAL,
       Constants.TTL_DEFAULT);
@@ -449,7 +455,7 @@ public class RouteDsr implements RouteInterface.Dsr
 
     // To do in future: Check the Route Cache to see if we know a route to the
     // destination
-    
+
     // Clone the message, add this node's address to the Source Route option,
     // and retransmit it.
     RouteDsrMsg newRequest = (RouteDsrMsg)msg.clone();
@@ -460,7 +466,7 @@ public class RouteDsr implements RouteInterface.Dsr
     {
       newAddresses[i] = opt.getAddress(i);
     }
-    
+
     newAddresses[newAddresses.length - 1] = localAddr;
     newRequest.addOption(RouteDsrMsg.OptionRouteRequest.create(opt.getId(),
       opt.getTargetAddress(), newAddresses));
@@ -917,7 +923,7 @@ public class RouteDsr implements RouteInterface.Dsr
           break;
 
         case RouteDsrMsg.OPT_ACK:
-          HandleAck((RouteDsrMsg.OptionAck)opt, dst);
+           HandleAck((RouteDsrMsg.OptionAck)opt, dst);
           break;
 
         case RouteDsrMsg.OPT_ROUTE_ERROR:
@@ -955,7 +961,7 @@ public class RouteDsr implements RouteInterface.Dsr
                 byte[] newOptBuf = new byte[optBuf.length];
                 System.arraycopy(optBuf, 0, newOptBuf, 0, optBuf.length);
                 newOptBuf[2] |= 0x80;
-                
+
                 List options = newMsg.getOptions();
                 options.remove(optBuf);
                 options.add(newOptBuf);
@@ -970,7 +976,7 @@ public class RouteDsr implements RouteInterface.Dsr
             default:
               throw new RuntimeException("Should never reach this point");
           }
- 
+
           break;
       }
     }
@@ -1270,7 +1276,7 @@ public class RouteDsr implements RouteInterface.Dsr
   {
     maintenanceBuffer = new Hashtable();
   }
-  
+
   /** Initializes the Route Request Table. */
   private void InitRequestTable()
   {
@@ -1568,7 +1574,7 @@ public class RouteDsr implements RouteInterface.Dsr
       if (msg.getProtocol() == Constants.NET_PROTOCOL_DSR)
       {
         RouteDsrMsg dsrMsg = (RouteDsrMsg)msg.getPayload();
-        
+
         // If this nodle is the source of the message, must simply remove the
         // broken link from the route cache
         if (msg.getSrc().equals(localAddr))
@@ -1621,16 +1627,16 @@ public class RouteDsr implements RouteInterface.Dsr
           msg.getDst() + "!");
       }
     }
-    
-    
-    //************************** Adição para mostrar as retransmissões que ocorreram **************************************** //
+
+
+    //************************** Adiï¿½ï¿½o para mostrar as retransmissï¿½es que ocorreram **************************************** //
     if (numRetransmits > 0)
     {
-    	
+
     	System.out.println(localAddr + " retransmitting from " + msg.getSrc() + " to " +msg.getDst() + "!" );
-     
-    	
-    	cbr.registrar(3, localAddr + " retransmitting from " + msg.getSrc() + " to " +msg.getDst());
+
+
+    	can.registrar(3, localAddr + " retransmitting from " + msg.getSrc() + " to " +msg.getDst());
     }
     //************************************************************************************************************************** //
 
@@ -1690,35 +1696,20 @@ public class RouteDsr implements RouteInterface.Dsr
     if (route.length > 0)
     {
       dsrMsg.addOption(RouteDsrMsg.OptionSourceRoute.create(0, route.length, route));
-       
+
     }
 
-    
-    //****************************** Adição para mostrar o tamanho da rota ******************************//
-    System.out.println();
-    System.out.println("Tamanho da rota: "+route.length);
-    System.out.println();
-    
-    
-    
-	    
-	//    System.out.println("ESCREVENDO NO ARQUIVO");
-	//    try {
-	//	      FileWriter myWriter = new FileWriter("C:\\Testes\\filename.txt");
-	//	      myWriter.write("Tamanho da rota: "+route.length);
-	//	      myWriter.close();
-	//	      System.out.println("Successfully wrote to the file.");
-	//	    } catch (IOException e) {
-	//	      System.out.println("An error occurred.");
-	//	      e.printStackTrace();
-	//	    }
-	    
-    
-    cbr.registrar(4, ""+route.length); //Tamanho da rota
-   
+
+    //****************************** Adiï¿½ï¿½o para mostrar o tamanho da rota ******************************//
+//    System.out.println();
+//    System.out.println("Tamanho da rota: "+route.length);
+//    System.out.println();
+//
+//    can.registrar(4, ""+route.length); //Tamanho da rota
+
     //****************************************************************************************************//
-    
-    
+
+
     if (log.isInfoEnabled())
     {
       log.info("Route length: " + route.length);
@@ -1747,10 +1738,23 @@ public class RouteDsr implements RouteInterface.Dsr
     if (msg instanceof NetMessage.Ip)
     {
       NetMessage.Ip ipMsg = (NetMessage.Ip)msg;
-      
+
+
       if (ipMsg.getProtocol() == Constants.NET_PROTOCOL_DSR)
       {
         RouteDsrMsg dsrMsg = (RouteDsrMsg)ipMsg.getPayload();
+//
+//        System.out.println();
+//        System.out.println(localAddr + " Recebeu mensagem de " + ipMsg.getSrc() +
+//        		" to " + ipMsg.getDst());
+//
+//
+//        if (localAddr == ipMsg.getDst() ) {
+//        	System.out.println("???????????????????JOINCONFIRMATION???????????????????");
+//        }
+
+//        ID = 31(localAddr + " saw message from " + ipMsg.getSrc() +
+//                " to " + ipMsg.getDst());
 
         if (log.isDebugEnabled())
         {
@@ -1769,7 +1773,7 @@ public class RouteDsr implements RouteInterface.Dsr
                 break;
 
               case RouteDsrMsg.OPT_ACK_REQUEST:
-                RouteDsrMsg.OptionAckRequest ackRequest = 
+                RouteDsrMsg.OptionAckRequest ackRequest =
                   (RouteDsrMsg.OptionAckRequest)RouteDsrMsg.Option.create(optBuf, 0);
                 log.debug("    Acknowledgement Request " + ackRequest.getId());
                 break;
@@ -1824,10 +1828,13 @@ public class RouteDsr implements RouteInterface.Dsr
   {
     if (!(msg instanceof NetMessage.Ip))
     {
+      System.out.println("Pacote nï¿½o suportado");
       throw new RuntimeException("Non-IP packets not supported");
+
     }
 
     NetMessage.Ip ipMsg = (NetMessage.Ip)msg;
+    //System.out.println(localAddr+" Enviando messagem para: "+ipMsg.getDst()+ " ID = "+ipMsg.getId());
 
     if (ipMsg.getProtocol() == Constants.NET_PROTOCOL_DSR)
     {
@@ -1842,9 +1849,18 @@ public class RouteDsr implements RouteInterface.Dsr
 
       if (route == null)
       {
+//    	  System.out.println();
+//    	  System.out.println("Rota = "+route);
+//    	  System.out.println();
+//
+
         self.InsertBuffer(ipMsg);
         activeRequests.add(ipMsg.getDst());
         DiscoverRoute(ipMsg.getDst(), nextRequestId++);
+
+//          System.out.println();
+//	  	  System.out.println("Rota = "+route);
+//	  	  System.out.println();
       }
       else
       {
@@ -1899,7 +1915,7 @@ public class RouteDsr implements RouteInterface.Dsr
       // Now go through some strange contortions to get this message received by
       // the proper protocol handler
       NetMessage.Ip newIp = new NetMessage.Ip(dsrMsg.getContent(), src, dst,
-        dsrMsg.getNextHeaderType(), priority, ttl);        
+        dsrMsg.getNextHeaderType(), priority, ttl);
 
       netEntity.receive(newIp, lastHop, macId, false);
 

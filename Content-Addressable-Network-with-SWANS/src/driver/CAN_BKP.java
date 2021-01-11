@@ -64,10 +64,9 @@ import csvMaker.*;
  *
  * @author Ben Viglietta
  * @author Rimon Barr
- * 
  */
 
-public class CAN {
+public class CAN_BKP {
 	/** Default port number to send and receive packets. */
 	private static final int PORT = 3001;
 
@@ -95,12 +94,6 @@ public class CAN {
 	private static Pairs pair = new Pairs();
 
 	private static ArrayList canPeers = new ArrayList();
-	
-	private static Peer CANInsertPeer;
-	
-	private static Peer CANLeavePeer;
-	
-	private static Peer CANSearchPeer;
 
 	/**
 	 * The interface for server nodes in the simulation.
@@ -124,6 +117,7 @@ public class CAN {
 		private NetAddress localAddr;
 		/** The number of packets this node has received. */
 		private int packetsReceived;
+
 
 		/**
 		 * Creates a new <code>Server</code>.
@@ -152,10 +146,10 @@ public class CAN {
 		public void run() {
 			// Create a UDP event handler that just makes a note of incoming packets
 			TransInterface.SocketHandler handler = new TransInterface.SocketHandler() {
-				public void receive(Message msg, NetAddress src, MacAddress lastHop, byte macId, NetAddress dst,
-						byte priority, byte ttl) {
+				public void receive(Message msg, NetAddress src, MacAddress lastHop, byte macId, NetAddress dst, byte priority,
+						byte ttl) {
 					int msgNum = (++packetsReceived);
-					System.out.println("***Received message " + msgNum + " from " + src + " Here at: " + localAddr);
+					System.out.println("Received message " + msgNum + " from " + src);
 
 					msgsReceived++;
 
@@ -173,14 +167,14 @@ public class CAN {
 //						// ************************************************ REGISTRANDO O TEMPO
 //						// DECORRIDO **********************************************//
 //
-//						// ***************************************** REGISTRANDO A DISTÂNCIA ENTRE OS
-//						// NÓS **********************************************//
+//						// ***************************************** REGISTRANDO A DISTï¿½NCIA ENTRE OS
+//						// Nï¿½S **********************************************//
 //						registrar(4, pair.locationOrigem.distance(pair.locationDestino) + "");
 //						System.out.println("Origem: " + pair.locationOrigem);
 //						System.out.println("Destino: " + pair.locationDestino);
 //						System.out.println("distancia: " + pair.locationOrigem.distance(pair.locationDestino) + "");
-//						// ***************************************** REGISTRANDO A DISTÂNCIA ENTRE OS
-//						// NÓS **********************************************//
+//						// ***************************************** REGISTRANDO A DISTï¿½NCIA ENTRE OS
+//						// Nï¿½S **********************************************//
 //
 //						CSVMaker csv = new CSVMaker();
 //						// roteamento-dimensao-# Nodes-loss-movement.csv
@@ -233,7 +227,7 @@ public class CAN {
 		private int transmissions;
 		/** instance of CAN when simulating it. */
 		private Peer CAN;
- 
+
 		/**
 		 * Creates a new <code>Client</code>.
 		 *
@@ -264,28 +258,29 @@ public class CAN {
 
 		/** {@inheritDoc} */
 		public void run() {
-			// if (this.CAN != null) {
-			//////////////////////////////////////////////// **INICIA O
-			//////////////////////////////////////////////// TIMER PARA A
-			// CAN**/////////////////////////////////////////////
-			startTime = System.currentTimeMillis();
-			System.out.println("Início: " + startTime);
-			//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			if (this.CAN != null) {
+				////////////////////////////////////////////////**INICIA O
+				//////////////////////////////////////////////// TIMER PARA A CAN**/////////////////////////////////////////////
+				startTime = System.currentTimeMillis();
+				System.out.println("Inï¿½cio: " + startTime);
+				//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-			// this.CAN.leave();
-			// JistAPI.sleep(100000000);
-			// this.CAN.insert(null);
-			// JistAPI.sleep(1000000000);
-			// this.CAN.search(null);
-			// } else {
-			JistAPI.sleep(100 * Constants.SECOND);
-			// Send the appropriate number of messages to the corresponding server
-			for (int i = 0; i < transmissions; i++) {
-				JistAPI.sleep(20 * Constants.SECOND);
-				JistAPI.sleep(Util.randomTime(5 * Constants.SECOND));
-				self.sendMessage(i + 1);
+
+
+				//this.CAN.leave();
+				JistAPI.sleep(100000000);
+				this.CAN.insert(null);
+				JistAPI.sleep(1000000000);
+				this.CAN.search(null);
+			} else {
+				JistAPI.sleep(100 * Constants.SECOND);
+				// Send the appropriate number of messages to the corresponding server
+				for (int i = 0; i < transmissions; i++) {
+					JistAPI.sleep(20 * Constants.SECOND);
+					JistAPI.sleep(Util.randomTime(5 * Constants.SECOND));
+					self.sendMessage(i + 1);
+				}
 			}
-			// }
 		}
 
 		/** {@inheritDoc} */
@@ -293,7 +288,7 @@ public class CAN {
 			//////////////////////////////////////////////// **INICIA O
 			//////////////////////////////////////////////// TIMER**/////////////////////////////////////////////
 			startTime = System.currentTimeMillis();
-			System.out.println("Início: " + startTime);
+			System.out.println("Inï¿½cio: " + startTime);
 			//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			MessageBytes msg = new MessageBytes("message");
 			udp.send(msg, serverAddr, PORT, PORT, Constants.NET_PRIORITY_NORMAL);
@@ -386,7 +381,6 @@ public class CAN {
 		CmdLineParser.Option opt_transmissions = parser.addIntegerOption('t', "transmissions");
 		CmdLineParser.Option opt_seed = parser.addIntegerOption('r', "randomseed");
 
-		//CAN Options
 		CmdLineParser.Option opt_canLeave = parser.addIntegerOption('v', "leave");
 		CmdLineParser.Option opt_canInsert = parser.addIntegerOption('i', "insert");
 		CmdLineParser.Option opt_canSearch = parser.addIntegerOption('s', "search");
@@ -576,7 +570,12 @@ public class CAN {
 
 			// alternate initializing servers and clients until there are numClients of each
 			isServer = (opts.nodes - i <= opts.clients - 1);
-			isClient = (i <= opts.clients);
+
+			if (opts.protocol == Constants.NET_PROTOCOL_CAN) {
+				isClient = (i <= opts.clients + 1);
+			} else {
+				isClient = (i <= opts.clients);
+			}
 
 			// radio
 			RadioNoise radio = new RadioNoiseIndep(i, radioInfo);
@@ -593,8 +592,7 @@ public class CAN {
 			RouteInterface route = null;
 			switch (opts.protocol) {
 			case Constants.NET_PROTOCOL_CAN:
-				// CANAtualPeer = new Peer(address, macAddress);
-				// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+				//CANAtualPeer = new Peer(address, macAddress); +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 				route = CANAtualPeer.getProxy();
 				CANAtualPeer.setNetEntity(net.getProxy());
 				canPeers.add(CANAtualPeer);
@@ -611,7 +609,7 @@ public class CAN {
 				aodv.getProxy().start();
 				break;
 			case Constants.NET_PROTOCOL_ZRP:
-				// REGISTRANDO A QUANTIDADE DE NÓS PADRÃO
+				// REGISTRANDO A QUANTIDADE DE Nï¿½S PADRï¿½O
 				registrar(2, "1");
 				final boolean zdp = true;
 				RouteZrp zrp = new RouteZrp(address, 2);
@@ -660,11 +658,15 @@ public class CAN {
 
 				CANAtualPeer.startNodes();
 
-			
+				// Sets the client that will do special commands in CAN
+				MacAddress macAddressCANClient = new MacAddress(5);
+				if (macAddress.equals(macAddressCANClient)) {
+					clients.add(client.getProxy());
+				}
 			} else {
 
 				// ******************************************************** COLETANDO O IP E
-				// POSIÇÃO DOS NÓS QUE COMPÕEM O PAR CLIENTE/SERVIDOR
+				// POSIï¿½ï¿½O DOS Nï¿½S QUE COMPï¿½EM O PAR CLIENTE/SERVIDOR
 				// **************************************************************************************//
 
 				if (i == 1) {
@@ -677,118 +679,35 @@ public class CAN {
 				}
 
 				// ******************************************************** COLETANDO O IP E
-				// POSIÇÃO DOS NÓS QUE COMPÕEM O PAR CLIENTE/SERVIDOR
+				// POSIï¿½ï¿½O DOS Nï¿½S QUE COMPï¿½EM O PAR CLIENTE/SERVIDOR
 				// **************************************************************************************//
 				// initialize client/server apps
-				// if (isServer) {
-//					Server server = new Server(udp.getProxy(), address);
-//					servers.add(server.getProxy());
-				// }
-				// if (isClient) {
-//					Client client = new Client(udp.getProxy(), opts.transmissions, address,
-//							new NetAddress(1), null);
+				if (isServer) {
+					Server server = new Server(udp.getProxy(), address);
+					servers.add(server.getProxy());
+				}
+				if (isClient) {
+					Client client = new Client(udp.getProxy(), opts.transmissions, address,
+							new NetAddress(opts.nodes - i + 1), null);
+					clients.add(client.getProxy());
 
-				
-				
-				
-				
-				
-				CANAtualPeer = new Peer(address, macAddress, udp.getProxy());
-				canPeers.add(CANAtualPeer);
-				// clients.add(client.getProxy());
-
-				// Sets the client that will do special commands in CAN
-				MacAddress macAddressCANClientInsert = new MacAddress(3);
-				if (macAddress.equals(macAddressCANClientInsert)) {
-					CANInsertPeer = CANAtualPeer;
 				}
-				
-				MacAddress macAddressCANClientLeave = new MacAddress(6);
-				if (macAddress.equals(macAddressCANClientLeave)) {
-					CANLeavePeer = CANAtualPeer;
-				}
-				
-				MacAddress macAddressCANClientSearch = new MacAddress(9);
-				if (macAddress.equals(macAddressCANClientSearch)) {
-					CANSearchPeer = CANAtualPeer;
-				}
-				// }
 			}
-			
-			
+
 		}
- 
-	 
 
-		
-		
-//		 start clients and servers
-//		numClientsTransmitting = opts.clients;
-//		Iterator serverIter = servers.iterator();
-//		while (serverIter.hasNext())
-//			((ServerInterface) serverIter.next()).run();
-//		
-
-//		Iterator clientIter = clients.iterator();
-//		while (clientIter.hasNext()) {
-//			JistAPI.sleep(999999999);
-//			((ClientInterface) clientIter.next()).run();
-//		}
-//		
-
-//		while (clientIter.hasNext())
-//			((ClientInterface) clientIter.next()).sendMessage(2);;
-//		
-
-		Iterator canNodesIter = canPeers.iterator();
-		
-			 
- 		while (canNodesIter.hasNext()) {
-
-//			Peer noAtual = ((Peer) canNodesIter.next());
-//			
-//			noAtual.startNodes();
-//			
-//			JistAPI.sleep(20000 * Constants.SECOND);
-//			    
-//			  
-//			for (int i=0 ; i < 4; i++) {
-//				if (noAtual.getZone() == null) {
-//					JistAPI.sleep(20000 * Constants.SECOND);
-//					System.out.println("ESPERANDOESPERANDOESPERANDOESPERANDOESPERANDOESPERANDOESPERANDOESPERANDOESPERANDO");
-//				} 
-//			}
-//			
-//			System.out.println("A Zona do Nó "+ noAtual.getHostName()+" é : "+ noAtual.getZone());
-			 JistAPI.sleep(20000 * Constants.SECOND);
-//			 JistAPI.sleep(70000 * Constants.SECOND);
-//			 JistAPI.sleep(20000 * Constants.SECOND);
-//			 JistAPI.sleep(20000 * Constants.SECOND);
-			((Peer) canNodesIter.next()).startNodes();
-			   
-		}
- 		
- 		
- 		//Execute CAN Operations
- 		if (CANInsertPeer != null || CANLeavePeer  != null || CANSearchPeer != null) {
- 			JistAPI.sleep(20000 * Constants.SECOND);
- 			CANInsertPeer.insert(null);
- 			JistAPI.sleep(20000 * Constants.SECOND);
- 			CANLeavePeer.leave();
- 			JistAPI.sleep(20000 * Constants.SECOND);
- 			JistAPI.sleep(20000 * Constants.SECOND);
- 			CANSearchPeer.search(null);
- 			JistAPI.sleep(20000 * Constants.SECOND);
- 		}
-		
-		
+		// start clients and servers
+		numClientsTransmitting = opts.clients;
+		Iterator serverIter = servers.iterator();
+		while (serverIter.hasNext())
+			((ServerInterface) serverIter.next()).run();
+		JistAPI.sleep(1);
+		Iterator clientIter = clients.iterator();
+		while (clientIter.hasNext())
+			((ClientInterface) clientIter.next()).run();
 
 	} // buildField
 
-	
-	public void processa(Peer noAtual) {
-		
-	}
 	/**
 	 * Starts the CBR simulation.
 	 *
@@ -840,6 +759,8 @@ public class CAN {
 
 	}
 
+
+
 	public static void fimSimulacao() {
 		// ************************************************ REGISTRANDO O TEMPO
 		// DECORRIDO **********************************************//
@@ -852,20 +773,19 @@ public class CAN {
 		// ************************************************ REGISTRANDO O TEMPO
 		// DECORRIDO **********************************************//
 
-		// ***************************************** REGISTRANDO A DISTÂNCIA ENTRE OS
-		// NÓS **********************************************//
+		// ***************************************** REGISTRANDO A DISTï¿½NCIA ENTRE OS
+		// Nï¿½S **********************************************//
 		registrar(4, pair.locationOrigem.distance(pair.locationDestino) + "");
 		System.out.println("Origem: " + pair.locationOrigem);
 		System.out.println("Destino: " + pair.locationDestino);
-		// System.out.println("distancia: " +
-		// pair.locationOrigem.distance(pair.locationDestino) + "");
-		// ***************************************** REGISTRANDO A DISTÂNCIA ENTRE OS
-		// NÓS **********************************************//
+		//System.out.println("distancia: " + pair.locationOrigem.distance(pair.locationDestino) + "");
+		// ***************************************** REGISTRANDO A DISTï¿½NCIA ENTRE OS
+		// Nï¿½S **********************************************//
 
 		CSVMaker csv = new CSVMaker();
 		// roteamento-dimensao-# Nodes-loss-movement.csv
-		String fileName = csv.fileNameFormat(params.protocol, params.field.getX(), params.field.getY(), params.nodes,
-				params.lossOpts, params.mobilityOpts);
+		String fileName = csv.fileNameFormat(params.protocol, params.field.getX(), params.field.getY(),
+				params.nodes, params.lossOpts, params.mobilityOpts );
 		csv.makeFile(coleta, fileName);
 	}
 

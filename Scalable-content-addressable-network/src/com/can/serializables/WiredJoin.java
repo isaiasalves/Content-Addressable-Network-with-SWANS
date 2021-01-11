@@ -2,6 +2,7 @@ package com.can.serializables;
 
 import java.io.Serializable;
 import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -32,6 +33,7 @@ public class WiredJoin implements Serializable, Message, Cloneable {
 	private ConcurrentHashMap<String , NeighbourInfo> routingTable;
 	private int numberOfHops;
 	private RouteInformation routeInformation;
+	private ArrayList<MacAddress> nodesVisited;
 
 
 	public WiredJoin(String sourceHostname, InetAddress sourceIpAddress, MacAddress sourceMacAddress, String hostnameToRoute, InetAddress ipAddressToRoute, MacAddress macAddressToRoute, RouteInformation routeInformation){
@@ -44,13 +46,21 @@ public class WiredJoin implements Serializable, Message, Cloneable {
 		this.numberOfHops = 0;
 		this.routeInformation = routeInformation;
 		this.macAddressToRoute = macAddressToRoute;
+		
 	}
 
 
 	public Coordinate getRandomCoordinate() {
 		return randomCoordinate;
 	}
+	
+	public ArrayList<MacAddress> getNodesVisiteds(){
+		return this.nodesVisited;
+	}
 
+	public void setNodesVisiteds(MacAddress nodeIP) {
+		this.nodesVisited.add(nodeIP);
+	}
 
 	public void setRandomCoordinate(Coordinate randomCoordinate) {
 		this.randomCoordinate = randomCoordinate;
