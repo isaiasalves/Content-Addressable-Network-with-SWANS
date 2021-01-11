@@ -96,7 +96,11 @@ public class CAN {
 
 	private static ArrayList canPeers = new ArrayList();
 	
-	private static Peer specialCANNode;
+	private static Peer CANInsertPeer;
+	
+	private static Peer CANLeavePeer;
+	
+	private static Peer CANSearchPeer;
 
 	/**
 	 * The interface for server nodes in the simulation.
@@ -694,9 +698,19 @@ public class CAN {
 				// clients.add(client.getProxy());
 
 				// Sets the client that will do special commands in CAN
-				MacAddress macAddressCANClient = new MacAddress(3);
-				if (macAddress.equals(macAddressCANClient)) {
-					specialCANNode = CANAtualPeer;
+				MacAddress macAddressCANClientInsert = new MacAddress(3);
+				if (macAddress.equals(macAddressCANClientInsert)) {
+					CANInsertPeer = CANAtualPeer;
+				}
+				
+				MacAddress macAddressCANClientLeave = new MacAddress(6);
+				if (macAddress.equals(macAddressCANClientLeave)) {
+					CANLeavePeer = CANAtualPeer;
+				}
+				
+				MacAddress macAddressCANClientSearch = new MacAddress(9);
+				if (macAddress.equals(macAddressCANClientSearch)) {
+					CANSearchPeer = CANAtualPeer;
 				}
 				// }
 			}
@@ -756,8 +770,15 @@ public class CAN {
  		
  		
  		//Execute CAN Operations
- 		if (specialCANNode != null) {
- 			specialCANNode.insert(null);
+ 		if (CANInsertPeer != null || CANLeavePeer  != null || CANSearchPeer != null) {
+ 			JistAPI.sleep(20000 * Constants.SECOND);
+ 			CANInsertPeer.insert(null);
+ 			JistAPI.sleep(20000 * Constants.SECOND);
+ 			CANLeavePeer.leave();
+ 			JistAPI.sleep(20000 * Constants.SECOND);
+ 			JistAPI.sleep(20000 * Constants.SECOND);
+ 			CANSearchPeer.search(null);
+ 			JistAPI.sleep(20000 * Constants.SECOND);
  		}
 		
 		

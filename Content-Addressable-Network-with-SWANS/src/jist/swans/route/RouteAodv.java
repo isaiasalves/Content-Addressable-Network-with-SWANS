@@ -1473,9 +1473,9 @@ public class RouteAodv implements RouteInterface.Aodv
       if (rreq.getTtl() < TTL_THRESHOLD)
       {
 
-    	//************************** Adiï¿½ï¿½o para mostrar as retransmissï¿½es que ocorreram **************************************** //
+    	//************************** Adição para mostrar as retransmissoes que ocorreram **************************************** //
     	can.registrar(3, rreq.thisNode.getLocalAddr() + " is retransmitting");
-    	//************************** Adiï¿½ï¿½o para mostrar as retransmissï¿½es que ocorreram **************************************** //
+    	//************************** Adição para mostrar as retransmissoes que ocorreram **************************************** //
         //broadcast new RREQ message with new RREQ ID and incremented TTL
         rreq.obtainNewRreqId();
         rreq.incTtl();

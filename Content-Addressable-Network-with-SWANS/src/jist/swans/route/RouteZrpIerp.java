@@ -472,7 +472,7 @@ public class RouteZrpIerp implements RouteInterface.Zrp.Ierp, Timer
     if(true)
     {
       //NetMessage.Ip ip = (NetMessage.Ip)msg;
-      //System.out.println("[RouteZrpIerp]  received t="+JistAPI.getTime()+" node="+zrp.getLocalAddr()+" msg="+msg );
+      System.out.println("[RouteZrpIerp]  received t="+JistAPI.getTime()+" node="+zrp.getLocalAddr()+" msg="+msg );
 
     }
     MessageIerp msgImpl = (MessageIerp)msg;

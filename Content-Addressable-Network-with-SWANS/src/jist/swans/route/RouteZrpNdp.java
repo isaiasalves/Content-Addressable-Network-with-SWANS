@@ -149,7 +149,7 @@ public class RouteZrpNdp implements RouteInterface.Zrp.Ndp, Timer
     if(true)
     {
       //NetMessage.Ip ip = null;
-      //system.out.println("[RouteZrpNdp] receive t="+JistAPI.getTime()+" at="+zrp.getLocalAddr()+" from="+src+" msg="+msg.toString() );
+      //System.out.println("[RouteZrpNdp] receive t="+JistAPI.getTime()+" at="+zrp.getLocalAddr()+" from="+src+" msg="+msg.toString() );
     }
     NeighbourState n = (NeighbourState)neighbours.get(src);
     boolean changed = false;
@@ -161,7 +161,7 @@ public class RouteZrpNdp implements RouteInterface.Zrp.Ndp, Timer
       changed = true;
       if(true)
       {
-        //system.out.println("[RouteZrpNdp] t="+JistAPI.getTimeString()+" "+zrp.getLocalAddr()+" found neighbour "+src);
+        //System.out.println("[RouteZrpNdp] t="+JistAPI.getTimeString()+" "+zrp.getLocalAddr()+" found neighbour "+src);
       }
     }
     n.macAddr = macAddr;
@@ -215,7 +215,7 @@ public class RouteZrpNdp implements RouteInterface.Zrp.Ndp, Timer
     MessageNdp msg = new MessageNdp();
     if(true)
     {
-      //system.out.println("[RouteZrpNdp] send t="+JistAPI.getTime()+" from="+zrp.getLocalAddr()+" msg=");
+      //System.out.println("[RouteZrpNdp] send t="+JistAPI.getTime()+" from="+zrp.getLocalAddr()+" msg=");
       
     }
     zrp.broadcast(msg);
@@ -231,7 +231,7 @@ public class RouteZrpNdp implements RouteInterface.Zrp.Ndp, Timer
         // neighbour lost
         if(true)
         {
-          //system.out.println("[RouteZrpNdp] t="+JistAPI.getTimeString()+" "+zrp.getLocalAddr()+" lost neighbour "+e.getKey());
+//          System.out.println("[RouteZrpNdp] t="+JistAPI.getTimeString()+" "+zrp.getLocalAddr()+" lost neighbour "+e.getKey());
         }
         zrp.getIarp().linkinfo(new Link((NetAddress)e.getKey(), zrp.getLocalAddr()), true);
         it.remove();

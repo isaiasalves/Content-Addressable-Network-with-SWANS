@@ -1796,9 +1796,9 @@ public class Peer implements RouteInterface.Can {
 		double dist;
 		Zone tempZone;
 		
-		System.out.println();
-		System.out.println("HERE AT: "+this.getIpAddress());
-		System.out.println("Coordenada buscada: "+ destinationCoordinate);
+//		System.out.println();
+//		System.out.println("HERE AT: "+this.getIpAddress());
+//		System.out.println("Coordenada buscada: "+ destinationCoordinate);
 
 		try {
 			for (Map.Entry<String, NeighbourInfo> routinTableEntry : this.routingTable.entrySet()) {
@@ -1818,10 +1818,10 @@ public class Peer implements RouteInterface.Can {
 
 					dist = Utils.computeDistance(routinTableEntry.getValue().getZone(), destinationCoordinate);
 					
-					System.out.println("Nó análisado: "+ routinTableEntry.getKey());
-					System.out.println("Nó: "+ routeInformation);
-					System.out.println("dist: "+ dist);
-					System.out.println("neighbourInfo: "+ routinTableEntry.getValue());
+//					System.out.println("Nó análisado: "+ routinTableEntry.getKey());
+//					System.out.println("Nó: "+ routeInformation);
+//					System.out.println("dist: "+ dist);
+//					System.out.println("neighbourInfo: "+ routinTableEntry.getValue());
 					
 					
 					if (minDist == -999999 && !routinTableEntry.getValue().getMacAddress().equals(lastHop)) {
@@ -2583,8 +2583,8 @@ public class Peer implements RouteInterface.Can {
 //				System.out.println("(2)-" + this.macAddress + " enviando wiredJoin para "
 //						+ wiredJoin.getSourceMacAddress() + " " + System.currentTimeMillis());
 				
-				System.out.println("(A)-" + this.macAddress + " enviando wiredJoin para: "
-						+ ipDest + " com ActivePeers = " +wiredJoin.getActivePeersInfo()+" "+ System.currentTimeMillis());
+//				System.out.println("(A)-" + this.macAddress + " enviando wiredJoin para: "
+//						+ ipDest + " com ActivePeers = " +wiredJoin.getActivePeersInfo()+" "+ System.currentTimeMillis());
 				
 				//this.netEntity.send(ipMsg, Constants.NET_INTERFACE_DEFAULT, wiredJoin.getSourceMacAddress());
 				this.udp.send(ipMsg, ipDest, PORT, PORT, Constants.NET_PRIORITY_NORMAL);
@@ -2629,8 +2629,8 @@ public class Peer implements RouteInterface.Can {
 
 //				System.out.println("(3)-" + this.macAddress + " enviando wiredJoin para "
 //						+ wiredJoin.getMacAddressToRoute() + " " + System.currentTimeMillis()+"Solicitando entrada em "+"("+wiredJoin.getRandomCoordinate()+")");
-				System.out.println("(B)-" + this.macAddress + " enviando wiredJoin para: "
-						+ ipDest + " com getRouteInformation = " +wiredJoin.getRouteInformation()+" "+ System.currentTimeMillis());
+//				System.out.println("(B)-" + this.macAddress + " enviando wiredJoin para: "
+//						+ ipDest + " com getRouteInformation = " +wiredJoin.getRouteInformation()+" "+ System.currentTimeMillis());
 				
 				//this.netEntity.send(ipMsg, Constants.NET_INTERFACE_DEFAULT, wiredJoin.getMacAddressToRoute());
 				this.udp.send(ipMsg, ipDest, PORT, PORT, Constants.NET_PRIORITY_NORMAL);
@@ -3614,15 +3614,15 @@ public class Peer implements RouteInterface.Can {
 				WiredSearch wiredSearch = (WiredSearch) wiredObject;
 				this.peer.search(wiredSearch);
 			} else if (wiredObject instanceof WiredJoin) {
-				System.out.println(this.peer.macAddress + " recebendo WiredJoin de " + this.lastHop + " "
-						+ System.currentTimeMillis());
+//				System.out.println(this.peer.macAddress + " recebendo WiredJoin de " + this.lastHop + " "
+//						+ System.currentTimeMillis());
 				
 				WiredJoin wiredJoin = (WiredJoin) wiredObject;
 
 				this.peer.join(wiredJoin, lastHop);
 			} else if (wiredObject instanceof JoinUpdateNeighbours) {
-				System.out.println(this.peer.macAddress + " recebendo JoinUpdateNeighbours de " + this.lastHop + " "
-						+ System.currentTimeMillis());
+//				System.out.println(this.peer.macAddress + " recebendo JoinUpdateNeighbours de " + this.lastHop + " "
+//						+ System.currentTimeMillis());
 				
 				JoinUpdateNeighbours joinUpdateNeighbours = (JoinUpdateNeighbours) wiredObject;
 
@@ -3632,8 +3632,8 @@ public class Peer implements RouteInterface.Can {
 				//JistAPI.sleep(10000);
 				this.peer.updateRoutingTableForNewNode(joinUpdateNeighbours);
 			} else if (wiredObject instanceof TemporaryZoneReleaseUpdateNeighbours) {
-				System.out.println(this.peer.macAddress + " recebendo TemporaryZoneReleaseUpdateNeighbours de " + this.lastHop + " "
-						+ System.currentTimeMillis());
+//				System.out.println(this.peer.macAddress + " recebendo TemporaryZoneReleaseUpdateNeighbours de " + this.lastHop + " "
+//						+ System.currentTimeMillis());
 				
 				TemporaryZoneReleaseUpdateNeighbours temporaryZoneReleaseUpdateNeighbours = (TemporaryZoneReleaseUpdateNeighbours) wiredObject;
 
@@ -3651,8 +3651,8 @@ public class Peer implements RouteInterface.Can {
 				this.peer.updateActivePeers(joinUpdateBootstrap);
 
 			} else if (wiredObject instanceof JoinConfirmation) {
-				System.out.println(this.peer.macAddress + " recebendo JoinConfirmation de " + this.lastHop + " "
-						+ System.currentTimeMillis());
+//				System.out.println(this.peer.macAddress + " recebendo JoinConfirmation de " + this.lastHop + " "
+//						+ System.currentTimeMillis());
 				
 				JoinConfirmation joinConfirmation = (JoinConfirmation) wiredObject;
 

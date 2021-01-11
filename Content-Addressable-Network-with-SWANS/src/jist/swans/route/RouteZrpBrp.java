@@ -568,7 +568,7 @@ public class RouteZrpBrp implements RouteInterface.Zrp.Brp, Timer
     if(true)
     {
      // NetMessage.Ip ip = (NetMessage.Ip)msg;
-      //System.out.println("[RouteZrpBrp] receive t="+JistAPI.getTime()+" at="+zrp.getLocalAddr()+" from="+from+" msg="+msgImpl);
+      System.out.println("[RouteZrpBrp] receive t="+JistAPI.getTime()+" at="+zrp.getLocalAddr()+" from="+from+" msg="+msgImpl);
     }
     QueryCoverageEntry qce = getQueryCoverageEntry(msgImpl.getSrc(), msgImpl.getID(), false);
     qce.addFrom(from);
@@ -595,7 +595,7 @@ public class RouteZrpBrp implements RouteInterface.Zrp.Brp, Timer
     if(true)
     {
       //NetMessage.Ip ip = (NetMessage.Ip)msg;
-      //System.out.println("[RouteZrpBrp] send request t="+JistAPI.getTimeString()+" from="+zrp.getLocalAddr()+" msg="+msg );
+      System.out.println("[RouteZrpBrp] send request t="+JistAPI.getTimeString()+" from="+zrp.getLocalAddr()+" msg="+msg );
     }
     QueryCoverageEntry qce = getQueryCoverageEntry(msg.getSrc(), msg.getID(), true);
     if(!qce.isForwarded() && qce.isTarget())
@@ -607,7 +607,7 @@ public class RouteZrpBrp implements RouteInterface.Zrp.Brp, Timer
         MessageBrp brp = new MessageBrp(msg, neighbours);
         if(true)
         {
-          //System.out.println("[RouteZrpBrp] send t="+JistAPI.getTimeString()+" from="+zrp.getLocalAddr()+" msg="+brp);
+          System.out.println("[RouteZrpBrp] send t="+JistAPI.getTimeString()+" from="+zrp.getLocalAddr()+" msg="+brp);
         }
         zrp.broadcast(brp);
       }
