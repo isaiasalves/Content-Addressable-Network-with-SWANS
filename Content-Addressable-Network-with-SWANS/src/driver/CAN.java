@@ -771,6 +771,12 @@ public class CAN {
  		
  		//Execute CAN Operations
  		if (CANInsertPeer != null || CANLeavePeer  != null || CANSearchPeer != null) {
+ 			
+ 			Recorder rec = Recorder.getInstance();
+ 			String fileName = rec.fileNameFormat(params.protocol, params.field.getX(), params.field.getY(), params.nodes,
+ 					params.lossOpts, params.mobilityOpts);
+ 			rec.startSimulation(fileName);
+ 			
  			JistAPI.sleep(20000 * Constants.SECOND);
  			CANInsertPeer.insert(null);
  			JistAPI.sleep(20000 * Constants.SECOND);

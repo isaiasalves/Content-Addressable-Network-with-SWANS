@@ -44,6 +44,7 @@ import com.can.serializables.WiredZoneTransfer;
 import com.can.serializables.Zone;
 import com.can.utilities.Utils;
 
+import csvMaker.Recorder;
 import driver.CAN;
 //import driver.CBR.ServerInterface;
 import driver.threaded.worker;
@@ -258,6 +259,11 @@ public class Peer implements RouteInterface.Can {
 			// adding the keyword (file name) to the list of filenames in the current Peer
 			this.fileNames.add(wiredInsert.getKeyword());
 
+			//***********************************REGISTRA O TÉRMINO DA SIMULAÇÃO***************************************************//
+			Recorder rec = Recorder.getInstance();
+			rec.endSimulation();
+			//***********************************REGISTRA O TÉRMINO DA SIMULAÇÃO***************************************************//
+			
 			// creating the success message
 			successMessage = "INSERT operation successful.\nInserted file : " + wiredInsert.getKeyword()
 					+ ".\nPeer hostName : " + this.getHostName() + ".\nPeer ipAddress : " + this.getIpAddress();
@@ -300,6 +306,13 @@ public class Peer implements RouteInterface.Can {
 			// adding the keyword (file name) to the list of filenames in the current Peer
 			this.tempFileNames.add(wiredInsert.getKeyword());
 
+			
+			//***********************************REGISTRA O TÉRMINO DA SIMULAÇÃO***************************************************//
+			Recorder rec = Recorder.getInstance();
+			rec.endSimulation();
+			//***********************************REGISTRA O TÉRMINO DA SIMULAÇÃO***************************************************//
+			
+			
 			// creating the success message
 			successMessage = "INSERT operation successful.\nInserted file : " + wiredInsert.getKeyword()
 					+ ".\nPeer hostName : " + this.getHostName() + ".\nPeer ipAddress : " + this.getIpAddress();
