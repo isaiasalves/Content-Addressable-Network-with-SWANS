@@ -1,5 +1,7 @@
 package csvMaker;
 
+import java.util.HashMap;
+
 import jist.runtime.JistAPI;
 import jist.swans.Constants;
 
@@ -10,9 +12,19 @@ public class Recorder {
 	private static long elapsedTime;
 	private static long stopTime;
 	private static String fileName;
+	private static HashMap content = new HashMap();
+	private static int messagesAtBootstrapCount = 0;
 	
 	private Recorder() {
 		
+	}
+	
+	public static void setContent(String key, String value) {
+		content.put(key, value);
+	}
+	
+	public static void setMessagesAtBootstrapCount() {
+		messagesAtBootstrapCount++;
 	}
 	
 	public static Recorder getInstance () {
@@ -27,34 +39,24 @@ public class Recorder {
 	public void endSimulation() {
 		stopTime = System.currentTimeMillis();
 		recordFile();
-		//DEVE CHAMAR A CLASSE PARA ESCREVER NO ARQUIVO INFORMANDO OS VALORES OBTIDOS
 	}
 	
 	public void recordFile() {
-		JistAPI.sleep(1000);
-		// ************************************************ REGISTRANDO O TEMPO DECORRIDO **********************************************//
+	
 		elapsedTime = stopTime - startTime;
 		System.out.println("Início: " + startTime);
 		System.out.println("Fim: " + stopTime);
 		System.out.println("Decorrido = " + elapsedTime);
+		String strLong = Long.toString(elapsedTime);
+		content.put("RTT", strLong);
+		content.put("BootstrapMSGCount", messagesAtBootstrapCount+"");
 
-		// ************************************************ REGISTRANDO O TEMPO
-		// DECORRIDO **********************************************//
+ 
 
-		// ***************************************** REGISTRANDO A DISTÂNCIA ENTRE OS
-		// NÓS **********************************************//
-		//registrar(4, pair.locationOrigem.distance(pair.locationDestino) + "");
-//		System.out.println("Origem: " + pair.locationOrigem);
-//		System.out.println("Destino: " + pair.locationDestino);
-		// System.out.println("distancia: " +
-		// pair.locationOrigem.distance(pair.locationDestino) + "");
-		// ***************************************** REGISTRANDO A DISTÂNCIA ENTRE OS
-		// NÓS **********************************************//
-
-		//CSVMaker csv = new CSVMaker();
-		// roteamento-dimensao-# Nodes-loss-movement.csv
+		CSVMaker csv = new CSVMaker();
 		 
-		//csv.makeFile(coleta, fileName);
+		 
+		csv.makeFile(content, fileName);
 	}
 	
 	

@@ -426,7 +426,7 @@ public final class Controller implements ControllerRemote, Runnable
         currentEvent = events.removeFirst();
         currentSimulationTime = currentEvent.time;
         processEvent();
-        numEvents++;
+         numEvents++;
         disposeEvent(currentEvent);
       }
     }

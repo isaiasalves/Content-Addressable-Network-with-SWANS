@@ -786,7 +786,7 @@ public class CAN_BKP {
 		// roteamento-dimensao-# Nodes-loss-movement.csv
 		String fileName = csv.fileNameFormat(params.protocol, params.field.getX(), params.field.getY(),
 				params.nodes, params.lossOpts, params.mobilityOpts );
-		csv.makeFile(coleta, fileName);
+		//csv.makeFile(coleta, fileName);
 	}
 
 } // class: CBR
