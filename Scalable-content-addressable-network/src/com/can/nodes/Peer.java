@@ -3615,11 +3615,13 @@ public class Peer implements RouteInterface.Can {
 			// TODO Auto-generated method stub
 
 			// System.out.println("AKI na thread at "+JistAPI.getTime());
-			
+
+			Recorder rec = Recorder.getInstance();
 			try {
 				if (this.peer.isBootstrap()) {
-				Recorder rec = Recorder.getInstance();
-				rec.setMessagesAtBootstrapCount();
+					rec.setMessagesAtBootstrapCount();
+				} else {
+					rec.setMessagesAtNodesCount();
 				}
 			} catch (UnknownHostException e1) {
 				// TODO Auto-generated catch block
@@ -3777,7 +3779,7 @@ public class Peer implements RouteInterface.Can {
 				Utils.printToConsole(wiredSuccess.toString());
 				
 				if (wiredSuccess.getStatusMessage() == "Search successful") {
-					Recorder rec = Recorder.getInstance();
+					//Recorder rec = Recorder.getInstance();
 					String tamanho = wiredSuccess.getRouteInformation().getRoute().size()-1+"";
 					rec.setContent("Saltos", tamanho);
 					rec.endSimulation();

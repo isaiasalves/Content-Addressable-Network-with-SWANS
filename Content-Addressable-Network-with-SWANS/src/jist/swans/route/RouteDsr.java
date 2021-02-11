@@ -404,11 +404,11 @@ public class RouteDsr implements RouteInterface.Dsr
     }
 
 
-    //********************* Adiï¿½ï¿½o para plotar a quantidade de nï¿½s ********************* //
-//    System.out.println("Quantidade de nï¿½s atï¿½ o Destino: "+(routeToHere.length-1)+":");
+    //********************* Adicao para plotar a quantidade de nos ********************* //
+//    System.out.println("Quantidade de nós até o Destino: "+(routeToHere.length-1)+":");
 //    //*********************************************************************************** //
 //
-//    //******************** Adiï¿½ï¿½o para plotar os nï¿½s atï¿½ o destino ********************* //
+//    //******************** Adicao para plotar os nos ate o destino ********************* //
 //    for	(int i=0; i < routeToHere.length; i++)
 //    {
 //    	System.out.print(routeToHere[i]+", ");
@@ -416,9 +416,10 @@ public class RouteDsr implements RouteInterface.Dsr
 //    }
 //    System.out.println();
 //    //*********************************************************************************** //
-//    //cbr.registrar("Quantidade de nï¿½s atï¿½ o Destino: "+(routeToHere.length-1));
+//    //cbr.registrar("Quantidade de nos ate o Destino: "+(routeToHere.length-1));
 //    can.registrar(2, ""+(routeToHere.length-1));
-
+    Recorder rec = Recorder.getInstance();
+    rec.setHopCount(routeToHere.length-1);
 
     NetMessage.Ip replyMsg = new NetMessage.Ip(reply, localAddr,
       src, Constants.NET_PROTOCOL_DSR, Constants.NET_PRIORITY_NORMAL,

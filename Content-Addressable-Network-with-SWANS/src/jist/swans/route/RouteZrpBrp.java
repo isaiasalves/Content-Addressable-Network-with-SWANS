@@ -21,6 +21,8 @@ import jist.runtime.JistAPI;
 
 import org.apache.log4j.Logger;
 
+import csvMaker.Recorder;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -609,6 +611,10 @@ public class RouteZrpBrp implements RouteInterface.Zrp.Brp, Timer
         {
           //System.out.println("[RouteZrpBrp] send t="+JistAPI.getTimeString()+" from="+zrp.getLocalAddr()+" msg="+brp);
         }
+        
+//        Recorder rec = Recorder.getInstance();
+//        rec.setHopCount(1);
+//        
         zrp.broadcast(brp);
       }
       // never process this query again

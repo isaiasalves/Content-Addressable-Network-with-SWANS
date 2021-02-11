@@ -452,6 +452,7 @@ public class RouteZrp implements RouteInterface.Zrp
     {
       // route found inside zone
       nextHop = iarp.getRoute(ip.getDst())[0];
+      //System.out.println("[RouteZrp] - Rota encontrada dentro da Zona do nó: "+this.localAddr +"Para o nó: "+nextHop);
     }
     else if(ip.hasSourceRoute())
     {

@@ -14,6 +14,10 @@ public class Recorder {
 	private static String fileName;
 	private static HashMap content = new HashMap();
 	private static int messagesAtBootstrapCount = 0;
+	private static int messagesAtNodesCount = 0;
+	private static int hopCount = 0;
+	private static String protocol;
+	public static int setZRPRadius = 0;
 	
 	private Recorder() {
 		
@@ -25,6 +29,14 @@ public class Recorder {
 	
 	public static void setMessagesAtBootstrapCount() {
 		messagesAtBootstrapCount++;
+	}
+	
+	public static void setMessagesAtNodesCount() {
+		messagesAtNodesCount++;
+	}
+	
+	public static void setHopCount(int hops) {
+		hopCount += hops;
 	}
 	
 	public static Recorder getInstance () {
@@ -50,9 +62,18 @@ public class Recorder {
 		String strLong = Long.toString(elapsedTime);
 		content.put("RTT", strLong);
 		content.put("BootstrapMSGCount", messagesAtBootstrapCount+"");
+		content.put("NodesMSGCount", messagesAtNodesCount+"");
 
- 
+		if (hopCount == 0) {
+			hopCount = 1;
+		}
+		
+		content.put("hopCount-"+this.protocol, hopCount+"");
 
+		if (this.setZRPRadius > 0) {
+			content.put("ZRPRadius", setZRPRadius+"");
+		}
+		
 		CSVMaker csv = new CSVMaker();
 		 
 		 
@@ -63,17 +84,16 @@ public class Recorder {
 	public String fileNameFormat(int protocol, float fieldX, float fieldY, int nodes,String loss, String mobility) {
 		String fileName = null;
 		
-		//Formata o protocólo utilizado
-		String protocolo = null;
+				
 		switch(protocol) {
 		case (135):
-			protocolo = "DSR";
+			this.protocol = "DSR";
 			break;
 		case (123):
-			protocolo = "AODV";
+			this.protocol = "AODV";
 			break;
 		case (133):
-			protocolo = "ZPR";
+			this.protocol = "ZPR";
 			break;
 		}
 		
@@ -91,7 +111,7 @@ public class Recorder {
 			mobility = 0+"";
 		}
 		
-		return protocolo+"-"+x+"x"+y+"-"+nodes+"-"+loss+'-'+mobility;
+		return this.protocol+"-"+x+"x"+y+"-"+nodes+"-"+loss+'-'+mobility;
 		
 	}
 	

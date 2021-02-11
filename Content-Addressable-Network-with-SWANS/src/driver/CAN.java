@@ -87,6 +87,8 @@ public class CAN {
 	private static int msgsReceived = 0;
 
 	private static int msgsSent = 0;
+	
+	private static int zrpRadius = 2;
 
 	private static CommandLineOptions params;
 
@@ -617,7 +619,7 @@ public class CAN {
 				// REGISTRANDO A QUANTIDADE DE NÓS PADRÃO
 				// registrar(2, "1");
 				final boolean zdp = true;
-				RouteZrp zrp = new RouteZrp(address, 1);
+				RouteZrp zrp = new RouteZrp(address, zrpRadius);
 				zrp.setNetEntity(net.getProxy());
 				zrp.getProxy().start();
 				route = zrp.getProxy();
@@ -830,18 +832,16 @@ public class CAN {
 				Recorder rec = Recorder.getInstance();
 				String fileName = rec.fileNameFormat(params.protocol, params.field.getX(), params.field.getY(),
 						params.nodes, params.lossOpts, params.mobilityOpts);
-
+				if(params.protocol == 133) {
+					rec.setZRPRadius = zrpRadius;
+				}
 			
-		
-// 				JistAPI.sleep(20000 * Constants.SECOND);
 	 			JistAPI.sleep(Constants.SECOND);
 				CANInsertPeer.insert(null);
-
-	 			
-//				leave(options.nodes, 3);
- 				JistAPI.sleep(4 *Constants.SECOND);
-	 			rec.startSimulation(fileName);
- 				CANSearchPeer.search(null);
+//			 	leave(options.nodes, 3);
+  				JistAPI.sleep(5  *Constants.SECOND);
+ 	 			rec.startSimulation(fileName);
+  				CANSearchPeer.search(null);
 
 			}
 		} catch (CmdLineParser.OptionException e) {

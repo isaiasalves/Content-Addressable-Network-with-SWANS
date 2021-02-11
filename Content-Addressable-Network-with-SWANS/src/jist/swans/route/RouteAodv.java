@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Set;
 
+import csvMaker.Recorder;
 import csvMaker.Structure;
 import driver.CAN;
 //import driver.CBR;
@@ -1926,9 +1927,12 @@ public class RouteAodv implements RouteInterface.Aodv
         + " origIp=" + rrepMsg.getOrigIp()
         + " hopCnt=" + rrepMsg.getHopCount());
 
-    	//********************* Adi��o para plotar a quantidade de n�s ********************* //
-        System.out.println("Quantidade de n�s at� o Destino: "+(rrepMsg.getHopCount()+1+":"));
+    	//********************* Adicao para plotar a quantidade de nos ********************* //
+        System.out.println("Quantidade de nos ate o Destino: "+(rrepMsg.getHopCount()+1+":"));
         can.registrar(2, ""+(rrepMsg.getHopCount()+1));
+        
+        Recorder rec = Recorder.getInstance();
+        rec.setHopCount(rrepMsg.getHopCount()+1);
 
         //*********************************************************************************** //
 
