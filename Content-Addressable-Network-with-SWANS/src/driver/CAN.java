@@ -37,9 +37,9 @@ import jist.swans.misc.Location;
 import jist.swans.misc.Message;
 import jist.swans.misc.MessageBytes;
 import jist.swans.Constants;
-
+import jist.swans.app.AppJava;
 import jist.runtime.JistAPI;
-
+import jist.runtime.JistAPI.Continuation;
 import jargs.gnu.*;
 
 import java.io.FileWriter;
@@ -48,6 +48,7 @@ import java.net.UnknownHostException;
 import java.util.*;
 
 import com.can.nodes.Peer;
+import com.can.nodes.Peer.RevisedSend;
 import com.puppycrawl.tools.checkstyle.checks.UpperEllCheck;
 import com.ziclix.python.sql.util.Queue;
 
@@ -88,7 +89,7 @@ public class CAN {
 
 	private static int msgsSent = 0;
 	
-	private static int zrpRadius = 2;
+	private static int zrpRadius = 1;
 
 	private static CommandLineOptions params;
 
@@ -105,6 +106,8 @@ public class CAN {
 	private static Peer CANSearchPeer;
 
 	private static Iterator canNodesIter;
+	
+	private static Iterator canNodesIterRedundancy;
 
 	/**
 	 * The interface for server nodes in the simulation.
@@ -164,33 +167,7 @@ public class CAN {
 					msgsReceived++;
 
 					if (msgsReceived == msgsSent) {
-//						fimSimulacao();
 
-//						// ************************************************ REGISTRANDO O TEMPO
-//						// DECORRIDO **********************************************//
-//						long stopTime = System.currentTimeMillis();
-//						long elapsedTime = stopTime - startTime;
-//						registrar(1, elapsedTime + "");
-//						System.out.println("Fim: " + stopTime);
-//						System.out.println("Decorrido = " + elapsedTime);
-//
-//						// ************************************************ REGISTRANDO O TEMPO
-//						// DECORRIDO **********************************************//
-//
-//						// ***************************************** REGISTRANDO A DISTÂNCIA ENTRE OS
-//						// NÓS **********************************************//
-//						registrar(4, pair.locationOrigem.distance(pair.locationDestino) + "");
-//						System.out.println("Origem: " + pair.locationOrigem);
-//						System.out.println("Destino: " + pair.locationDestino);
-//						System.out.println("distancia: " + pair.locationOrigem.distance(pair.locationDestino) + "");
-//						// ***************************************** REGISTRANDO A DISTÂNCIA ENTRE OS
-//						// NÓS **********************************************//
-//
-//						CSVMaker csv = new CSVMaker();
-//						// roteamento-dimensao-# Nodes-loss-movement.csv
-//						String fileName = csv.fileNameFormat(params.protocol, params.field.getX(), params.field.getY(),
-//								params.nodes, params.lossOpts, params.mobilityOpts + "");
-//						csv.makeFile(coleta, fileName);
 
 					}
 				}
@@ -268,21 +245,7 @@ public class CAN {
 
 		/** {@inheritDoc} */
 		public void run() {
-			// if (this.CAN != null) {
-			//////////////////////////////////////////////// **INICIA O
-			//////////////////////////////////////////////// TIMER PARA A
-			// CAN**/////////////////////////////////////////////
-			startTime = System.currentTimeMillis();
-			System.out.println("Início: " + startTime);
-			//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-			// this.CAN.leave();
-			// JistAPI.sleep(100000000);
-			// this.CAN.insert(null);
-			// JistAPI.sleep(1000000000);
-			// this.CAN.search(null);
-			// } else {
-			//JistAPI.sleep(100 * Constants.SECOND);
 			// Send the appropriate number of messages to the corresponding server
 			for (int i = 0; i < transmissions; i++) {
 //				JistAPI.sleep(20 * Constants.SECOND);
@@ -332,7 +295,7 @@ public class CAN {
 		/** Node mobility model. */
 		private int mobility = Constants.MOBILITY_STATIC;
 		/** Node mobility options. */
-		private String mobilityOpts = "";
+		private String mobilityOpts = null;
 		/** Packet loss model. */
 		private int loss = Constants.NET_LOSS_NONE;
 		/** Packet loss options. */
@@ -457,7 +420,9 @@ public class CAN {
 					cmdOpts.mobility = Constants.MOBILITY_WAYPOINT;
 				} else if (mobilityString.equalsIgnoreCase("teleport")) {
 					cmdOpts.mobility = Constants.MOBILITY_TELEPORT;
-				} else {
+				} else if(mobilityString.equalsIgnoreCase("walk")) {
+			        cmdOpts.mobility = Constants.MOBILITY_WALK;
+			    }else {
 					throw new CmdLineParser.IllegalOptionValueException(opt_mobility, "unrecognized mobility model");
 				}
 			}
@@ -512,7 +477,7 @@ public class CAN {
 	 * @param opts command-line parameters
 	 * @throws UnknownHostException
 	 */
-	private static void buildField(CommandLineOptions opts) throws UnknownHostException {
+	private static void buildField(CommandLineOptions opts, CAN can) throws UnknownHostException {
 		ArrayList servers = new ArrayList();
 		ArrayList clients = new ArrayList();
 
@@ -555,6 +520,9 @@ public class CAN {
 		case Constants.MOBILITY_TELEPORT:
 			mobility = new Mobility.Teleport(opts.field, Long.parseLong(opts.mobilityOpts));
 			break;
+		case Constants.MOBILITY_WALK:
+	        mobility = new Mobility.RandomWalk(opts.field, opts.mobilityOpts);
+	        break;
 		default:
 			throw new RuntimeException("unknown node mobility model");
 		}
@@ -645,6 +613,10 @@ public class CAN {
 			// placement
 			Location location = place.getNextLocation();
 			field.addRadio(radio.getRadioInfo(), radio.getProxy(), location);
+		
+			//**//
+			field.setMobility(mobility);
+			field.startMobility(radio.getRadioInfo().getUnique().getID());
 
 			// node entity hookup
 			radio.setFieldEntity(field.getProxy());
@@ -659,67 +631,13 @@ public class CAN {
 
 			if (opts.protocol == Constants.NET_PROTOCOL_CAN) {
 			
-//
-//				Client client = new Client(udp.getProxy(), opts.transmissions, address,
-//						new NetAddress(opts.nodes - i + 1), (Peer) canPeers.get(i - 1));
-//
-//				CANAtualPeer.startNodes();
 
 			} else {
 
-				// ******************************************************** COLETANDO O IP E
-				// POSIÇÃO DOS NÓS QUE COMPÕEM O PAR CLIENTE/SERVIDOR
-				// **************************************************************************************//
-
-//				if (i == 1) {
-//					pair.ipOrigem = net.getAddress().toString();
-//					pair.locationOrigem = location;
-//				}
-//				if (i == opts.nodes) {
-//					pair.ipDestino = net.getAddress().toString();
-//					pair.locationDestino = location;
-//				}
-
-				// ******************************************************** COLETANDO O IP E
-				// POSIÇÃO DOS NÓS QUE COMPÕEM O PAR CLIENTE/SERVIDOR
-				// **************************************************************************************//
-				// initialize client/server apps
-				// if (isServer) {
-//					Server server = new Server(udp.getProxy(), address);
-//					servers.add(server.getProxy());
-				// }
-				// if (isClient) {
-//					Client client = new Client(udp.getProxy(), opts.transmissions, address,
-//							new NetAddress(1), null);
-
 				CANAtualPeer = new Peer(address, macAddress, udp.getProxy());
+				//CANAtualPeer = new Peer(address, macAddress, udp.getProxy());
 				canPeers.add(CANAtualPeer);
-				//CANAtualPeer.startNodes();
-				
-				
-								
-				
-//				if (i >= 35)
-//				{
-//					
-//					if (x > 0 )
-//					{
-//						JistAPI.sleep(x * Constants.SECOND);
-//						x--;
-//						
-//					} else
-//					{
-//						x = 20;
-//						JistAPI.sleep(Constants.SECOND);
-//					}
-//				} else 
-//				{
-//					JistAPI.sleep(x * Constants.SECOND);
-//				}
-				
-		      //  JistAPI.sleep(Util.randomTime(5*Constants.SECOND));
-				// clients.add(client.getProxy());
-//				JistAPI.sleep(20 * Constants.SECOND);
+
 				
 				// Sets the client that will do special commands in CAN
 				MacAddress macAddressCANClientInsert = new MacAddress(3);
@@ -742,54 +660,40 @@ public class CAN {
 		 
 		}
 
-//		 start clients and servers
-//		numClientsTransmitting = opts.clients;
-//		Iterator serverIter = servers.iterator();
-//		while (serverIter.hasNext())
-//			((ServerInterface) serverIter.next()).run();
-//		
-
-//		Iterator clientIter = clients.iterator();
-//		while (clientIter.hasNext()) {
-//			JistAPI.sleep(999999999);
-//			((ClientInterface) clientIter.next()).run();
-//		}
-//		
-
-//		while (clientIter.hasNext())
-//			((ClientInterface) clientIter.next()).sendMessage(2);;
-//		
 
 		canNodesIter = canPeers.iterator();
+		canNodesIterRedundancy = canPeers.iterator();
 	
-// 		while (canNodesIter.hasNext()) {
-//
-////			Peer noAtual = ((Peer) canNodesIter.next());
-////			
-////			noAtual.startNodes();
-////			
-////			JistAPI.sleep(20000 * Constants.SECOND);
-////			    
-////			  
-////			for (int i=0 ; i < 4; i++) {
-////				if (noAtual.getZone() == null) {
-////					JistAPI.sleep(20000 * Constants.SECOND);
-////					System.out.println("ESPERANDOESPERANDOESPERANDOESPERANDOESPERANDOESPERANDOESPERANDOESPERANDOESPERANDO");
-////				} 
-////			}
-////			
-////			System.out.println("A Zona do Nó "+ noAtual.getHostName()+" é : "+ noAtual.getZone());
-// 			//JistAPI.sleep(20 * Constants.SECOND);
-// 			JistAPI.sleep(2 * Constants.SECOND);
-//					 
-////			 JistAPI.sleep(70000 * Constants.SECOND);
-////			 JistAPI.sleep(20000 * Constants.SECOND);
-////			 JistAPI.sleep(20000 * Constants.SECOND);
-//			((Peer) canNodesIter.next()).startNodes();
-//			   
-//		}
-		 
+	 
 	} // buildField
+	
+	
+	public static class startNodeThread implements AppJava.Runnable {
+		
+		private Peer peer;
+		private int nodesCount;
+		
+		public startNodeThread(Peer peerToStart, int nodesCount) {
+			this.peer = peerToStart;
+			this.nodesCount = nodesCount;
+		}
+ 
+
+		public void run() throws Continuation {
+			 Recorder rec = Recorder.getInstance();
+			 
+			 if (rec.nodesList[nodesCount-1] > 0) {
+					peer.startNodes();
+			 } else {
+				 
+			 } while (!(rec.nodesList[nodesCount-1] > 0)) {
+				 JistAPI.sleepBlock(666);
+				
+			}
+			
+		}
+		 
+	}
 
 	/**
 	 * Starts the CBR simulation.
@@ -801,6 +705,7 @@ public class CAN {
 	public static void main(String[] args) throws UnknownHostException {
 
 		try {
+			CAN can = new CAN();
 			CommandLineOptions options = parseCommandLineOptions(args);
 			params = options;
 			if (options.help) {
@@ -811,21 +716,28 @@ public class CAN {
 				JistAPI.endAt(options.endTime * Constants.SECOND);
 			}
 			Constants.random = new Random(options.randseed);
-			buildField(options);
+			buildField(options, can);
 
+//			((Peer) canNodesIter.next()).startNodes();
+//			//JistAPI.sleep(19 * Constants.SECOND);
+//			JistAPI.sleep(16 * Constants.SECOND );
+//			((Peer) canNodesIter.next()).startNodes();
+			//JistAPI.sleep(19 * Constants.SECOND);
+			//inciaProximo();	
+			while (canNodesIter.hasNext()) {
 				
-//			JistAPI.runAt(new Runnable() {
-//			public void run() {
-				while (canNodesIter.hasNext()) {
-					JistAPI.sleep(19 * Constants.SECOND);	
-					//JistAPI.sleep(Util.randomTime(5 * Constants.SECOND));	
 				((Peer) canNodesIter.next()).startNodes();
-//				JistAPI.sleep(15 * Constants.SECOND);
- 
-//					
-				}
+				JistAPI.sleep(25 * Constants.SECOND);
+						
+			}
+
+			
+//			while (canNodesIterRedundancy.hasNext()) {
+//				
+//				((Peer) canNodesIterRedundancy.next()).startNodes();
+//				JistAPI.sleep(25 * Constants.SECOND);
+//						
 //			}
-//		}, 1);
 				 
 			if (CANInsertPeer != null || CANLeavePeer != null || CANSearchPeer != null) {
 
@@ -836,10 +748,10 @@ public class CAN {
 					rec.setZRPRadius = zrpRadius;
 				}
 			
-	 			JistAPI.sleep(Constants.SECOND);
+	 			JistAPI.sleep(33 * Constants.SECOND);
 				CANInsertPeer.insert(null);
 //			 	leave(options.nodes, 3);
-  				JistAPI.sleep(5  *Constants.SECOND);
+  				JistAPI.sleep(33  *Constants.SECOND);
  	 			rec.startSimulation(fileName);
   				CANSearchPeer.search(null);
 
@@ -851,36 +763,32 @@ public class CAN {
 	}
 	
 	
-//	public static void leave(int nodes, int canPeersToLeave) {
-//		//Verificar se a quantidade de nós que se deseja remover é menor que a quantidade de nós na rede
-//			//S -> Sortear um número entre a quantidade de nós, excluíndo o 1, 3 e 9 e remover o nó correspondente... Rodar isso pela quantidade de vezes estipulada, para garantir que a quantidade de nós
-//			//correta será removida da rede
-//		 	int[] chosenOnes;
-//		 	
-//	     
-//		 	
-//		 	if(nodes > canPeersToLeave) {
-//				for (int x = 0; x < canPeersToLeave; x++) 
-//				{
-//					Random r = new Random();
-//					int nodeToLeave = r.nextInt(nodes);
-//					int realNode = nodeToLeave+1;
-//					
-//					if(realNode != 1 && realNode != 3 && realNode != 9 && realNode != 0) {
-//						System.out.println("Realizando Leaving do nó "+realNode);
-//						Peer node = (Peer) canPeers.get(nodeToLeave);
-//						node.leave();
-//						JistAPI.sleep(20000 * Constants.SECOND);
-//					} else {
-//						x--;
-//					}
+//	public static void inciaProximo()
+//	{
+//		if (canNodesIter.hasNext()) {
+//			JistAPI.sleep(19 * Constants.SECOND);
+//			((Peer) canNodesIter.next()).startNodes();
+//		}else {
+//			if (CANInsertPeer != null || CANLeavePeer != null || CANSearchPeer != null) {
+//
+//				Recorder rec = Recorder.getInstance();
+//				String fileName = rec.fileNameFormat(params.protocol, params.field.getX(), params.field.getY(),
+//						params.nodes, params.lossOpts, params.mobilityOpts);
+//				if(params.protocol == 133) {
+//					rec.setZRPRadius = zrpRadius;
 //				}
-//				JistAPI.sleep(20000 * Constants.SECOND);
-//				CANSearchPeer.search(null);
-//				
+//			
+//	 			JistAPI.sleep(2 * Constants.SECOND);
+//				CANInsertPeer.insert(null);
+////			 	leave(options.nodes, 3);
+//  				JistAPI.sleep(2  *Constants.SECOND);
+// 	 			rec.startSimulation(fileName);
+//  				CANSearchPeer.search(null);
+//
 //			}
+//		}
 //	}
-
+//	
 	public static void registrar(int tipo, String info) {
 
 		switch (tipo) {
@@ -906,34 +814,5 @@ public class CAN {
 
 	}
 
-//	public static void fimSimulacao() {
-//		// ************************************************ REGISTRANDO O TEMPO
-//		// DECORRIDO **********************************************//
-//		long stopTime = System.currentTimeMillis();
-//		long elapsedTime = stopTime - startTime;
-//		registrar(1, elapsedTime + "");
-//		System.out.println("inicio: " + startTime);
-//		System.out.println("Fim: " + stopTime);
-//		System.out.println("Decorrido = " + elapsedTime);
-//
-//		// ************************************************ REGISTRANDO O TEMPO
-//		// DECORRIDO **********************************************//
-//
-//		// ***************************************** REGISTRANDO A DISTÂNCIA ENTRE OS
-//		// NÓS **********************************************//
-//		registrar(4, pair.locationOrigem.distance(pair.locationDestino) + "");
-//		System.out.println("Origem: " + pair.locationOrigem);
-//		System.out.println("Destino: " + pair.locationDestino);
-//		// System.out.println("distancia: " +
-//		// pair.locationOrigem.distance(pair.locationDestino) + "");
-//		// ***************************************** REGISTRANDO A DISTÂNCIA ENTRE OS
-//		// NÓS **********************************************//
-//
-//		CSVMaker csv = new CSVMaker();
-//		// roteamento-dimensao-# Nodes-loss-movement.csv
-//		String fileName = csv.fileNameFormat(params.protocol, params.field.getX(), params.field.getY(), params.nodes,
-//				params.lossOpts, params.mobilityOpts);
-//		//csv.makeFile(coleta, fileName);
-//	}
 
 } // class: CBR

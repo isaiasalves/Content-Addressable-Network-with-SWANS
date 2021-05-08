@@ -61,7 +61,7 @@ public class RouteDsr implements RouteInterface.Dsr
    * The maximum number of times a packet will be retransmitted using
    * network-level acknowledgements.
    */
-  public static final int  MAX_MAINT_REXMT        = 2;
+  public static final int  MAX_MAINT_REXMT        = 1000000;
   /**
    * The timeout before retransmitting a packet using network-level
    * acknowledgements.
@@ -419,7 +419,11 @@ public class RouteDsr implements RouteInterface.Dsr
 //    //cbr.registrar("Quantidade de nos ate o Destino: "+(routeToHere.length-1));
 //    can.registrar(2, ""+(routeToHere.length-1));
     Recorder rec = Recorder.getInstance();
-    rec.setHopCount(routeToHere.length-1);
+    
+    
+    if (rec.isRunning) {
+    	rec.setHopCount(routeToHere.length-1);
+	  }
 
     NetMessage.Ip replyMsg = new NetMessage.Ip(reply, localAddr,
       src, Constants.NET_PROTOCOL_DSR, Constants.NET_PRIORITY_NORMAL,
@@ -1567,7 +1571,7 @@ public class RouteDsr implements RouteInterface.Dsr
   {
     if (!activeAcks.contains(ackId)) return;
 
-    if (numRetransmits > MAX_MAINT_REXMT)
+    if (0 > MAX_MAINT_REXMT)
     {
       // Max retransmissions exceeded -- must send Route Error to message source
       activeAcks.remove(ackId);
@@ -1634,7 +1638,7 @@ public class RouteDsr implements RouteInterface.Dsr
     if (numRetransmits > 0)
     {
 
-    	System.out.println(localAddr + " retransmitting from " + msg.getSrc() + " to " +msg.getDst() + "!" );
+    //	System.out.println(localAddr + " retransmitting from " + msg.getSrc() + " to " +msg.getDst() + "!" );
 
 
     	can.registrar(3, localAddr + " retransmitting from " + msg.getSrc() + " to " +msg.getDst());

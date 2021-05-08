@@ -505,10 +505,15 @@ public class RouteZrpIerp implements RouteInterface.Zrp.Ierp, Timer
         	//********************* Adição para registrar a quantidade de nós ********************* //
               //System.out.println("[RouteZrpIerp] dst found: t="+JistAPI.getTime()+" at="+zrp.getLocalAddr()+" reply="reply);
               //System.out.println("Quantidade de nós até o Destino: "+(route.length-1));
-              can.registrar(2, ""+(route.length-1));
+                    	  
+        	  can.registrar(2, ""+(route.length-1));
               
-              Recorder rec = Recorder.getInstance();
-              rec.setHopCount(route.length-1);
+              
+        	  Recorder rec = Recorder.getInstance();
+        	  
+        	  if (rec.isRunning) {
+        		  rec.setHopCount(route.length-1);
+        	  }
               //********************* Adição para registrar a quantidade de nós ********************* //
             //System.out.println("[RouteZrpIerp] reply received: t="+JistAPI.getTime()+" reply="+msgImpl);
           }

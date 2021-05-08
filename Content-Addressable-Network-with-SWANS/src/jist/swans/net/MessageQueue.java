@@ -189,7 +189,7 @@ public interface MessageQueue
      */
     public void insert(QueuedMessage msg, int pri)
     {
-      if(size==capacity)
+      if(size==1000)
       {
         throw new IndexOutOfBoundsException("list maximum exceeded");
       }

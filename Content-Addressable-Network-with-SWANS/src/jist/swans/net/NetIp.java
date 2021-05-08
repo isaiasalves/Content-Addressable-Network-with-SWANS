@@ -160,6 +160,13 @@ public class NetIp implements NetInterface
     if(Main.ASSERT) Util.assertion(addr!=null);
     this.localAddr = addr;
   }
+  
+  
+  public void setLoss (PacketLoss in, PacketLoss out) {
+	  this.incomingLoss = in;
+	  this.outgoingLoss = out;
+  }
+  
 
   /**
    * Whether packet is for local consumption.

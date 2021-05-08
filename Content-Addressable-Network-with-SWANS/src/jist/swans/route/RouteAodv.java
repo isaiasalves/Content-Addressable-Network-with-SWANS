@@ -1932,7 +1932,10 @@ public class RouteAodv implements RouteInterface.Aodv
         can.registrar(2, ""+(rrepMsg.getHopCount()+1));
         
         Recorder rec = Recorder.getInstance();
-        rec.setHopCount(rrepMsg.getHopCount()+1);
+        
+        if (rec.isRunning) {
+        	rec.setHopCount(rrepMsg.getHopCount()+1);
+        }
 
         //*********************************************************************************** //
 

@@ -18,6 +18,9 @@ public class Recorder {
 	private static int hopCount = 0;
 	private static String protocol;
 	public static int setZRPRadius = 0;
+	public static boolean isRunning = false;
+	public static int nodes; 
+	public static int[] nodesList = new int[101];
 	
 	private Recorder() {
 		
@@ -45,6 +48,7 @@ public class Recorder {
 	
 	public void startSimulation(String fileName) {
 		this.fileName = fileName;
+		this.isRunning = true;
 		startTime = System.currentTimeMillis();
 	}
 	
